@@ -148,7 +148,7 @@ function get_courses() {
                 $lessons[] = [
                     'number'       => intval($num),
                     'slug'         => $url_slug,
-                    'title'        => mb_ucfirst($title_part),
+                    'title'        => mb_strtoupper(mb_substr($title_part, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($title_part, 1, null, 'UTF-8'),
                     'description'  => $lesson_desc,
                     'reading_time' => get_reading_time($lesson_file),
                     'file'         => $lesson_file,
