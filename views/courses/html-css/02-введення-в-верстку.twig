@@ -313,13 +313,71 @@
         </div>
 
         <h3>Скидання стандартних стилів</h3>
-        <p>Браузерні стилі (відступи, шрифти) часто заважають при верстці. Їх можна скинути:</p>
+        <p>Браузерні стилі (відступи, шрифти, розміри) часто заважають при верстці — в різних браузерах вони можуть відрізнятися. Тому перед початком роботи стилі скидають. Є кілька підходів:</p>
+
+        <h3>Підхід 1: Універсальний селектор *</h3>
+        <p>Найпростіший спосіб — скинути відступи для всіх елементів одразу:</p>
         <pre><code><span class="sel">*</span> {
-  <span class="prop">margin</span>: 0;
-  <span class="prop">padding</span>: 0;
+  <span class="prop">margin</span>: <span class="val">0</span>;
+  <span class="prop">padding</span>: <span class="val">0</span>;
+  <span class="prop">box-sizing</span>: <span class="val">border-box</span>;
 }</code></pre>
-        <p>Селектор <code>*</code> (зірочка) — універсальний, застосовується до <strong>всіх</strong> елементів на
-            сторінці.</p>
+        <p>Селектор <code>*</code> (зірочка) — універсальний, застосовується до <strong>всіх</strong> елементів на сторінці. Додавання <code>box-sizing: border-box</code> робить так, що <code>width</code> і <code>height</code> включають padding і border (детальніше — у лекції про блочну модель).</p>
+        <p>Це мінімальний варіант, який підходить для навчання і невеликих проєктів. На практиці використовують більш ґрунтовні рішення.</p>
+
+        <h3>Підхід 2: CSS Reset (Ерік Мейєр)</h3>
+        <p><strong>Reset CSS</strong> — це файл стилів, який <strong>повністю обнулює</strong> всі браузерні стилі. Після підключення reset кожен елемент виглядає однаково — як звичайний текст без відступів, рамок та розмірів.</p>
+        <pre><code><span class="comment">/* Фрагмент reset.css */</span>
+<span class="sel">html, body, div, span, h1, h2, h3, h4, h5, h6,
+p, a, img, ol, ul, li, form, label, table,
+caption, tbody, tfoot, thead, tr, th, td</span> {
+  <span class="prop">margin</span>: <span class="val">0</span>;
+  <span class="prop">padding</span>: <span class="val">0</span>;
+  <span class="prop">border</span>: <span class="val">0</span>;
+  <span class="prop">font-size</span>: <span class="val">100%</span>;
+  <span class="prop">font</span>: <span class="val">inherit</span>;
+  <span class="prop">vertical-align</span>: <span class="val">baseline</span>;
+}</code></pre>
+        <p>Перевага: повна передбачуваність — ви починаєте з чистого аркуша. Недолік: потрібно заново прописувати стилі для списків, заголовків, таблиць тощо.</p>
+
+        <h3>Підхід 3: Normalize.css</h3>
+        <p><strong>Normalize.css</strong> діє інакше — він <strong>не скидає</strong> стилі повністю, а <strong>вирівнює</strong> їх між браузерами. Корисні стилі (відступи заголовків, маркери списків) зберігаються, але стають однаковими у Chrome, Firefox, Safari та інших.</p>
+        <p>Переваги:</p>
+        <ul>
+            <li>Зберігає корисні браузерні стилі замість того, щоб знищувати все</li>
+            <li>Виправляє відомі баги та неконсистентності між браузерами</li>
+            <li>Менше роботи після підключення — базові елементи вже виглядають нормально</li>
+        </ul>
+
+        <h3>Порівняння підходів</h3>
+        <div class="comparison">
+            <div>
+                <strong>Reset CSS</strong>
+                <ul>
+                    <li>Обнулює <strong>все</strong></li>
+                    <li>Заголовки = звичайний текст</li>
+                    <li>Списки без маркерів</li>
+                    <li>Потрібно все стилізувати з нуля</li>
+                </ul>
+            </div>
+            <div>
+                <strong>Normalize.css</strong>
+                <ul>
+                    <li><strong>Вирівнює</strong> між браузерами</li>
+                    <li>Заголовки залишаються більшими</li>
+                    <li>Списки з маркерами</li>
+                    <li>Менше ручної роботи</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Як підключити</h3>
+        <p>Reset або Normalize підключають <strong>першим</strong> CSS-файлом — до ваших стилів:</p>
+        <pre><code><span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"stylesheet"</span> <span class="attr">href=</span><span class="val">"normalize.css"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"stylesheet"</span> <span class="attr">href=</span><span class="val">"style.css"</span><span class="tag">&gt;</span></code></pre>
+        <p>Порядок важливий: спочатку скидаємо/вирівнюємо, потім пишемо свої стилі поверх.</p>
+
+        <div class="tip">На практиці більшість сучасних проєктів використовують Normalize.css або його модифікації. Повний reset використовують рідше, бо після нього доводиться заново стилізувати навіть базові елементи. Для навчання достатньо скидання через <code>*</code>.</div>
     </section>
 
     <!-- ===== SECTION 7 ===== -->

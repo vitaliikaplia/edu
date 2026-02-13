@@ -269,11 +269,71 @@
         <h2>11. 100vh для повноекранних секцій</h2>
         <p>Для створення блоку на всю висоту вікна використовують одиницю <code>vh</code>:</p>
         <pre><code><span class="sel">.fullscreen-section</span> {
-  <span class="prop">height</span>: <span class="val">100vh</span>;   <span
-                        class="comment">/* 100% висоти viewport */</span>
+  <span class="prop">height</span>: <span class="val">100vh</span>;   <span class="comment">/* 100% висоти viewport */</span>
 }</code></pre>
-        <p>Для коректної роботи на мобільних пристроях (де адресний рядок впливає на висоту) у сучасних браузерах можна
-            використовувати <code>100dvh</code> (dynamic viewport height).</p>
+
+        <h3>Проблема 100vh на мобільних пристроях</h3>
+        <p>На мобільних браузерах є адресний рядок та панель навігації, які можуть ховатися при скролі. Класичне значення <code>100vh</code> завжди дорівнює висоті вікна <strong>без урахування</strong> цих панелей — тобто це найбільша можлива висота viewport. Через це на мобільних <code>100vh</code> може бути більшим за видиму область, і контент виходить за межі екрана.</p>
+
+        <h3>Нові viewport-одиниці: svh, lvh, dvh</h3>
+        <p>Для вирішення цієї проблеми у CSS з'явилися три нові одиниці висоти viewport:</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Одиниця</th>
+                <th>Назва</th>
+                <th>Що означає</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>svh</code></td>
+                <td>Small Viewport Height</td>
+                <td>Висота viewport, коли всі панелі браузера <strong>показані</strong> (найменша видима область)</td>
+            </tr>
+            <tr>
+                <td><code>lvh</code></td>
+                <td>Large Viewport Height</td>
+                <td>Висота viewport, коли всі панелі браузера <strong>приховані</strong> (найбільша видима область)</td>
+            </tr>
+            <tr>
+                <td><code>dvh</code></td>
+                <td>Dynamic Viewport Height</td>
+                <td>Динамічно змінюється при появі/зникненні панелей браузера</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            Класичне значення <code>vh</code> на мобільних браузерах поводиться як <code>lvh</code> — завжди дорівнює найбільшому розміру viewport.
+        </div>
+
+        <h3>Як обрати правильну одиницю</h3>
+        <ul>
+            <li><strong><code>dvh</code></strong> — найкращий вибір для повноекранних секцій (hero-блоки, лендінги). Контент завжди точно вписується у видиму область, навіть коли адресний рядок показаний</li>
+            <li><strong><code>svh</code></strong> — гарантує, що контент <strong>ніколи</strong> не буде обрізаний, навіть при максимально видимих панелях. Корисно для елементів, де обрізання критичне (наприклад, форма входу або CTA-кнопка)</li>
+            <li><strong><code>lvh</code></strong> — поведінка ідентична класичному <code>vh</code>. Рідко потрібний окремо, але може бути корисний, якщо ви свідомо хочете використати максимальну висоту</li>
+        </ul>
+
+        <h3>Приклад використання</h3>
+        <pre><code><span class="comment">/* Hero-блок, який завжди займає весь видимий екран */</span>
+<span class="sel">.hero</span> {
+  <span class="prop">min-height</span>: <span class="val">100dvh</span>;
+}
+
+<span class="comment">/* Fallback для старих браузерів */</span>
+<span class="sel">.hero</span> {
+  <span class="prop">min-height</span>: <span class="val">100vh</span>;    <span class="comment">/* Старі браузери */</span>
+  <span class="prop">min-height</span>: <span class="val">100dvh</span>;   <span class="comment">/* Сучасні браузери */</span>
+}</code></pre>
+
+        <div class="warning">
+            Одиниця <code>dvh</code> динамічно змінюється при скролі, коли панелі браузера ховаються. Це може спричиняти небажане <strong>перемальовування (reflow)</strong> елементів. Тому для анімацій та фіксованих елементів краще використовувати <code>svh</code> або <code>lvh</code>, які мають стабільне значення.
+        </div>
+
+        <h3>Аналогічні одиниці для ширини</h3>
+        <p>Ті самі варіанти існують і для ширини viewport: <code>svw</code>, <code>lvw</code>, <code>dvw</code>. Також є діагональні одиниці <code>svi</code>, <code>lvi</code>, <code>dvi</code> (inline) та <code>svb</code>, <code>lvb</code>, <code>dvb</code> (block), які враховують напрямок тексту. На практиці для ширини ці одиниці потрібні рідко, оскільки панелі браузера зазвичай впливають тільки на висоту.</p>
     </section>
 
     <!-- 12. Модульна сітка -->
@@ -600,8 +660,8 @@
                 <td>Різні зображення для різних пристроїв</td>
             </tr>
             <tr>
-                <td>100vh</td>
-                <td>Блок на всю висоту вікна</td>
+                <td>100vh / dvh / svh / lvh</td>
+                <td>Viewport-одиниці: класична, динамічна, мала, велика висота</td>
             </tr>
             <tr>
                 <td>Модульна сітка</td>
