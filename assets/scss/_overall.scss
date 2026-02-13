@@ -357,8 +357,16 @@ li {
 }
 
 .lesson-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
     font-size: 0.75rem;
     color: var(--color-text-light);
+
+    .lesson-meta-icon {
+        font-size: 0.85rem;
+        line-height: 1;
+    }
 }
 
 /* --- Toolbar (non-lesson pages) --- */

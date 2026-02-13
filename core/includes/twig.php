@@ -145,7 +145,7 @@ function get_courses() {
                     $lesson_desc = trim(strip_tags($lm[1]));
                 }
 
-                $url_slug = $num . '-' . ukr_to_lat($lesson_title);
+                $url_slug = ukr_to_lat($lesson_title);
                 $lesson_file = 'courses/' . $slug . '/' . $filename . '.twig';
 
                 $lessons[] = [
