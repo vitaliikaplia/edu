@@ -131,12 +131,10 @@ function get_courses() {
         foreach($files as $file) {
             $filename = basename($file, '.twig');
             if($filename === 'about') continue;
-            if(preg_match('/^(\d+)-(.+)$/', $filename, $m)) {
+            if(preg_match('/^(\d+)/', $filename, $m)) {
                 $num = $m[1];
-                $title_part = str_replace('-', ' ', $m[2]);
-                $url_slug = $num . '-' . ukr_to_lat($title_part);
 
-                // parse lesson title from <h1> and description from first <p> after <h1>
+                // parse lesson title and description from file content (not filename — avoids Unicode issues on hosting)
                 $lesson_title = '';
                 $lesson_desc = '';
                 $lesson_content = file_get_contents($file);
@@ -147,12 +145,13 @@ function get_courses() {
                     $lesson_desc = trim(strip_tags($lm[1]));
                 }
 
+                $url_slug = $num . '-' . ukr_to_lat($lesson_title);
                 $lesson_file = 'courses/' . $slug . '/' . $filename . '.twig';
 
                 $lessons[] = [
                     'number'       => intval($num),
                     'slug'         => $url_slug,
-                    'title'        => $lesson_title ?: mb_strtoupper(mb_substr($title_part, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($title_part, 1, null, 'UTF-8'),
+                    'title'        => $lesson_title,
                     'description'  => $lesson_desc,
                     'reading_time' => get_reading_time($lesson_file),
                     'file'         => $lesson_file,
