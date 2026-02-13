@@ -136,9 +136,13 @@ function get_courses() {
                 $title_part = str_replace('-', ' ', $m[2]);
                 $url_slug = $num . '-' . ukr_to_lat($title_part);
 
-                // parse lesson description from first <p> after <h1>
+                // parse lesson title from <h1> and description from first <p> after <h1>
+                $lesson_title = '';
                 $lesson_desc = '';
                 $lesson_content = file_get_contents($file);
+                if(preg_match('/<h1>(.*?)<\/h1>/s', $lesson_content, $tm)) {
+                    $lesson_title = trim(strip_tags($tm[1]));
+                }
                 if(preg_match('/<h1>.*?<\/h1>\s*<p>(.*?)<\/p>/s', $lesson_content, $lm)) {
                     $lesson_desc = trim(strip_tags($lm[1]));
                 }
@@ -148,7 +152,7 @@ function get_courses() {
                 $lessons[] = [
                     'number'       => intval($num),
                     'slug'         => $url_slug,
-                    'title'        => mb_strtoupper(mb_substr($title_part, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($title_part, 1, null, 'UTF-8'),
+                    'title'        => $lesson_title ?: mb_strtoupper(mb_substr($title_part, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($title_part, 1, null, 'UTF-8'),
                     'description'  => $lesson_desc,
                     'reading_time' => get_reading_time($lesson_file),
                     'file'         => $lesson_file,
