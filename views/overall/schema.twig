@@ -1,0 +1,86 @@
+{# --- WebSite schema (homepage) --- #}
+{% if 'index' in body_classes %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "edu.kaplia.pro",
+    "url": "{{ site.url }}",
+    "description": "{{ page.description | default('') }}",
+    "inLanguage": "uk"
+}
+</script>
+{% endif %}
+
+{# --- Course page (ItemList) --- #}
+{% if 'course-about' in body_classes and lessons is defined %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "{{ course.title }}",
+    "description": "{{ course.description }}",
+    "provider": {
+        "@type": "Organization",
+        "name": "edu.kaplia.pro",
+        "url": "{{ site.url }}"
+    },
+    "inLanguage": "uk",
+    "hasCourseInstance": {
+        "@type": "CourseInstance",
+        "courseMode": "online",
+        "courseWorkload": "PT{{ lessons | length }}H"
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "{{ course.title }} — зміст курсу",
+    "numberOfItems": {{ lessons | length }},
+    "itemListElement": [
+        {% for lesson in lessons %}
+        {
+            "@type": "ListItem",
+            "position": {{ loop.index }},
+            "url": "{{ site.url }}{{ course.slug }}/{{ lesson.slug }}/",
+            "name": "{{ lesson.title }}"
+        }{% if not loop.last %},{% endif %}
+
+        {% endfor %}
+    ]
+}
+</script>
+{% endif %}
+
+{# --- Lesson page (Article) --- #}
+{% if 'course-lesson' in body_classes and lesson is defined %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "{{ lesson.title }}",
+    "description": "{{ page.description | default('') }}",
+    "url": "{{ page.canonical | default('') }}",
+    "inLanguage": "uk",
+    "isPartOf": {
+        "@type": "Course",
+        "name": "{{ course.title }}",
+        "url": "{{ site.url }}{{ course.slug }}/"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Віталій Капля",
+        "url": "https://vitaliikaplia.com/"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "edu.kaplia.pro",
+        "url": "{{ site.url }}"
+    },
+    "wordCount": {{ (reading_time | default(1)) * 200 }},
+    "timeRequired": "PT{{ reading_time | default(1) }}M"
+}
+</script>
+{% endif %}

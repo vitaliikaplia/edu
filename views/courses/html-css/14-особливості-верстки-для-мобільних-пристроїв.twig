@@ -1,0 +1,481 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Особливості верстки для мобільних пристроїв</h1>
+    <p>Конспект лекції: Retina-дисплеї, Device Pixel Ratio, viewport мета-тег, мобільні браузери</p>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>1. Проблема декоративної графіки на Retina-дисплеях</h2>
+
+        <p>Декоративні зображення (іконки, фони) вставляються через CSS за допомогою <code>background-image</code>. На
+            екранах з підвищеною щільністю пікселів (Retina) растрова графіка може виглядати розмито.</p>
+
+        <h3>Фізичні vs CSS-пікселі</h3>
+
+        <p>CSS-піксель — це <strong>віртуальна одиниця</strong>. Один CSS-піксель може відповідати 2, 3 або більше
+            фізичним пікселям екрана. Коефіцієнт <strong>DPR (Device Pixel Ratio)</strong> визначає це співвідношення.
+        </p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Ситуація</th>
+                <th>Результат</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Розмір файлу = <code>background-size</code></td>
+                <td>Якість ідеальна</td>
+            </tr>
+            <tr>
+                <td>Файл більший за <code>background-size</code></td>
+                <td>Браузер зменшує — якість зберігається</td>
+            </tr>
+            <tr>
+                <td>Файл менший за <code>background-size</code></td>
+                <td>Браузер розтягує — якість втрачається (розмиття)</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="example">
+            <strong>Приклад:</strong> іконка 16×16 px, DPR = 2. Браузер спробує відобразити 32×32 фізичних пікселів, але
+            інформації лише на 16×16 — з'явиться розмиття.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>2. Рішення «в лоб» — збільшене зображення</h2>
+
+        <p>Найпростіший підхід — підготувати зображення в 2× (або 3×) більшому розмірі, а в CSS вказати потрібний <code>background-size</code>:
+        </p>
+
+        <pre><code><span class="sel">.icon</span> {
+    <span class="prop">background-image</span>: <span class="val">url("icon@2x.png")</span>;  <span class="comment">/* 32×32 px файл */</span>
+    <span class="prop">background-size</span>: <span class="val">16px 16px</span>;           <span class="comment">/* відображаємо як 16×16 */</span>
+    <span class="prop">background-repeat</span>: <span class="val">no-repeat</span>;
+}</code></pre>
+
+        <div class="warning">
+            <strong>Недоліки:</strong> збільшений файл важить більше; при зміні розміру іконки потрібно готувати нове
+            зображення; для DPR 3 потрібен ще один варіант.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>3. Іконковий шрифт (Icon Font)</h2>
+
+        <p>Іконковий шрифт — це шрифт, де замість літер — іконки. Оскільки шрифт — векторний, іконки масштабуються без
+            втрати якості.</p>
+
+        <h3>Підключення</h3>
+
+        <pre><code><span class="sel">@font-face</span> {
+    <span class="prop">font-family</span>: <span class="val">"MyIcons"</span>;
+    <span class="prop">src</span>: <span class="val">url("fonts/icons.woff2") format("woff2")</span>;
+    <span class="prop">font-weight</span>: <span class="val">normal</span>;
+    <span class="prop">font-style</span>: <span class="val">normal</span>;
+}</code></pre>
+
+        <h3>Використання через псевдоелемент</h3>
+
+        <pre><code><span class="sel">.link::before</span> {
+    <span class="prop">content</span>: <span class="val">"\e901"</span>;          <span class="comment">/* Unicode-код іконки */</span>
+    <span class="prop">font-family</span>: <span class="val">"MyIcons"</span>;
+    <span class="prop">font-size</span>: <span class="val">16px</span>;
+    <span class="prop">position</span>: <span class="val">absolute</span>;
+    <span class="prop">top</span>: <span class="val">50%</span>;
+    <span class="prop">transform</span>: <span class="val">translateY(-50%)</span>;
+}</code></pre>
+
+        <h3>Переваги</h3>
+        <ul>
+            <li>Розмір змінюється через <code>font-size</code> — без втрати якості</li>
+            <li>Колір змінюється через <code>color</code> (як звичайний текст)</li>
+            <li>Готові набори іконок (Font Awesome, Material Icons тощо)</li>
+        </ul>
+
+        <h3>Недоліки</h3>
+        <ul>
+            <li>Іконка — це символ (текст), а не графіка — семантично неправильно</li>
+            <li>Не можна розфарбувати окремі частини іконки різними кольорами</li>
+            <li>Застарілий підхід — SVG має всі переваги без недоліків</li>
+        </ul>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>4. SVG — сучасне рішення</h2>
+
+        <p><strong>SVG (Scalable Vector Graphics)</strong> — формат векторної графіки. Масштабується без втрати якості,
+            бо описує фігури формулами, а не пікселями.</p>
+
+        <h3>Два способи використання</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Спосіб</th>
+                <th>Як</th>
+                <th>Зміна кольору</th>
+                <th>Доступ з JS</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Зовнішній файл</td>
+                <td><code>background-image: url("icon.svg")</code></td>
+                <td>Ні</td>
+                <td>Ні</td>
+            </tr>
+            <tr>
+                <td>Вбудований (inline)</td>
+                <td>Тег <code>&lt;svg&gt;</code> прямо в HTML</td>
+                <td>Так (через <code>fill</code>)</td>
+                <td>Так</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Структура SVG</h3>
+
+        <pre><code><span class="tag">&lt;svg</span> <span class="attr">class</span>=<span
+                        class="val">"icon"</span> <span class="attr">viewBox</span>=<span class="val">"0 0 24 24"</span><span
+                        class="tag">&gt;</span>
+    <span class="tag">&lt;path</span> <span class="attr">d</span>=<span
+                        class="val">"M12 2C6.48 2 2 6.48 2 12s..."</span><span class="tag">/&gt;</span>
+<span class="tag">&lt;/svg&gt;</span></code></pre>
+
+        <ul>
+            <li><code>&lt;svg&gt;</code> — контейнер; <code>viewBox</code> задає систему координат</li>
+            <li><code>&lt;path&gt;</code> — контур фігури; атрибут <code>d</code> описує кривні</li>
+            <li><code>fill</code> — колір заливки (атрибут або CSS-властивість)</li>
+        </ul>
+
+        <h3>Керування кольором inline SVG</h3>
+
+        <pre><code><span class="comment">/* Видаліть атрибут fill з &lt;path&gt; в розмітці! */</span>
+<span class="sel">.icon path</span> {
+    <span class="prop">fill</span>: <span class="val">#333</span>;
+}
+<span class="sel">.link:hover .icon path</span> {
+    <span class="prop">fill</span>: <span class="val">#0066cc</span>;
+}</code></pre>
+
+        <div class="warning">
+            <strong>Якщо <code>fill</code> заданий атрибутом</strong> у тезі <code>&lt;path fill="..."&gt;</code>,
+            CSS-властивість <code>fill</code> його не перевизначить (як inline-стилі). Видаліть атрибут, щоб керувати
+            кольором з CSS.
+        </div>
+
+        <h3>Розмір inline SVG</h3>
+
+        <pre><code><span class="sel">.icon</span> {
+    <span class="prop">width</span>: <span class="val">24px</span>;
+    <span class="prop">height</span>: <span class="val">24px</span>;
+}</code></pre>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>5. Порівняння підходів до декоративної графіки</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Критерій</th>
+                <th>PNG @2x</th>
+                <th>Іконковий шрифт</th>
+                <th>SVG</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Якість при масштабуванні</td>
+                <td>Обмежена розміром файлу</td>
+                <td>Без втрат</td>
+                <td>Без втрат</td>
+            </tr>
+            <tr>
+                <td>Зміна кольору в CSS</td>
+                <td>Ні</td>
+                <td>Так (<code>color</code>)</td>
+                <td>Так (<code>fill</code>, тільки inline)</td>
+            </tr>
+            <tr>
+                <td>Багатоколірність</td>
+                <td>Так</td>
+                <td>Ні</td>
+                <td>Так (окремі <code>&lt;path&gt;</code>)</td>
+            </tr>
+            <tr>
+                <td>Семантичність</td>
+                <td>Графіка</td>
+                <td>Текст (семантично неправильно)</td>
+                <td>Графіка</td>
+            </tr>
+            <tr>
+                <td>Підтримка браузерами</td>
+                <td>Усі</td>
+                <td>Усі</td>
+                <td>Усі сучасні</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>6. Стилізація форм на мобільних пристроях</h2>
+
+        <p>Мобільні браузери мають власні <strong>дефолтні стилі</strong> для елементів форм — скруглені кути у <code>&lt;input&gt;</code>,
+            нестандартний вигляд <code>&lt;select&gt;</code>.</p>
+
+        <h3>Скидання системного вигляду</h3>
+
+        <pre><code><span class="sel">input, select, textarea, button</span> {
+    <span class="prop">-webkit-appearance</span>: <span class="val">none</span>;
+    <span class="prop">-moz-appearance</span>: <span class="val">none</span>;
+    <span class="prop">border-radius</span>: <span class="val">0</span>;
+}</code></pre>
+
+        <div class="warning">
+            <strong>Властивість <code>appearance</code></strong> без префікса не підтримується всіма браузерами. Завжди
+            використовуйте <strong>обидва префікси</strong>: <code>-webkit-appearance</code> та
+            <code>-moz-appearance</code>.
+        </div>
+
+        <h3>Повернення стрілки для select</h3>
+
+        <p>Після скидання <code>appearance</code> у <code>&lt;select&gt;</code> зникне стрілка. Додайте її через
+            SVG-фон:</p>
+
+        <pre><code><span class="sel">select</span> {
+    <span class="prop">background-image</span>: <span class="val">url("arrow-down.svg")</span>;
+    <span class="prop">background-repeat</span>: <span class="val">no-repeat</span>;
+    <span class="prop">background-position</span>: <span class="val">right 10px center</span>;
+    <span class="prop">background-size</span>: <span class="val">12px</span>;
+    <span class="prop">padding-right</span>: <span class="val">30px</span>;
+}</code></pre>
+
+        <div class="tip">
+            <strong>Завжди явно задавайте стилі</strong> для елементів форм: <code>border</code>,
+            <code>border-radius</code>, <code>background</code>, <code>color</code>, <code>font-size</code>. Не
+            покладайтесь на дефолтні стилі — вони різні на різних платформах.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>7. Автовизначення телефонних номерів на iOS</h2>
+
+        <p>iOS Safari автоматично розпізнає числа, схожі на телефонні номери, і перетворює їх на сині підкреслені
+            посилання з протоколом <code>tel:</code>.</p>
+
+        <h3>Чому просте скидання стилів не працює</h3>
+
+        <p>Браузер не змінює ваш тег — він <strong>обгортає текст</strong> у <code>&lt;a href="tel:..."&gt;</code>
+            всередині вашого елемента. Тому стилі для батьківського елемента не допоможуть.</p>
+
+        <h3>Рішення 1 — селектор за атрибутом</h3>
+
+        <pre><code><span class="sel">a[href^="tel"]</span> {
+    <span class="prop">color</span>: <span class="val">inherit</span>;
+    <span class="prop">text-decoration</span>: <span class="val">none</span>;
+}</code></pre>
+
+        <h3>Рішення 2 (краще) — одразу робити посилання</h3>
+
+        <pre><code><span class="tag">&lt;a</span> <span class="attr">href</span>=<span
+                        class="val">"tel:+380441234567"</span><span class="tag">&gt;</span>+38 (044) 123-45-67<span
+                        class="tag">&lt;/a&gt;</span></code></pre>
+
+        <p>Стилізуйте посилання як потрібно — і на десктопі, і на мобільних пристроях воно виглядатиме однаково.</p>
+
+        <h3>Рішення 3 — повне вимкнення автовизначення</h3>
+
+        <pre><code><span class="tag">&lt;meta</span> <span class="attr">name</span>=<span
+                        class="val">"format-detection"</span> <span class="attr">content</span>=<span class="val">"telephone=no"</span><span
+                        class="tag">&gt;</span></code></pre>
+
+        <div class="warning">
+            <strong>Обережно!</strong> Цей мета-тег вимикає автовизначення на <strong>всій сторінці</strong>.
+            Переконайтесь, що всі номери телефонів оформлені як посилання <code>&lt;a href="tel:..."&gt;</code> вручну.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>8. Селектори за атрибутом</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Синтаксис</th>
+                <th>Опис</th>
+                <th>Приклад</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>[attr="value"]</code></td>
+                <td>Точне співпадіння</td>
+                <td><code>input[type="text"]</code></td>
+            </tr>
+            <tr>
+                <td><code>[attr^="value"]</code></td>
+                <td>Починається з...</td>
+                <td><code>a[href^="tel"]</code></td>
+            </tr>
+            <tr>
+                <td><code>[attr$="value"]</code></td>
+                <td>Закінчується на...</td>
+                <td><code>a[href$=".pdf"]</code></td>
+            </tr>
+            <tr>
+                <td><code>[attr*="value"]</code></td>
+                <td>Містить підрядок</td>
+                <td><code>a[href*="example"]</code></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>Продуктивність:</strong> селектори за атрибутом повільніші за селектори за класом — браузеру
+            потрібно аналізувати рядок. Використовуйте їх лише для специфічних випадків (масове стилізування посилань
+            <code>tel:</code>, <code>mailto:</code> тощо).
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>9. align-self — індивідуальне вирівнювання flex-елемента</h2>
+
+        <p>Властивість <code>align-self</code> дозволяє <strong>перевизначити</strong> <code>align-items</code> для
+            <strong>одного конкретного</strong> flex-елемента по додатковій осі.</p>
+
+        <pre><code><span class="sel">.container</span> {
+    <span class="prop">display</span>: <span class="val">flex</span>;
+    <span class="prop">align-items</span>: <span class="val">flex-start</span>;
+}
+
+<span class="sel">.button</span> {
+    <span class="prop">align-self</span>: <span class="val">center</span>;  <span class="comment">/* Тільки ця кнопка по центру */</span>
+}</code></pre>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Значення</th>
+                <th>Поведінка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>auto</code> (за замовчуванням)</td>
+                <td>Успадковує значення <code>align-items</code> контейнера</td>
+            </tr>
+            <tr>
+                <td><code>flex-start</code></td>
+                <td>Притискає до початку додаткової осі</td>
+            </tr>
+            <tr>
+                <td><code>flex-end</code></td>
+                <td>Притискає до кінця додаткової осі</td>
+            </tr>
+            <tr>
+                <td><code>center</code></td>
+                <td>Центрує по додатковій осі</td>
+            </tr>
+            <tr>
+                <td><code>stretch</code></td>
+                <td>Розтягує на всю висоту рядка</td>
+            </tr>
+            <tr>
+                <td><code>baseline</code></td>
+                <td>Вирівнює по базовій лінії тексту</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Альтернатива: margin auto</h3>
+
+        <p>Центрування одного елемента можна зробити і через <code>margin-top: auto; margin-bottom: auto;</code>, але
+            <code>align-self: center</code> — більш явний і семантичний спосіб.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>10. Тестування верстки з динамічним контентом</h2>
+
+        <p>Верстка повинна працювати з <strong>будь-якою кількістю контенту</strong> — коротким текстом, довгим текстом,
+            різною кількістю елементів.</p>
+
+        <h3>Що тестувати</h3>
+        <ul>
+            <li>Багато тексту — чи не ламається макет?</li>
+            <li>Мало тексту — чи не з'являються порожні простори?</li>
+            <li>Різна кількість колонок / карток</li>
+            <li>Відсутність зображень</li>
+        </ul>
+
+        <div class="warning">
+            <strong>Не використовуйте фіксований <code>margin-top</code></strong> для вертикального центрування! При
+            зміні контенту (більше/менше тексту) вирівнювання зламається. Використовуйте <code>align-self: center</code>
+            або <code>margin: auto</code> у flex.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>11. Підсумкова таблиця</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Тема</th>
+                <th>Ключові моменти</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Retina та DPR</td>
+                <td>CSS-піксель ≠ фізичний піксель; DPR = фізичний / CSS; растр на Retina — розмивається</td>
+            </tr>
+            <tr>
+                <td>Іконковий шрифт</td>
+                <td>Іконки як символи шрифту; масштабується без втрат; застарілий підхід</td>
+            </tr>
+            <tr>
+                <td>SVG</td>
+                <td>Векторна графіка; найкраще рішення; inline — дозволяє <code>fill</code> та JS</td>
+            </tr>
+            <tr>
+                <td>Форми на мобільних</td>
+                <td><code>-webkit-appearance: none</code> + явні стилі; стрілка select через SVG-фон</td>
+            </tr>
+            <tr>
+                <td>Телефони на iOS</td>
+                <td>Автовизначення; <code>a[href^="tel"]</code> для стилів; найкраще — робити <code>&lt;a href="tel:..."&gt;</code>
+                    одразу
+                </td>
+            </tr>
+            <tr>
+                <td>Селектори за атрибутом</td>
+                <td><code>[attr="val"]</code>, <code>[attr^="val"]</code>, <code>[attr$="val"]</code>, <code>[attr*="val"]</code>
+                </td>
+            </tr>
+            <tr>
+                <td>align-self</td>
+                <td>Індивідуальне вирівнювання flex-елемента; перевизначає <code>align-items</code> контейнера</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+{% endblock %}

@@ -1,0 +1,608 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Верстка форм</h1>
+    <p>Конспект лекції: елементи форм, стилізація полів, валідація, label, outline, стани :focus та :hover</p>
+
+    <!-- ===== SECTION 1 ===== -->
+    <section>
+        <h2>Навіщо потрібні форми?</h2>
+        <p>Форми — спосіб отримати дані від користувача: ім'я, email, повідомлення, вибір опцій тощо.</p>
+        <ul>
+            <li><strong>Текстові поля</strong> — <code>&lt;input&gt;</code> (однорядкове), <code>&lt;textarea&gt;</code>
+                (багаторядкове).
+            </li>
+            <li><strong>Чекбокси</strong> — вибір кількох варіантів зі списку.</li>
+            <li><strong>Радіокнопки</strong> — вибір одного варіанту зі списку.</li>
+            <li><strong>Випадаючі списки</strong> — <code>&lt;select&gt;</code>.</li>
+            <li><strong>Кнопки</strong> — відправлення, скидання, дія.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 2 ===== -->
+    <section>
+        <h2>Тег &lt;input&gt; — однорядкове поле</h2>
+        <p><code>&lt;input&gt;</code> — самозакривний тег. Тип визначається атрибутом <code>type</code>:</p>
+
+        <table>
+            <tr>
+                <th>Тип</th>
+                <th>Призначення</th>
+            </tr>
+            <tr>
+                <td><code>text</code> (за замовчуванням)</td>
+                <td>Звичайне текстове поле</td>
+            </tr>
+            <tr>
+                <td><code>password</code></td>
+                <td>Пароль (символи приховані)</td>
+            </tr>
+            <tr>
+                <td><code>email</code></td>
+                <td>Email (вбудована перевірка на @)</td>
+            </tr>
+            <tr>
+                <td><code>search</code></td>
+                <td>Пошук (має кнопку очищення ×)</td>
+            </tr>
+            <tr>
+                <td><code>number</code></td>
+                <td>Число (стрілки ↑↓, атрибути <code>min</code>, <code>max</code>, <code>step</code>)</td>
+            </tr>
+            <tr>
+                <td><code>date</code></td>
+                <td>Дата (календар браузера)</td>
+            </tr>
+            <tr>
+                <td><code>time</code></td>
+                <td>Час</td>
+            </tr>
+            <tr>
+                <td><code>datetime-local</code></td>
+                <td>Дата + час</td>
+            </tr>
+            <tr>
+                <td><code>range</code></td>
+                <td>Повзунок</td>
+            </tr>
+            <tr>
+                <td><code>color</code></td>
+                <td>Вибір кольору</td>
+            </tr>
+        </table>
+
+        <div class="tip">Якщо <code>type</code> не вказано — це <code>text</code>. Довідник усіх типів: <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input" target="_blank">MDN — &lt;input&gt;</a>.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 3 ===== -->
+    <section>
+        <h2>Атрибути input</h2>
+        <table>
+            <tr>
+                <th>Атрибут</th>
+                <th>Призначення</th>
+            </tr>
+            <tr>
+                <td><code>placeholder</code></td>
+                <td>Підказка всередині поля (зникає при введенні)</td>
+            </tr>
+            <tr>
+                <td><code>value</code></td>
+                <td>Значення за замовчуванням (як ніби користувач вже ввів)</td>
+            </tr>
+            <tr>
+                <td><code>name</code></td>
+                <td>Ім'я поля для відправлення на сервер</td>
+            </tr>
+            <tr>
+                <td><code>required</code></td>
+                <td>Поле обов'язкове (форма не відправиться без нього)</td>
+            </tr>
+            <tr>
+                <td><code>disabled</code></td>
+                <td>Поле заблоковане (не можна редагувати)</td>
+            </tr>
+            <tr>
+                <td><code>id</code></td>
+                <td>Унікальний ідентифікатор (для зв'язку з <code>&lt;label&gt;</code>)</td>
+            </tr>
+            <tr>
+                <td><code>autocomplete</code></td>
+                <td>Підказка браузеру, що автозаповнювати (<code>"name"</code>, <code>"email"</code>, <code>"tel"</code>…)
+                </td>
+            </tr>
+        </table>
+
+        <h3>autocomplete — автозаповнення браузером</h3>
+        <p>Атрибут <code>autocomplete</code> підказує браузеру, яку збережену інформацію підставити в поле:</p>
+        <pre><code><span class="tag">&lt;input</span> <span class="attr">type=</span><span
+                        class="val">"text"</span> <span class="attr">name=</span><span
+                        class="val">"fullname"</span> <span class="attr">autocomplete=</span><span
+                        class="val">"name"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;input</span> <span class="attr">type=</span><span class="val">"email"</span> <span class="attr">name=</span><span
+                        class="val">"email"</span> <span class="attr">autocomplete=</span><span
+                        class="val">"email"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;input</span> <span class="attr">type=</span><span class="val">"tel"</span> <span class="attr">name=</span><span
+                        class="val">"phone"</span> <span class="attr">autocomplete=</span><span class="val">"tel"</span><span
+                        class="tag">&gt;</span></code></pre>
+
+        <div class="tip">Правильний <code>autocomplete</code> покращує UX: браузер пропонує збережені дані в один клік.
+            Особливо важливо на мобільних пристроях.
+        </div>
+
+        <div class="example">
+            <code>placeholder</code> — це <strong>приклад</strong> очікуваного значення (наприклад, «Іван
+            Петренко»).<br>
+            <code>&lt;label&gt;</code> або підказка — це <strong>назва</strong> поля (наприклад, «Ваше ім'я»).
+        </div>
+    </section>
+
+    <!-- ===== SECTION 4 ===== -->
+    <section>
+        <h2>Стилізація input</h2>
+        <p><code>&lt;input&gt;</code> можна стилізувати як будь-який блочний елемент:</p>
+
+        <pre><code><span class="sel">.field</span> {
+    <span class="prop">width</span>: <span class="val">100%</span>;
+    <span class="prop">padding</span>: <span class="val">10px 15px</span>;
+    <span class="prop">border</span>: <span class="val">1px solid #ccc</span>;
+    <span class="prop">border-radius</span>: <span class="val">4px</span>;
+    <span class="prop">font-size</span>: <span class="val">16px</span>;
+    <span class="prop">box-sizing</span>: <span class="val">border-box</span>;
+    <span class="prop">background-color</span>: <span class="val">#fff</span>;
+    <span class="prop">color</span>: <span class="val">#333</span>;
+}</code></pre>
+
+        <div class="tip">Завжди додавайте <code>box-sizing: border-box</code> для полів форми — інакше
+            <code>padding</code> збільшить загальну ширину елемента.
+        </div>
+
+        <h3>accent-color — стилізація чекбоксів та радіокнопок</h3>
+        <p>Раніше змінити колір чекбокса або радіокнопки було неможливо без хаків. Сучасна властивість <code>accent-color</code>
+            вирішує це одним рядком:</p>
+
+        <pre><code><span class="comment">/* Усі інтерактивні елементи — в кольорах бренду */</span>
+<span class="sel">input[type="checkbox"]</span>,
+<span class="sel">input[type="radio"]</span>,
+<span class="sel">input[type="range"]</span> {
+    <span class="prop">accent-color</span>: <span class="val">#e53935</span>;
+}</code></pre>
+
+        <div class="tip"><code>accent-color</code> підтримується усіма сучасними браузерами з 2022 року. Працює для
+            <code>checkbox</code>, <code>radio</code>, <code>range</code> та <code>progress</code>.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 5 ===== -->
+    <section>
+        <h2>Тег &lt;textarea&gt; — багаторядкове поле</h2>
+        <ul>
+            <li>На відміну від <code>&lt;input&gt;</code>, має <strong>закривний тег</strong>: <code>&lt;textarea&gt;...&lt;/textarea&gt;</code>.
+            </li>
+            <li>Текст між тегами — значення за замовчуванням.</li>
+            <li>Користувач може змінювати розмір (перетягування кутка).</li>
+        </ul>
+
+        <h3>Обмеження розміру</h3>
+        <pre><code><span class="sel">textarea.field</span> {
+    <span class="prop">min-width</span>: <span class="val">250px</span>;
+    <span class="prop">max-width</span>: <span class="val">100%</span>;
+    <span class="prop">min-height</span>: <span class="val">100px</span>;
+    <span class="prop">max-height</span>: <span class="val">300px</span>;
+    <span class="prop">font-family</span>: <span class="val">inherit</span>;  <span class="comment">/* без цього — моноширинний шрифт! */</span>
+}</code></pre>
+
+        <div class="warning"><code>&lt;textarea&gt;</code> за замовчуванням має моноширинний шрифт (monospace). Задайте
+            <code>font-family: inherit</code>, щоб успадкувати шрифт від батька.
+        </div>
+
+        <div class="tip">Задайте однакові <code>min-width</code> і <code>max-width</code>, щоб заборонити горизонтальну
+            зміну розміру. Аналогічно для висоти.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 6 ===== -->
+    <section>
+        <h2>Кнопки &lt;button&gt;</h2>
+        <p>Три типи кнопок:</p>
+
+        <table>
+            <tr>
+                <th>Тип</th>
+                <th>Поведінка</th>
+            </tr>
+            <tr>
+                <td><code>submit</code></td>
+                <td>Відправляє форму (потрібен тег <code>&lt;form&gt;</code>)</td>
+            </tr>
+            <tr>
+                <td><code>reset</code></td>
+                <td>Скидає всі поля до значень за замовчуванням</td>
+            </tr>
+            <tr>
+                <td><code>button</code></td>
+                <td>Нічого не робить (для JavaScript-обробників)</td>
+            </tr>
+        </table>
+
+        <h3>Стилізація кнопки</h3>
+        <pre><code><span class="sel">.button</span> {
+    <span class="prop">padding</span>: <span class="val">12px 24px</span>;
+    <span class="prop">border</span>: <span class="val">none</span>;
+    <span class="prop">background-color</span>: <span class="val">#e53935</span>;
+    <span class="prop">color</span>: <span class="val">#fff</span>;
+    <span class="prop">font-size</span>: <span class="val">16px</span>;
+    <span class="prop">font-family</span>: <span class="val">inherit</span>;
+    <span class="prop">cursor</span>: <span class="val">pointer</span>;  <span
+                        class="comment">/* лапка при наведенні */</span>
+    <span class="prop">border-radius</span>: <span class="val">4px</span>;
+}</code></pre>
+
+        <div class="warning">Кнопки виглядають по-різному в різних браузерах. Завжди скидайте <code>border</code>,
+            <code>background</code>, <code>font-family</code> і стилізуйте з нуля.
+        </div>
+
+        <div class="tip">Додавайте <code>cursor: pointer</code> — за замовчуванням на кнопках курсор-стрілка, а не
+            лапка.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 7 ===== -->
+    <section>
+        <h2>Тег &lt;label&gt; — підпис поля</h2>
+        <p><code>&lt;label&gt;</code> — семантичний елемент, що зв'язує текст підпису з полем введення.</p>
+
+        <h3>Два способи зв'язування</h3>
+
+        <p><strong>1. Обгортка</strong> — input всередині label:</p>
+        <pre><code><span class="tag">&lt;label&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"hint"</span><span class="tag">&gt;</span>Ваше ім'я<span
+                        class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;input</span> <span class="attr">type=</span><span class="val">"text"</span> <span
+                        class="attr">class=</span><span class="val">"field"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;/label&gt;</span></code></pre>
+
+        <p><strong>2. Атрибут for + id</strong> — label окремо від input:</p>
+        <pre><code><span class="tag">&lt;label</span> <span class="attr">for=</span><span
+                        class="val">"user-email"</span><span class="tag">&gt;</span>Email<span class="tag">&lt;/label&gt;</span>
+<span class="tag">&lt;input</span> <span class="attr">type=</span><span class="val">"email"</span> <span class="attr">id=</span><span
+                        class="val">"user-email"</span> <span class="attr">class=</span><span class="val">"field"</span><span
+                        class="tag">&gt;</span></code></pre>
+
+        <div class="tip">Клік на <code>&lt;label&gt;</code> автоматично ставить фокус на пов'язаний input. Це зручно для
+            UX і важливо для доступності (скрінрідери).
+        </div>
+    </section>
+
+    <!-- ===== SECTION 8 ===== -->
+    <section>
+        <h2>Тег &lt;form&gt;</h2>
+        <p><code>&lt;form&gt;</code> об'єднує поля в єдину форму. Без нього кнопка <code>submit</code> не працюватиме.
+        </p>
+
+        <pre><code><span class="tag">&lt;form</span> <span class="attr">action=</span><span
+                        class="val">"/api/contact"</span> <span class="attr">method=</span><span
+                        class="val">"POST"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;label&gt;</span>
+        <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"hint"</span><span
+                        class="tag">&gt;</span>Ім'я<span class="tag">&lt;/span&gt;</span>
+        <span class="tag">&lt;input</span> <span class="attr">type=</span><span class="val">"text"</span> <span
+                        class="attr">name=</span><span class="val">"username"</span> <span
+                        class="attr">required</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;/label&gt;</span>
+    <span class="tag">&lt;button</span> <span class="attr">type=</span><span class="val">"submit"</span><span
+                        class="tag">&gt;</span>Надіслати<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/form&gt;</span></code></pre>
+
+        <table>
+            <tr>
+                <th>Атрибут</th>
+                <th>Призначення</th>
+            </tr>
+            <tr>
+                <td><code>action</code></td>
+                <td>URL, куди відправляються дані</td>
+            </tr>
+            <tr>
+                <td><code>method</code></td>
+                <td>HTTP-метод: <code>GET</code> або <code>POST</code></td>
+            </tr>
+        </table>
+
+        <div class="warning"><code>&lt;form&gt;</code> — не просто семантичний тег. Він має практичне значення: об'єднує
+            поля, додає подію <code>submit</code>, дозволяє кнопці <code>type="submit"</code> працювати.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 9 ===== -->
+    <section>
+        <h2>Валідація полів</h2>
+        <p>HTML має вбудовані валідатори — перевірки перед відправленням форми:</p>
+
+        <table>
+            <tr>
+                <th>Спосіб</th>
+                <th>Що перевіряє</th>
+            </tr>
+            <tr>
+                <td><code>required</code></td>
+                <td>Поле не порожнє</td>
+            </tr>
+            <tr>
+                <td><code>type="email"</code></td>
+                <td>Наявність символу @</td>
+            </tr>
+            <tr>
+                <td><code>min</code> / <code>max</code></td>
+                <td>Діапазон числового значення</td>
+            </tr>
+            <tr>
+                <td><code>minlength</code> / <code>maxlength</code></td>
+                <td>Мінімальна / максимальна кількість символів</td>
+            </tr>
+            <tr>
+                <td><code>pattern</code></td>
+                <td>Перевірка за регулярним виразом</td>
+            </tr>
+        </table>
+
+        <div class="example">
+            Порядок перевірки: спочатку <code>required</code> (чи не порожнє), потім <code>type</code> (формат), потім
+            <code>pattern</code> та інші обмеження.
+        </div>
+
+        <div class="tip">Вбудована валідація — лише базовий захист. Для серйозних проєктів потрібна додаткова перевірка
+            на сервері (backend).
+        </div>
+    </section>
+
+    <!-- ===== SECTION 10 ===== -->
+    <section>
+        <h2>Стани :focus та :hover</h2>
+
+        <h3>:focus — поле у фокусі</h3>
+        <p>Коли користувач клікнув на поле або перейшов клавішею <kbd>Tab</kbd>:</p>
+        <pre><code><span class="sel">.field:focus</span> {
+    <span class="prop">outline</span>: <span class="val">2px solid #1976d2</span>;
+    <span class="prop">outline-offset</span>: <span class="val">2px</span>;
+}</code></pre>
+
+        <h3>:focus-visible — фокус тільки з клавіатури</h3>
+        <p>Проблема <code>:focus</code>: outline з'являється і при кліку мишею, що дратує дизайнерів. Рішення — <code>:focus-visible</code>:
+        </p>
+        <pre><code><span class="comment">/* Прибираємо outline при кліку мишею */</span>
+<span class="sel">.field:focus</span> {
+    <span class="prop">outline</span>: <span class="val">none</span>;
+}
+
+<span class="comment">/* Показуємо outline тільки при навігації клавіатурою */</span>
+<span class="sel">.field:focus-visible</span> {
+    <span class="prop">outline</span>: <span class="val">2px solid #1976d2</span>;
+    <span class="prop">outline-offset</span>: <span class="val">2px</span>;
+}</code></pre>
+
+        <div class="tip"><code>:focus-visible</code> підтримується усіма сучасними браузерами з 2022 року. Це
+            стандартний підхід: красиво для миші, доступно для клавіатури.
+        </div>
+
+        <h3>:hover — наведення мишею</h3>
+        <pre><code><span class="sel">.field:hover</span> {
+    <span class="prop">border-color</span>: <span class="val">#666</span>;
+}</code></pre>
+
+        <div class="warning">Ніколи не прибирайте <code>outline</code> для клавіатурного фокусу — це критично для
+            доступності. Використовуйте <code>:focus-visible</code>, щоб outline з'являвся лише при навігації
+            клавіатурою, а не при кліку мишею.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 11 ===== -->
+    <section>
+        <h2>Властивість outline</h2>
+        <p><code>outline</code> — обведення навколо елемента, яке <strong>не впливає</strong> на розміри та розкладку.
+        </p>
+
+        <table>
+            <tr>
+                <th>Властивість</th>
+                <th>Що задає</th>
+            </tr>
+            <tr>
+                <td><code>outline-width</code></td>
+                <td>Товщина обведення</td>
+            </tr>
+            <tr>
+                <td><code>outline-style</code></td>
+                <td><code>solid</code>, <code>dotted</code>, <code>dashed</code>, <code>none</code></td>
+            </tr>
+            <tr>
+                <td><code>outline-color</code></td>
+                <td>Колір обведення</td>
+            </tr>
+            <tr>
+                <td><code>outline-offset</code></td>
+                <td>Відстань від межі елемента до обведення</td>
+            </tr>
+            <tr>
+                <td><code>outline</code></td>
+                <td>Скорочення: <code>width style color</code></td>
+            </tr>
+        </table>
+
+        <div class="tip"><code>outline</code> не входить до блочної моделі — навіть із <code>border-box</code> він не
+            змінює розмір елемента. Це ключова відмінність від <code>border</code>.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 12 ===== -->
+    <section>
+        <h2>Групування селекторів</h2>
+        <p>Якщо кілька елементів мають однакові стилі, їх селектори можна перелічити через кому:</p>
+
+        <pre><code><span class="comment">/* Замість дублювання: */</span>
+<span class="sel">.field:focus</span>,
+<span class="sel">.button:focus</span> {
+    <span class="prop">outline</span>: <span class="val">2px solid #1976d2</span>;
+    <span class="prop">outline-offset</span>: <span class="val">2px</span>;
+}
+
+<span class="comment">/* Однакові шрифти для заголовків: */</span>
+<span class="sel">h1</span>,
+<span class="sel">h2</span>,
+<span class="sel">h3</span> {
+    <span class="prop">font-family</span>: <span class="val">"Segoe UI", sans-serif</span>;
+}</code></pre>
+    </section>
+
+    <!-- ===== SECTION 13 ===== -->
+    <section>
+        <h2>Структура форми: повний приклад</h2>
+
+        <pre><code><span class="tag">&lt;form</span> <span class="attr">class=</span><span
+                        class="val">"contact-form"</span> <span class="attr">action=</span><span class="val">"/api/contact"</span> <span
+                        class="attr">method=</span><span class="val">"POST"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"form-row"</span><span
+                        class="tag">&gt;</span>
+        <span class="tag">&lt;label</span> <span class="attr">class=</span><span class="val">"form-group"</span><span
+                        class="tag">&gt;</span>
+            <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"form-hint"</span><span
+                        class="tag">&gt;</span>Ваше ім'я<span class="tag">&lt;/span&gt;</span>
+            <span class="tag">&lt;input</span> <span class="attr">type=</span><span class="val">"text"</span> <span
+                        class="attr">class=</span><span class="val">"field"</span>
+                   <span class="attr">name=</span><span class="val">"username"</span> <span
+                        class="attr">placeholder=</span><span class="val">"Іван Петренко"</span> <span class="attr">required</span><span
+                        class="tag">&gt;</span>
+        <span class="tag">&lt;/label&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+
+    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"form-row"</span><span
+                        class="tag">&gt;</span>
+        <span class="tag">&lt;label</span> <span class="attr">class=</span><span class="val">"form-group"</span><span
+                        class="tag">&gt;</span>
+            <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"form-hint"</span><span
+                        class="tag">&gt;</span>Email<span class="tag">&lt;/span&gt;</span>
+            <span class="tag">&lt;input</span> <span class="attr">type=</span><span class="val">"email"</span> <span
+                        class="attr">class=</span><span class="val">"field"</span>
+                   <span class="attr">name=</span><span class="val">"email"</span> <span
+                        class="attr">placeholder=</span><span class="val">"name@example.com"</span> <span class="attr">required</span><span
+                        class="tag">&gt;</span>
+        <span class="tag">&lt;/label&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+
+    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"form-row"</span><span
+                        class="tag">&gt;</span>
+        <span class="tag">&lt;label</span> <span class="attr">class=</span><span class="val">"form-group"</span><span
+                        class="tag">&gt;</span>
+            <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"form-hint"</span><span
+                        class="tag">&gt;</span>Повідомлення<span class="tag">&lt;/span&gt;</span>
+            <span class="tag">&lt;textarea</span> <span class="attr">class=</span><span class="val">"field"</span>
+                      <span class="attr">name=</span><span class="val">"message"</span> <span
+                        class="attr">placeholder=</span><span class="val">"Ваше повідомлення..."</span> <span
+                        class="attr">required</span><span class="tag">&gt;&lt;/textarea&gt;</span>
+        <span class="tag">&lt;/label&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+
+    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"form-row"</span><span
+                        class="tag">&gt;</span>
+        <span class="tag">&lt;button</span> <span class="attr">type=</span><span class="val">"submit"</span> <span
+                        class="attr">class=</span><span class="val">"button"</span><span class="tag">&gt;</span>Надіслати<span
+                        class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/form&gt;</span></code></pre>
+
+        <pre><code><span class="comment">/* CSS для відступів між рядками форми */</span>
+<span class="sel">.form-row:nth-child(n+2)</span> {
+    <span class="prop">margin-top</span>: <span class="val">20px</span>;
+}
+
+<span class="sel">.form-hint</span> {
+    <span class="prop">display</span>: <span class="val">block</span>;
+    <span class="prop">margin-bottom</span>: <span class="val">6px</span>;
+    <span class="prop">font-weight</span>: <span class="val">600</span>;
+}</code></pre>
+    </section>
+
+    <!-- ===== SECTION 14 ===== -->
+    <section>
+        <h2>Налагодження станів у DevTools</h2>
+        <p>У DevTools (інспекторі браузера) є панель <strong>:hov</strong>, яка дозволяє емулювати псевдостани:</p>
+        <ol>
+            <li>Виділіть елемент у вкладці Elements.</li>
+            <li>Натисніть кнопку <strong>:hov</strong> (у панелі Styles).</li>
+            <li>Увімкніть <code>:focus</code>, <code>:hover</code>, <code>:active</code> тощо.</li>
+            <li>Стилі цього стану стануть видимими та редагованими.</li>
+        </ol>
+
+        <div class="tip">Можна одночасно увімкнути кілька станів (наприклад, <code>:hover</code> + <code>:focus</code>),
+            щоб побачити, який стиль перекриває інший.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 15 ===== -->
+    <section>
+        <h2>Підсумок</h2>
+        <table>
+            <tr>
+                <th>Тема</th>
+                <th>Ключове</th>
+            </tr>
+            <tr>
+                <td><code>&lt;input&gt;</code></td>
+                <td>Однорядкове поле; <code>type</code> визначає тип (text, email, number…)</td>
+            </tr>
+            <tr>
+                <td><code>&lt;textarea&gt;</code></td>
+                <td>Багаторядкове поле; <code>font-family: inherit</code>; обмежити розмір</td>
+            </tr>
+            <tr>
+                <td><code>&lt;button&gt;</code></td>
+                <td><code>submit</code> (відправити), <code>reset</code> (скинути), <code>button</code> (JS)</td>
+            </tr>
+            <tr>
+                <td><code>&lt;label&gt;</code></td>
+                <td>Підпис поля; клік → фокус; зв'язок через обгортку або <code>for</code>+<code>id</code></td>
+            </tr>
+            <tr>
+                <td><code>&lt;form&gt;</code></td>
+                <td>Об'єднує поля; <code>action</code> + <code>method</code>; подія <code>submit</code></td>
+            </tr>
+            <tr>
+                <td><code>placeholder</code></td>
+                <td>Приклад значення (не замінює label!)</td>
+            </tr>
+            <tr>
+                <td><code>required</code></td>
+                <td>Обов'язкове поле (вбудована валідація)</td>
+            </tr>
+            <tr>
+                <td><code>outline</code></td>
+                <td>Обведення при фокусі; не впливає на розміри; не видаляйте!</td>
+            </tr>
+            <tr>
+                <td><code>:focus</code> / <code>:hover</code></td>
+                <td>Стани для інтерактивних елементів; відлагоджувати через :hov у DevTools</td>
+            </tr>
+            <tr>
+                <td><code>cursor: pointer</code></td>
+                <td>Лапка на кнопках (за замовчуванням — стрілка)</td>
+            </tr>
+            <tr>
+                <td><code>:focus-visible</code></td>
+                <td>Outline тільки при навігації клавіатурою (не при кліку мишею)</td>
+            </tr>
+            <tr>
+                <td><code>accent-color</code></td>
+                <td>Колір checkbox, radio, range — одним рядком CSS</td>
+            </tr>
+            <tr>
+                <td><code>autocomplete</code></td>
+                <td>Підказка браузеру для автозаповнення (<code>"name"</code>, <code>"email"</code>, <code>"tel"</code>)
+                </td>
+            </tr>
+        </table>
+    </section>
+
+{% endblock %}

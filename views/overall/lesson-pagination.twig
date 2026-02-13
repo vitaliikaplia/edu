@@ -1,0 +1,39 @@
+{% if lesson is defined %}
+<nav class="lesson-nav" aria-label="Навігація між лекціями">
+    <div class="lesson-nav-inner">
+        {% if prev_lesson %}
+        <a href="{{ site.url }}{{ course.slug }}/{{ prev_lesson.slug }}/" class="lesson-nav-link lesson-nav-prev">
+            <span class="lesson-nav-arrow">←</span>
+            <span class="lesson-nav-title">{{ prev_lesson.title }}</span>
+        </a>
+        {% else %}
+        <a href="{{ site.url }}{{ course.slug }}/" class="lesson-nav-link lesson-nav-prev">
+            <span class="lesson-nav-arrow">←</span>
+            <span class="lesson-nav-title">До курсу</span>
+        </a>
+        {% endif %}
+
+        <div class="lesson-nav-controls">
+            <span class="lesson-nav-counter">{{ lesson_current }}/{{ lesson_total }}</span>
+            <button class="lesson-nav-btn search-trigger" type="button" aria-label="Пошук" title="Пошук">&#128269;</button>
+            <button class="lesson-nav-btn theme-toggle" type="button" aria-label="Змінити тему" title="Змінити тему">
+                <span class="theme-icon-light">☀️</span>
+                <span class="theme-icon-dark">🌙</span>
+            </button>
+            <button class="lesson-nav-btn" type="button" id="scrollToTop" aria-label="Вгору" title="Вгору">↑</button>
+        </div>
+
+        {% if next_lesson %}
+        <a href="{{ site.url }}{{ course.slug }}/{{ next_lesson.slug }}/" class="lesson-nav-link lesson-nav-next">
+            <span class="lesson-nav-title">{{ next_lesson.title }}</span>
+            <span class="lesson-nav-arrow">→</span>
+        </a>
+        {% else %}
+        <a href="{{ site.url }}{{ course.slug }}/" class="lesson-nav-link lesson-nav-next">
+            <span class="lesson-nav-title">До курсу</span>
+            <span class="lesson-nav-arrow">→</span>
+        </a>
+        {% endif %}
+    </div>
+</nav>
+{% endif %}

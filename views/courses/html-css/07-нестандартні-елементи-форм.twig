@@ -1,0 +1,677 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Нестандартні елементи форм</h1>
+    <p>Конспект лекції: display: inline-block, випадаючий список &lt;select&gt;, background-властивості, радіокнопки,
+        чекбокси, кастомна стилізація, псевдоелементи, селектори + і ~</p>
+
+    <!-- ===== SECTION 1 ===== -->
+    <section>
+        <h2>display: inline-block</h2>
+        <p>Окрім <code>block</code>, <code>inline</code> та <code>flex</code>, є ще одне значення —
+            <code>inline-block</code>. Воно поєднує поведінку строкових і блочних елементів.</p>
+
+        <h3>Що від чого?</h3>
+        <table>
+            <tr>
+                <th>Від строкових (inline)</th>
+                <th>Від блочних (block)</th>
+            </tr>
+            <tr>
+                <td>Елементи розташовуються в рядок</td>
+                <td>Можна задавати <code>width</code> і <code>height</code></td>
+            </tr>
+            <tr>
+                <td>Без <code>width</code> ширина визначається вмістом</td>
+                <td><code>padding</code>, <code>margin</code> працюють повноцінно</td>
+            </tr>
+            <tr>
+                <td>Позиціонуються через <code>text-align</code></td>
+                <td>Не розбиваються на частини при переносі рядка</td>
+            </tr>
+        </table>
+
+        <div class="example">
+            Кнопка <code>&lt;button&gt;</code> за замовчуванням має <code>display: inline-block</code>. Тому її можна
+            центрувати через <code>text-align: center</code> на батьківському елементі.
+        </div>
+
+        <h3>Центрування кнопки</h3>
+        <pre><code><span class="sel">.form-row:last-child</span> {
+    <span class="prop">text-align</span>: <span class="val">center</span>;  <span class="comment">/* кнопка всередині стане по центру */</span>
+}</code></pre>
+    </section>
+
+    <!-- ===== SECTION 2 ===== -->
+    <section>
+        <h2>Пробіл між inline-block елементами</h2>
+        <p>Між <code>inline-block</code> елементами з'являється пробіл (~4px). Він не «створюється» — він бере початок
+            від символу переносу рядка або пробілу у вашому HTML-коді.</p>
+
+        <h3>Як виникає?</h3>
+        <pre><code><span class="comment">&lt;!-- Між цими div є перенос рядка → браузер показує 1 пробіл --&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"card"</span><span
+                        class="tag">&gt;</span>...<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"card"</span><span
+                        class="tag">&gt;</span>...<span class="tag">&lt;/div&gt;</span></code></pre>
+
+        <h3>Як прибрати?</h3>
+        <table>
+            <tr>
+                <th>Спосіб</th>
+                <th>Недолік</th>
+            </tr>
+            <tr>
+                <td>Писати теги без пробілів між ними</td>
+                <td>Крихке рішення — будь-який пробіл зламає верстку</td>
+            </tr>
+            <tr>
+                <td><code>font-size: 0</code> на батьку, відновити на дітях</td>
+                <td>Ламає відносні одиниці (<code>em</code>), незручно</td>
+            </tr>
+            <tr>
+                <td><strong>Flexbox</strong> замість inline-block</td>
+                <td>Найкраще рішення — без хаків</td>
+            </tr>
+        </table>
+
+        <div class="tip">Якщо вам потрібно, щоб елементи щільно прилягали один до одного — використовуйте <code>display:
+                flex</code> замість <code>inline-block</code>. Flex-елементи не мають пробілів між собою.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 3 ===== -->
+    <section>
+        <h2>Випадаючий список: &lt;select&gt; + &lt;option&gt;</h2>
+        <p><code>&lt;select&gt;</code> — елемент форми для вибору одного варіанту зі списку. <code>&lt;option&gt;</code>
+            — кожен варіант вибору (може бути лише всередині <code>&lt;select&gt;</code>).</p>
+
+        <pre><code><span class="tag">&lt;label&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"form-hint"</span><span
+                        class="tag">&gt;</span>Оберіть місто<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;select</span> <span class="attr">class=</span><span class="val">"select"</span> <span
+                        class="attr">name=</span><span class="val">"city"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;option&gt;</span>Київ<span class="tag">&lt;/option&gt;</span>
+        <span class="tag">&lt;option</span> <span class="attr">selected</span><span class="tag">&gt;</span>Львів<span
+                        class="tag">&lt;/option&gt;</span>
+        <span class="tag">&lt;option&gt;</span>Одеса<span class="tag">&lt;/option&gt;</span>
+        <span class="tag">&lt;option&gt;</span>Харків<span class="tag">&lt;/option&gt;</span>
+    <span class="tag">&lt;/select&gt;</span>
+<span class="tag">&lt;/label&gt;</span></code></pre>
+
+        <table>
+            <tr>
+                <th>Атрибут</th>
+                <th>Призначення</th>
+            </tr>
+            <tr>
+                <td><code>selected</code></td>
+                <td>Позначає варіант, вибраний за замовчуванням</td>
+            </tr>
+            <tr>
+                <td><code>multiple</code></td>
+                <td>Дозволяє обрати кілька (рідко використовується — незручний UX)</td>
+            </tr>
+        </table>
+
+        <div class="tip">Без <code>selected</code> — вибраним стає перший <code>&lt;option&gt;</code>. Якщо <code>selected</code>
+            є на кількох — виграє останній у коді.
+        </div>
+
+        <h3>Коли select, а коли radio?</h3>
+        <div class="comparison">
+            <div>
+                <strong>&lt;select&gt;</strong>
+                <ul>
+                    <li>Варіантів більше 5</li>
+                    <li>Займає мінімум місця</li>
+                    <li>Потрібно 2 кліки (відкрити + обрати)</li>
+                </ul>
+            </div>
+            <div>
+                <strong>radio</strong>
+                <ul>
+                    <li>Варіантів 2–5</li>
+                    <li>Усі варіанти видимі одразу</li>
+                    <li>Вибір за 1 клік</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 4 ===== -->
+    <section>
+        <h2>appearance: none — скидання стилізації</h2>
+        <p>Браузери мають власну стилізацію для елементів форм (<code>&lt;select&gt;</code>, деякі типи <code>&lt;input&gt;</code>),
+            яку складно перевизначити. Властивість <code>appearance</code> зі значенням <code>none</code> вимикає цю
+            базову стилізацію.</p>
+
+        <pre><code><span class="sel">.select</span> {
+    <span class="prop">-webkit-appearance</span>: <span class="val">none</span>;  <span class="comment">/* Safari, старі Chrome */</span>
+    <span class="prop">-moz-appearance</span>: <span class="val">none</span>;     <span
+                        class="comment">/* Firefox */</span>
+    <span class="prop">appearance</span>: <span class="val">none</span>;          <span
+                        class="comment">/* стандарт */</span>
+}</code></pre>
+
+        <div class="tip">Сучасні браузери (Chrome 84+, Firefox 80+, Safari 15.4+) підтримують <code>appearance:
+                none</code> без префіксів. Але для повної сумісності додавайте всі три рядки.
+        </div>
+
+        <h3>Де застосовувати?</h3>
+        <ul>
+            <li><code>&lt;select&gt;</code> — прибирає стандартну стрілку, дозволяє повну стилізацію</li>
+            <li><code>input[type="search"]</code> — прибирає нестандартне оформлення в Safari</li>
+        </ul>
+
+        <div class="warning">Не застосовуйте <code>appearance: none</code> повсюдно. Кнопки та звичайні <code>&lt;input&gt;</code>
+            прекрасно стилізуються і без нього.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 5 ===== -->
+    <section>
+        <h2>background — фон елемента</h2>
+        <p>Група властивостей для керування фоном: колір, зображення, повторення, позиція, розмір.</p>
+
+        <h3>background-color</h3>
+        <p>Задає колір фону. Рекомендується завжди підкладати колір під <code>background-image</code> — на випадок, якщо
+            картинка не завантажиться.</p>
+
+        <h3>background-image</h3>
+        <pre><code><span class="prop">background-image</span>: <span
+                        class="val">url("icons/arrow.svg")</span>;</code></pre>
+        <p>Завантажує зображення і показує його як фон елемента. Без додаткових налаштувань — повторюється і заповнює
+            весь блок.</p>
+
+        <h3>background-repeat</h3>
+        <table>
+            <tr>
+                <th>Значення</th>
+                <th>Поведінка</th>
+            </tr>
+            <tr>
+                <td><code>repeat</code> (за замовчуванням)</td>
+                <td>Повторюється по горизонталі та вертикалі</td>
+            </tr>
+            <tr>
+                <td><code>repeat-x</code></td>
+                <td>Тільки по горизонталі</td>
+            </tr>
+            <tr>
+                <td><code>repeat-y</code></td>
+                <td>Тільки по вертикалі</td>
+            </tr>
+            <tr>
+                <td><code>no-repeat</code></td>
+                <td>Без повторення (одна копія)</td>
+            </tr>
+        </table>
+        <div class="tip"><code>no-repeat</code> використовується найчастіше — для іконок, декоративних елементів,
+            унікальних фонових зображень.
+        </div>
+
+        <h3>background-position</h3>
+        <p>Визначає положення фонового зображення. Два значення: горизонталь і вертикаль.</p>
+        <pre><code><span class="comment">/* 9 опорних точок */</span>
+<span class="prop">background-position</span>: <span class="val">left top</span>;       <span class="comment">/* лівий верхній кут */</span>
+<span class="prop">background-position</span>: <span class="val">center center</span>;  <span class="comment">/* строго по центру */</span>
+<span class="prop">background-position</span>: <span class="val">right center</span>;   <span class="comment">/* справа по центру */</span>
+
+<span class="comment">/* Зі зміщенням від опорної точки */</span>
+<span class="prop">background-position</span>: <span class="val">right 10px center</span>;  <span class="comment">/* справа, -10px ліворуч */</span></code></pre>
+
+        <div class="tip">Вибирайте найближчу опорну точку до потрібного місця. Для іконки у правій частині поля — <code>right
+                center</code> зі зміщенням ліворуч.
+        </div>
+
+        <h3>background-size</h3>
+        <table>
+            <tr>
+                <th>Значення</th>
+                <th>Поведінка</th>
+            </tr>
+            <tr>
+                <td><code>200px auto</code></td>
+                <td>Ширина 200px, висота — пропорційно</td>
+            </tr>
+            <tr>
+                <td><code>auto 100px</code></td>
+                <td>Висота 100px, ширина — пропорційно</td>
+            </tr>
+            <tr>
+                <td><code>cover</code></td>
+                <td>Покриває весь блок (частина картинки може бути обрізана)</td>
+            </tr>
+            <tr>
+                <td><code>contain</code></td>
+                <td>Вписується в блок цілком (частина блоку може бути порожньою)</td>
+            </tr>
+        </table>
+
+        <div class="example">
+            <strong>cover</strong> — для декоративних фонів, де не важливі деталі.<br>
+            <strong>contain</strong> — для зображень, де важливо показати все (портрети, діаграми).
+        </div>
+    </section>
+
+    <!-- ===== SECTION 6 ===== -->
+    <section>
+        <h2>Стилізація &lt;select&gt;: повний приклад</h2>
+        <p>Після скидання <code>appearance: none</code> елемент <code>&lt;select&gt;</code> стає звичайним
+            прямокутником. Тепер ми додаємо власну стрілку через <code>background-image</code>:</p>
+
+        <pre><code><span class="sel">.select</span> {
+    <span class="prop">display</span>: <span class="val">block</span>;
+    <span class="prop">width</span>: <span class="val">100%</span>;
+    <span class="prop">padding</span>: <span class="val">10px 35px 10px 15px</span>;  <span class="comment">/* більше padding-right для стрілки */</span>
+    <span class="prop">border</span>: <span class="val">1px solid #ccc</span>;
+    <span class="prop">border-radius</span>: <span class="val">4px</span>;
+    <span class="prop">font-size</span>: <span class="val">16px</span>;
+    <span class="prop">font-family</span>: <span class="val">inherit</span>;
+    <span class="prop">box-sizing</span>: <span class="val">border-box</span>;
+    <span class="prop">-webkit-appearance</span>: <span class="val">none</span>;
+    <span class="prop">-moz-appearance</span>: <span class="val">none</span>;
+    <span class="prop">appearance</span>: <span class="val">none</span>;
+    <span class="prop">background-image</span>: <span class="val">url("icons/arrow-down.svg")</span>;
+    <span class="prop">background-repeat</span>: <span class="val">no-repeat</span>;
+    <span class="prop">background-position</span>: <span class="val">right 10px center</span>;
+    <span class="prop">background-size</span>: <span class="val">12px auto</span>;
+}</code></pre>
+
+        <div class="tip">Не забудьте обгорнути <code>&lt;select&gt;</code> у <code>&lt;label&gt;</code> — щоб клік по
+            підпису активував поле. І додайте стилі <code>:focus</code> однакові з іншими полями.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 7 ===== -->
+    <section>
+        <h2>Радіокнопки: input type="radio"</h2>
+        <p>Радіокнопки дозволяють обрати <strong>один</strong> варіант із групи. Назва «radio» походить від старих
+            радіоприймачів: натискаєш одну кнопку — інша вистрибує.</p>
+
+        <pre><code><span class="tag">&lt;label&gt;</span>
+    <span class="tag">&lt;input</span> <span class="attr">type=</span><span class="val">"radio"</span> <span
+                        class="attr">name=</span><span class="val">"gender"</span> <span class="attr">class=</span><span
+                        class="val">"radio"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"radio-text"</span><span
+                        class="tag">&gt;</span>Чоловіча<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;/label&gt;</span>
+<span class="tag">&lt;label&gt;</span>
+    <span class="tag">&lt;input</span> <span class="attr">type=</span><span class="val">"radio"</span> <span
+                        class="attr">name=</span><span class="val">"gender"</span> <span class="attr">class=</span><span
+                        class="val">"radio"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"radio-text"</span><span
+                        class="tag">&gt;</span>Жіноча<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;/label&gt;</span></code></pre>
+
+        <h3>Атрибут name — створення радіогрупи</h3>
+        <p>Без <code>name</code> кожна радіокнопка працює незалежно — можна обрати усі одночасно. Атрибут
+            <code>name</code> зв'язує радіокнопки в групу: у групі обрана лише одна.</p>
+
+        <div class="warning">Значення <code>name</code> повинно відображати призначення групи: <code>"gender"</code>,
+            <code>"subscription"</code>, <code>"delivery"</code> — а не абстрактне <code>"radiogroup"</code>.
+        </div>
+
+        <div class="tip">Обгортайте радіокнопки в <code>&lt;label&gt;</code> — тоді клік по тексту теж активує вибір.
+            Плюс <code>&lt;label&gt;</code> — строковий елемент, тому радіокнопки автоматично стоятимуть в одному рядку.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 8 ===== -->
+    <section>
+        <h2>Псевдоелементи ::before та ::after (практика)</h2>
+        <p>Псевдоелементи дозволяють додати до будь-якого елемента віртуальні блоки — без зміни HTML-коду. Вони
+            створюються виключно через CSS.</p>
+
+        <h3>Обов'язкова властивість content</h3>
+        <pre><code><span class="sel">.heading::before</span> {
+    <span class="prop">content</span>: <span class="val">""</span>;  <span class="comment">/* обов'язково! без content — елемент не з'явиться */</span>
+    <span class="prop">display</span>: <span class="val">block</span>;
+    <span class="prop">width</span>: <span class="val">60px</span>;
+    <span class="prop">height</span>: <span class="val">4px</span>;
+    <span class="prop">background-color</span>: <span class="val">#4caf50</span>;
+    <span class="prop">margin-bottom</span>: <span class="val">10px</span>;
+}</code></pre>
+
+        <h3>Обмеження</h3>
+        <p>Псевдоелементи <strong>не працюють</strong> для тегів:</p>
+        <ul>
+            <li><code>&lt;input&gt;</code> — самозакривний, без вмісту</li>
+            <li><code>&lt;textarea&gt;</code></li>
+            <li><code>&lt;select&gt;</code></li>
+            <li><code>&lt;img&gt;</code> — самозакривний</li>
+        </ul>
+
+        <div class="warning">Не вставляйте текстовий контент через псевдоелементи — він невидимий для скрінрідерів і не
+            індексується пошуковими системами. Псевдоелементи — лише для декоративного оформлення.
+        </div>
+
+        <h3>Пріоритет шарів</h3>
+        <p><code>::before</code> з'являється перед вмістом і має нижчий пріоритет (вміст його перекриває).
+            <code>::after</code> з'являється після вмісту і має вищий пріоритет (може перекрити вміст).</p>
+    </section>
+
+    <!-- ===== SECTION 9 ===== -->
+    <section>
+        <h2>vertical-align — вирівнювання по вертикалі</h2>
+        <p>Працює для <code>inline</code> та <code>inline-block</code> елементів. Визначає, як елемент вирівнюється
+            відносно рядка.</p>
+
+        <table>
+            <tr>
+                <th>Значення</th>
+                <th>Поведінка</th>
+            </tr>
+            <tr>
+                <td><code>baseline</code> (за замовчуванням)</td>
+                <td>По базовій лінії тексту (нижній край букв)</td>
+            </tr>
+            <tr>
+                <td><code>top</code></td>
+                <td>По верхньому краю рядка</td>
+            </tr>
+            <tr>
+                <td><code>middle</code></td>
+                <td>По центру рядка</td>
+            </tr>
+            <tr>
+                <td><code>bottom</code></td>
+                <td>По нижньому краю рядка</td>
+            </tr>
+        </table>
+
+        <div class="tip"><code>vertical-align: middle</code> ідеально підходить для вирівнювання іконок, радіокнопок,
+            чекбоксів поряд із текстом.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 10 ===== -->
+    <section>
+        <h2>Селектори + (суміжний) та ~ (загальний братський)</h2>
+        <p>Ці селектори працюють між «братами» — елементами одного рівня вкладеності (один батько). Аналог селекторів
+            <code>&gt;</code> (дитина) та пробілу (нащадок), але <strong>по горизонталі</strong>.</p>
+
+        <h3>Селектор + (суміжний)</h3>
+        <p>Стилізує елемент, якщо його <strong>безпосередній</strong> старший брат відповідає умові:</p>
+        <pre><code><span class="comment">/* Стилізуємо .radio-text, якщо безпосередньо перед ним — .form-hint */</span>
+<span class="sel">.form-hint + .radio-text</span> {
+    <span class="prop">color</span>: <span class="val">red</span>;
+}</code></pre>
+
+        <h3>Селектор ~ (загальний братський)</h3>
+        <p>Стилізує елемент, якщо <strong>будь-який</strong> його старший брат відповідає умові:</p>
+        <pre><code><span class="comment">/* Стилізуємо .radio-text, якщо десь вище по коду є .form-hint */</span>
+<span class="sel">.form-hint ~ .radio-text</span> {
+    <span class="prop">color</span>: <span class="val">red</span>;
+}</code></pre>
+
+        <h3>Порівняння усіх чотирьох «горизонтально-вертикальних» селекторів</h3>
+        <table>
+            <tr>
+                <th>Селектор</th>
+                <th>Напрямок</th>
+                <th>Строгість</th>
+            </tr>
+            <tr>
+                <td><code>A B</code> (пробіл)</td>
+                <td>Батько → нащадок (будь-якої глибини)</td>
+                <td>М'який</td>
+            </tr>
+            <tr>
+                <td><code>A &gt; B</code></td>
+                <td>Батько → безпосередня дитина</td>
+                <td>Строгий</td>
+            </tr>
+            <tr>
+                <td><code>A ~ B</code></td>
+                <td>Старший брат → будь-який молодший</td>
+                <td>М'який</td>
+            </tr>
+            <tr>
+                <td><code>A + B</code></td>
+                <td>Старший брат → безпосередній наступний</td>
+                <td>Строгий</td>
+            </tr>
+        </table>
+
+        <div class="tip">Селектор <code>~</code> надійніший за <code>+</code>: якщо хтось вставить додатковий елемент
+            між братами, <code>+</code> зламається, а <code>~</code> — ні.
+        </div>
+
+        <div class="warning">Ці селектори працюють <strong>лише від старшого до молодшого</strong> брата. Стилізувати
+            старшого на основі молодшого — неможливо у CSS.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 11 ===== -->
+    <section>
+        <h2>Кастомна стилізація радіокнопок</h2>
+        <p>Стандартні радіокнопки не стилізуються: браузери не дозволяють змінювати колір, розмір, форму. Рішення —
+            створити муляж і приховати оригінал.</p>
+
+        <h3>Крок 1: створюємо муляж через ::before</h3>
+        <p>Оскільки <code>&lt;input&gt;</code> не підтримує псевдоелементи, створюємо їх на сусідньому <code>&lt;span&gt;</code>:
+        </p>
+        <pre><code><span class="sel">.radio-text::before</span> {
+    <span class="prop">content</span>: <span class="val">""</span>;
+    <span class="prop">display</span>: <span class="val">inline-block</span>;
+    <span class="prop">width</span>: <span class="val">20px</span>;
+    <span class="prop">height</span>: <span class="val">20px</span>;
+    <span class="prop">margin-right</span>: <span class="val">8px</span>;
+    <span class="prop">vertical-align</span>: <span class="val">middle</span>;
+    <span class="prop">background-image</span>: <span class="val">url("icons/radio.svg")</span>;
+    <span class="prop">background-repeat</span>: <span class="val">no-repeat</span>;
+    <span class="prop">background-position</span>: <span class="val">center</span>;
+    <span class="prop">background-size</span>: <span class="val">contain</span>;
+}</code></pre>
+
+        <h3>Крок 2: передаємо стан :checked через селектор ~</h3>
+        <pre><code><span class="comment">/* Якщо радіокнопка обрана → підмінюємо картинку на муляжі */</span>
+<span class="sel">.radio:checked ~ .radio-text::before</span> {
+    <span class="prop">background-image</span>: <span class="val">url("icons/radio-active.svg")</span>;
+}</code></pre>
+
+        <div class="example">Читаємо справа наліво: стилізуємо <code>::before</code> елемента <code>.radio-text</code>,
+            якщо десь перед ним є <code>.radio</code> у стані <code>:checked</code>.
+        </div>
+
+        <h3>Крок 3: ховаємо оригінал доступно</h3>
+        <pre><code><span class="sel">.radio</span> {
+    <span class="prop">position</span>: <span class="val">absolute</span>;
+    <span class="prop">width</span>: <span class="val">1px</span>;
+    <span class="prop">height</span>: <span class="val">1px</span>;
+    <span class="prop">clip-path</span>: <span class="val">inset(50%)</span>;
+    <span class="prop">overflow</span>: <span class="val">hidden</span>;
+}</code></pre>
+
+        <div class="warning">Не використовуйте <code>display: none</code> або <code>visibility: hidden</code> — елемент
+            стане недоступним для скрінрідерів та клавіатурної навігації. <code>clip-path: inset(50%)</code> ховає
+            візуально, але зберігає доступність.
+        </div>
+
+        <h3>Крок 4: стан фокусу</h3>
+        <pre><code><span class="comment">/* Фокус з радіокнопки → візуальне виділення тексту */</span>
+<span class="sel">.radio:focus ~ .radio-text</span> {
+    <span class="prop">outline</span>: <span class="val">2px solid #1976d2</span>;
+    <span class="prop">outline-offset</span>: <span class="val">2px</span>;
+}</code></pre>
+    </section>
+
+    <!-- ===== SECTION 12 ===== -->
+    <section>
+        <h2>position: absolute — коротко</h2>
+        <p><code>position: absolute</code> вириває елемент з нормального потоку документа і розміщує на окремому «шарі»:
+        </p>
+        <ul>
+            <li>Інші елементи поводяться так, ніби абсолютного елемента не існує</li>
+            <li>Ширина і висота розраховуються за вмістом (як у inline-block)</li>
+            <li>Можна задавати <code>width</code>, <code>height</code> — працюватимуть</li>
+            <li>Батьківський елемент не враховує висоту абсолютного нащадка</li>
+        </ul>
+
+        <div class="tip">Детально <code>position</code> (static, relative, absolute, fixed, sticky) розглядається у
+            наступних лекціях. Тут він потрібен лише для коректного приховування оригінальних radio/checkbox.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 13 ===== -->
+    <section>
+        <h2>clip-path: inset() — візуальне обрізання</h2>
+        <p>Властивість <code>clip-path</code> дозволяє показати тільки частину елемента, а решту — приховати.</p>
+
+        <pre><code><span class="comment">/* Обрізати 50% з кожного боку — елемент зникає візуально */</span>
+<span class="prop">clip-path</span>: <span class="val">inset(50%)</span>;
+
+<span class="comment">/* Обрізати у формі кола */</span>
+<span class="prop">clip-path</span>: <span class="val">circle(50%)</span>;
+
+<span class="comment">/* Обрізати у формі багатокутника */</span>
+<span class="prop">clip-path</span>: <span class="val">polygon(50% 0%, 100% 100%, 0% 100%)</span>;</code></pre>
+
+        <div class="example">
+            <code>inset(50%)</code> — обрізає 50% з кожного боку елемента. Область, що залишається = нічого. Візуально
+            елемент зникає, але залишається доступним для скрінрідерів.
+        </div>
+
+        <div class="tip">Застаріла властивість <code>clip: rect()</code> робила те саме, але працювала лише з <code>position:
+                absolute</code> і є deprecated. Використовуйте <code>clip-path</code> — вона сучасніша і підтримує
+            більше форм обрізання.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 14 ===== -->
+    <section>
+        <h2>Чекбокс: input type="checkbox"</h2>
+        <p>Чекбокс — елемент «так/ні»: погодитися чи не погодитися. По суті — дві радіокнопки в одному елементі.</p>
+
+        <pre><code><span class="tag">&lt;label&gt;</span>
+    <span class="tag">&lt;input</span> <span class="attr">type=</span><span class="val">"checkbox"</span> <span
+                        class="attr">name=</span><span class="val">"consent"</span> <span
+                        class="attr">class=</span><span class="val">"checkbox"</span> <span class="attr">required</span><span
+                        class="tag">&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"checkbox-text"</span><span
+                        class="tag">&gt;</span>Погоджуюсь на обробку персональних даних<span
+                        class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;/label&gt;</span></code></pre>
+
+        <p>Стилізація <strong>абсолютно ідентична</strong> радіокнопкам:</p>
+        <ol>
+            <li>Створити муляж через <code>::before</code> на <code>.checkbox-text</code></li>
+            <li>Передати стан <code>:checked</code> через <code>.checkbox:checked ~ .checkbox-text::before</code></li>
+            <li>Приховати оригінал через <code>position: absolute</code> + <code>clip</code></li>
+            <li>Додати стан <code>:focus</code></li>
+        </ol>
+
+        <pre><code><span class="comment">/* Ховаємо разом з radio — через запятую */</span>
+<span class="sel">.radio</span>,
+<span class="sel">.checkbox</span> {
+    <span class="prop">position</span>: <span class="val">absolute</span>;
+    <span class="prop">width</span>: <span class="val">1px</span>;
+    <span class="prop">height</span>: <span class="val">1px</span>;
+    <span class="prop">clip-path</span>: <span class="val">inset(50%)</span>;
+    <span class="prop">overflow</span>: <span class="val">hidden</span>;
+}</code></pre>
+    </section>
+
+    <!-- ===== SECTION 15 ===== -->
+    <section>
+        <h2>Сучасна альтернатива: accent-color</h2>
+        <p>У файлі 06 ми вже згадували <code>accent-color</code> — властивість, яка дозволяє змінити колір стандартних
+            checkbox, radio, range <strong>без кастомної стилізації</strong>:</p>
+
+        <pre><code><span class="sel">input[type="radio"]</span>,
+<span class="sel">input[type="checkbox"]</span> {
+    <span class="prop">accent-color</span>: <span class="val">#e53935</span>;
+}</code></pre>
+
+        <div class="comparison">
+            <div>
+                <strong>accent-color</strong>
+                <ul>
+                    <li>Один рядок CSS</li>
+                    <li>Зберігає стандартну поведінку</li>
+                    <li>100% доступність</li>
+                    <li>Обмежений контроль (лише колір)</li>
+                </ul>
+            </div>
+            <div>
+                <strong>Кастомна стилізація</strong>
+                <ul>
+                    <li>Повний контроль вигляду</li>
+                    <li>Дизайнер вирішує форму, анімацію</li>
+                    <li>Потрібен складний CSS</li>
+                    <li>Потрібно дбати про доступність</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tip">Якщо дизайнер хоче лише змінити колір — використовуйте <code>accent-color</code>. Якщо потрібна
+            повна кастомізація — техніка з муляжем і <code>::before</code>.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 16 ===== -->
+    <section>
+        <h2>Підсумок</h2>
+        <table>
+            <tr>
+                <th>Тема</th>
+                <th>Ключове</th>
+            </tr>
+            <tr>
+                <td><code>display: inline-block</code></td>
+                <td>Рядок + розміри; центрування через <code>text-align</code>; пробіл між елементами</td>
+            </tr>
+            <tr>
+                <td><code>&lt;select&gt;</code> + <code>&lt;option&gt;</code></td>
+                <td>Випадаючий список; <code>selected</code> — передвибраний; &gt; 5 варіантів</td>
+            </tr>
+            <tr>
+                <td><code>appearance: none</code></td>
+                <td>Скидає стандартну стилізацію браузера для елементів форм</td>
+            </tr>
+            <tr>
+                <td><code>background</code></td>
+                <td>image + repeat + position + size; cover vs contain</td>
+            </tr>
+            <tr>
+                <td><code>input type="radio"</code></td>
+                <td>Вибір одного із групи; <code>name</code> зв'язує в радіогрупу</td>
+            </tr>
+            <tr>
+                <td><code>::before</code> / <code>::after</code></td>
+                <td>Декоративні блоки через CSS; обов'язковий <code>content</code>; не для input/img</td>
+            </tr>
+            <tr>
+                <td><code>vertical-align</code></td>
+                <td>Вирівнювання inline/inline-block по вертикалі; <code>middle</code> для іконок</td>
+            </tr>
+            <tr>
+                <td>Селектори <code>+</code> та <code>~</code></td>
+                <td>Братські селектори; <code>+</code> строгий, <code>~</code> м'який; тільки від старшого до молодшого
+                </td>
+            </tr>
+            <tr>
+                <td>Кастомна стилізація radio/checkbox</td>
+                <td>Муляж через <code>::before</code> + стан <code>:checked</code> через <code>~</code> + доступне
+                    приховування
+                </td>
+            </tr>
+            <tr>
+                <td><code>position: absolute</code></td>
+                <td>Вириває елемент з потоку; потрібний для <code>clip</code></td>
+            </tr>
+            <tr>
+                <td><code>clip-path: inset()</code></td>
+                <td>Візуальне приховування зі збереженням доступності; замінює застарілу <code>clip: rect()</code></td>
+            </tr>
+            <tr>
+                <td><code>accent-color</code></td>
+                <td>Сучасна альтернатива: змінити колір radio/checkbox одним рядком</td>
+            </tr>
+        </table>
+    </section>
+
+{% endblock %}

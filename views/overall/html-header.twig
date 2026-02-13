@@ -1,0 +1,32 @@
+<head>
+    <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark')</script>
+    <meta http-equiv="Content-Type" content="text/html; charset={{ site.charset }}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ html_title }}</title>
+    {% if page.description is defined and page.description %}
+    <meta name="description" content="{{ page.description }}" />
+    {% endif %}
+    {% if page.canonical is defined and page.canonical %}
+    <link rel="canonical" href="{{ page.canonical }}" />
+    {% endif %}
+    <meta property="og:title" content="{{ html_title }}" />
+    <meta property="og:site_name" content="edu.kaplia.pro" />
+    <meta property="og:type" content="website" />
+    {% if page.description is defined and page.description %}
+    <meta property="og:description" content="{{ page.description }}" />
+    {% endif %}
+    {% if page.canonical is defined and page.canonical %}
+    <meta property="og:url" content="{{ page.canonical }}" />
+    {% endif %}
+    <meta property="og:locale" content="uk_UA" />
+    <link rel="shortcut icon" sizes="32x32" href="{{ site.url }}assets/img/favicon2x.png?ver={{ assets_version }}" type="image/x-icon"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ site.url }}assets/img/favicon-114.png?ver={{ assets_version }}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ site.url }}assets/img/favicon-144.png?ver={{ assets_version }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel='stylesheet' id='main-css' href='{{ site.url }}assets/css/style.min.css?ver={{ assets_version }}' type='text/css' media='all' />
+    {{ all_blocks_styles }}
+    {% include 'overall/schema.twig' %}
+</head>

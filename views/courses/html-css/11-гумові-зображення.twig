@@ -1,0 +1,530 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Гумові зображення</h1>
+    <p>Конспект лекції: функція calc(), адаптивні картинки, max-width, object-fit та гумові відео</p>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>1. Функція calc()</h2>
+
+        <p>Функція <code>calc()</code> дозволяє виконувати арифметичні операції з різними одиницями виміру прямо в CSS.
+            Браузер обчислює результат «на льоту».</p>
+
+        <pre><code><span class="comment">/* Проблема: дві колонки + відступ = більше 100% */</span>
+<span class="sel">.sidebar</span> { <span class="prop">width</span>: <span class="val">40%</span>; }
+<span class="sel">.content</span> {
+    <span class="prop">width</span>: <span class="val">calc(60% - 20px)</span>;
+    <span class="prop">margin-left</span>: <span class="val">20px</span>;
+}</code></pre>
+
+        <p>Підтримувані операції: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>. Можна змішувати
+            одиниці: <code>calc(100% - 20px)</code>, <code>calc(50vh + 2rem)</code>.</p>
+
+        <div class="warning">
+            <strong>Не зловживайте calc()!</strong> У більшості випадків можна обійтися Flexbox або <code>box-sizing:
+                border-box</code>. Надмірне використання <code>calc()</code> ускладнює читання коду.
+        </div>
+
+        <h3>Чому box-sizing: border-box не вирішує проблему?</h3>
+        <p><code>border-box</code> враховує лише <code>padding</code> і <code>border</code> у ширині елемента. Зовнішній
+            відступ <code>margin</code> не входить у розрахунок, тому <code>60% + margin-left: 20px</code> все одно
+            перевищить 100%.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>2. Препроцесори CSS (огляд)</h2>
+
+        <p><strong>Препроцесори</strong> — це інструменти, які розширюють можливості CSS (змінні, обчислення,
+            вкладеність) і компілюються у звичайний CSS-файл.</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Інструмент</th>
+                <th>Особливість</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><strong>Sass / SCSS</strong></td>
+                <td>Найпопулярніший препроцесор, багатий функціонал</td>
+            </tr>
+            <tr>
+                <td><strong>Less</strong></td>
+                <td>Простіший синтаксис, менш популярний</td>
+            </tr>
+            <tr>
+                <td><code>calc()</code></td>
+                <td>Вбудована функція CSS — обчислення відбувається <strong>в браузері</strong> (на відміну від
+                    препроцесорів, де результат фіксований)
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>3. Центрування абсолютного елемента</h2>
+
+        <p>Класична задача: помістити елемент точно по центру батьківського блоку.</p>
+
+        <h3>Спосіб 1: position + transform (універсальний)</h3>
+
+        <pre><code><span class="sel">.parent</span> {
+    <span class="prop">position</span>: <span class="val">relative</span>;
+}
+
+<span class="sel">.child</span> {
+    <span class="prop">position</span>: <span class="val">absolute</span>;
+    <span class="prop">top</span>: <span class="val">50%</span>;
+    <span class="prop">left</span>: <span class="val">50%</span>;
+    <span class="prop">transform</span>: <span class="val">translate(-50%, -50%)</span>;
+}</code></pre>
+
+        <p>Чому працює:</p>
+        <ol>
+            <li><code>top: 50%; left: 50%</code> — зміщує <strong>лівий верхній кут</strong> елемента до центру батька
+            </li>
+            <li><code>translate(-50%, -50%)</code> — зміщує елемент назад на половину <strong>своїх</strong> розмірів
+            </li>
+        </ol>
+
+        <div class="tip">
+            <strong>Ключова перевага:</strong> відсотки в <code>translate()</code> рахуються від розмірів <strong>самого
+                елемента</strong> (а не батька). Тому центрування працює незалежно від розмірів елемента.
+        </div>
+
+        <h3>Спосіб 2: Flexbox</h3>
+
+        <pre><code><span class="sel">.parent</span> {
+    <span class="prop">display</span>: <span class="val">flex</span>;
+    <span class="prop">justify-content</span>: <span class="val">center</span>;
+    <span class="prop">align-items</span>: <span class="val">center</span>;
+}</code></pre>
+
+        <p>Різниця між підходами:</p>
+        <table>
+            <thead>
+            <tr>
+                <th>Спосіб</th>
+                <th>Де задаються стилі</th>
+                <th>Коли використовувати</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>position + transform</td>
+                <td>На <strong>дочірньому</strong> елементі</td>
+                <td>Модальні вікна, поверхневі елементи</td>
+            </tr>
+            <tr>
+                <td>Flexbox</td>
+                <td>На <strong>батьківському</strong> елементі</td>
+                <td>Загальне центрування контенту</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Чому margin-left: -50px — поганий спосіб?</h3>
+        <p>Жорстко прив'язує зміщення до конкретного розміру елемента. Якщо розмір зміниться — центрування зламається.
+            <code>transform: translate(-50%, -50%)</code> працює з будь-якими розмірами.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>4. transform — перетворення елементів</h2>
+
+        <p>Властивість <code>transform</code> дозволяє застосовувати до елемента різні візуальні перетворення:</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Функція</th>
+                <th>Що робить</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>translate(x, y)</code></td>
+                <td>Зміщує елемент по осях X та Y</td>
+            </tr>
+            <tr>
+                <td><code>rotate(deg)</code></td>
+                <td>Обертає елемент</td>
+            </tr>
+            <tr>
+                <td><code>scale(n)</code></td>
+                <td>Збільшує/зменшує елемент</td>
+            </tr>
+            <tr>
+                <td><code>skew(x, y)</code></td>
+                <td>Нахиляє елемент (перетворює прямокутник на паралелограм)</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>Не плутайте:</strong> <code>transform</code> — перетворення (зміщення, обертання тощо). <code>transition</code>
+            — анімований перехід між станами. Це різні властивості, які часто використовуються разом.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>5. Контентні та фонові зображення</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Тип</th>
+                <th>Технологія</th>
+                <th>Коли використовувати</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><strong>Контентне</strong></td>
+                <td><code>&lt;img&gt;</code></td>
+                <td>Зображення, що змінюється від сторінки до сторінки: фото товару, аватар, обкладинка статті</td>
+            </tr>
+            <tr>
+                <td><strong>Фонове</strong></td>
+                <td><code>background-image</code></td>
+                <td>Декоративне зображення, прив'язане до дизайну: фон шапки, абстрактна текстура</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>Головне питання:</strong> чи буде це зображення змінюватися через адмінпанель? Якщо так — це
+            контентне зображення (<code>&lt;img&gt;</code>), навіть якщо візуально воно виглядає як фон (наприклад,
+            обкладинка статті).
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>6. object-fit і object-position</h2>
+
+        <p>Властивості <code>object-fit</code> та <code>object-position</code> — це аналоги <code>background-size</code>
+            та <code>background-position</code>, але для тегів <code>&lt;img&gt;</code> та <code>&lt;video&gt;</code>.
+        </p>
+
+        <pre><code><span class="sel">img</span> {
+    <span class="prop">width</span>: <span class="val">200px</span>;
+    <span class="prop">height</span>: <span class="val">200px</span>;
+    <span class="prop">object-fit</span>: <span class="val">cover</span>;
+    <span class="prop">object-position</span>: <span class="val">center center</span>;
+}</code></pre>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Значення</th>
+                <th>Поведінка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>cover</code></td>
+                <td>Заповнює блок повністю, зайве обрізає. Пропорції зберігаються</td>
+            </tr>
+            <tr>
+                <td><code>contain</code></td>
+                <td>Вписує зображення повністю, з'являються «смуги». Пропорції зберігаються</td>
+            </tr>
+            <tr>
+                <td><code>fill</code> (за замовчуванням)</td>
+                <td>Розтягує до заданих розмірів. Пропорції <strong>не зберігаються</strong></td>
+            </tr>
+            <tr>
+                <td><code>none</code></td>
+                <td>Зображення зберігає свій реальний розмір</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p><code>object-position</code> задає точку, відносно якої масштабується зображення: <code>top center</code>,
+            <code>bottom right</code> тощо. За замовчуванням — <code>center center</code>.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>7. Оптимізація завантаження зображень</h2>
+
+        <p>Порівняння поведінки різних способів приховування для контентних та фонових зображень:</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Спосіб приховування</th>
+                <th><code>&lt;img&gt;</code></th>
+                <th><code>background-image</code></th>
+                <th><code>::before</code></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>display: none</code></td>
+                <td>Завантажується</td>
+                <td>Залежить від браузера</td>
+                <td>Не завантажується</td>
+            </tr>
+            <tr>
+                <td><code>opacity: 0</code></td>
+                <td>Завантажується</td>
+                <td>Завантажується</td>
+                <td>Завантажується</td>
+            </tr>
+            <tr>
+                <td><code>visibility: hidden</code></td>
+                <td>Завантажується</td>
+                <td>Завантажується</td>
+                <td>Завантажується</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>Висновок:</strong> жоден спосіб приховування CSS не запобігає завантаженню <code>&lt;img&gt;</code>.
+            Для оптимізації потрібен інший підхід — lazy loading.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>8. Lazy loading — відкладене завантаження</h2>
+
+        <p>Ідея: не завантажувати зображення, поки користувач не прокрутив до нього сторінку.</p>
+
+        <h3>Підхід з data-атрибутами</h3>
+
+        <pre><code><span class="comment">&lt;!-- Зображення не завантажиться — src порожній --&gt;</span>
+<span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="val">""</span>
+     <span class="attr">data-src</span>=<span class="val">"photo.jpg"</span>
+     <span class="attr">alt</span>=<span class="val">"Опис"</span>
+     <span class="attr">class</span>=<span class="val">"lazy"</span><span class="tag">&gt;</span></code></pre>
+
+        <p>Як працює:</p>
+        <ol>
+            <li>Атрибут <code>src</code> порожній або містить зображення-заглушку низької якості</li>
+            <li>Реальна адреса зберігається в <code>data-src</code> (data-атрибут не впливає на завантаження)</li>
+            <li>JavaScript відстежує прокрутку і, коли зображення потрапляє у видиму область, копіює
+                <code>data-src</code> → <code>src</code></li>
+            <li>Тільки після цього браузер починає завантаження</li>
+        </ol>
+
+        <h3>Нативний lazy loading</h3>
+
+        <pre><code><span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="val">"photo.jpg"</span>
+     <span class="attr">loading</span>=<span class="val">"lazy"</span>
+     <span class="attr">alt</span>=<span class="val">"Опис"</span><span class="tag">&gt;</span></code></pre>
+
+        <div class="tip">
+            <strong>Сучасний спосіб:</strong> атрибут <code>loading="lazy"</code> підтримується всіма сучасними
+            браузерами і не потребує JavaScript. Браузер сам відкладає завантаження зображень, що знаходяться поза
+            видимою областю.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>9. Data-атрибути</h2>
+
+        <p>HTML5 дозволяє створювати довільні атрибути з префіксом <code>data-</code>:</p>
+
+        <pre><code><span class="tag">&lt;div</span> <span class="attr">data-category</span>=<span
+                        class="val">"news"</span>
+     <span class="attr">data-user-id</span>=<span class="val">"42"</span><span class="tag">&gt;</span>...<span
+                        class="tag">&lt;/div&gt;</span></code></pre>
+
+        <ul>
+            <li>Можна додати до <strong>будь-якого</strong> тегу</li>
+            <li>Браузер їх <strong>ігнорує</strong> — вони не впливають на відображення</li>
+            <li>Використовуються для зберігання додаткових даних для JavaScript</li>
+        </ul>
+
+        <h3>Виведення data-атрибута через CSS</h3>
+
+        <pre><code><span class="comment">&lt;!-- HTML --&gt;</span>
+<span class="tag">&lt;span</span> <span class="attr">data-tooltip</span>=<span class="val">"Підказка"</span><span
+                        class="tag">&gt;</span>Наведіть курсор<span class="tag">&lt;/span&gt;</span></code></pre>
+
+        <pre><code><span class="comment">/* CSS — виведення значення data-атрибута */</span>
+<span class="sel">span::before</span> {
+    <span class="prop">content</span>: <span class="val">attr(data-tooltip)</span>;
+}</code></pre>
+
+        <p>Функція <code>attr()</code> працює <strong>лише</strong> у властивості <code>content</code> псевдоелементів.
+        </p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>10. Гумові зображення — max-width: 100%</h2>
+
+        <p>Основна техніка для гумових контентних зображень:</p>
+
+        <pre><code><span class="sel">img</span> {
+    <span class="prop">max-width</span>: <span class="val">100%</span>;
+    <span class="prop">height</span>: <span class="val">auto</span>;
+}</code></pre>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Властивість</th>
+                <th>Поведінка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>width: 100%</code></td>
+                <td>Зображення <strong>завжди</strong> розтягується на всю ширину батька (навіть якщо менше)</td>
+            </tr>
+            <tr>
+                <td><code>max-width: 100%</code></td>
+                <td>Зображення не перевищує ширину батька, але <strong>не збільшується</strong> понад свій реальний
+                    розмір
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>Стандартний підхід:</strong> задаємо <code>max-width: 100%</code> для зображення, а розміри
+            контролюємо через батьківський блок. Це дає універсальний клас, який можна застосувати до будь-якої
+            картинки.
+        </div>
+
+        <p>При <code>width: 100%</code> маленьке зображення розтягнеться і втратить якість. При <code>max-width:
+                100%</code> воно збереже свій реальний розмір, якщо батько більший.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>11. background-size для фонових зображень</h2>
+
+        <p>Властивість <code>background-size</code> керує розміром фонового зображення:</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Значення</th>
+                <th>Поведінка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>cover</code></td>
+                <td>Заповнює весь блок, зайве обрізає</td>
+            </tr>
+            <tr>
+                <td><code>contain</code></td>
+                <td>Вписує повністю, з'являються смуги</td>
+            </tr>
+            <tr>
+                <td>Значення в px або %</td>
+                <td>Фіксований розмір (наприклад, <code>600px auto</code> — ширина 600px, висота автоматична)</td>
+            </tr>
+            <tr>
+                <td><code>100%</code></td>
+                <td>Ширина = ширині блоку, висота автоматична</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p>У комбінації з <code>background-position: center</code> отримуємо зображення, що коректно масштабується при
+            зміні розмірів блоку.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>12. Протоколи посилань: tel: і mailto:</h2>
+
+        <p>У атрибуті <code>href</code> можна використовувати спеціальні протоколи для дзвінків та електронної пошти:
+        </p>
+
+        <pre><code><span class="comment">&lt;!-- Дзвінок --&gt;</span>
+<span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="val">"tel:+380991234567"</span><span
+                        class="tag">&gt;</span>+38 (099) 123-45-67<span class="tag">&lt;/a&gt;</span>
+
+<span class="comment">&lt;!-- Електронна пошта --&gt;</span>
+<span class="tag">&lt;a</span> <span class="attr">href</span>=<span
+                        class="val">"mailto:info@example.com?subject=Запит"</span><span class="tag">&gt;</span>Написати нам<span
+                        class="tag">&lt;/a&gt;</span></code></pre>
+
+        <h3>tel: — протокол для дзвінків</h3>
+        <p>Добре працює на мобільних пристроях: натискання відкриває набирач номера. На десктопі поведінка залежить від
+            ОС та встановлених програм.</p>
+
+        <h3>mailto: — протокол для пошти</h3>
+        <div class="warning">
+            <strong>Недоліки mailto:</strong>
+            <ul>
+                <li>Email-адреса відкрита для спам-ботів</li>
+                <li>Користувач покидає сайт (переходить у поштовий клієнт)</li>
+                <li>Неможливо відстежити ефективність (UTM-мітки, аналітика)</li>
+                <li>Не всі мають налаштований поштовий клієнт</li>
+            </ul>
+            <p>Краща альтернатива — форма зворотного зв'язку на сайті.</p>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>13. Підсумкова таблиця</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Тема</th>
+                <th>Ключове</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>calc()</code></td>
+                <td>Арифметика в CSS зі змішуванням одиниць; не зловживайте</td>
+            </tr>
+            <tr>
+                <td>Центрування absolute</td>
+                <td><code>top: 50%; left: 50%; transform: translate(-50%, -50%)</code> — універсальний спосіб</td>
+            </tr>
+            <tr>
+                <td><code>object-fit</code></td>
+                <td>Аналог <code>background-size</code> для <code>&lt;img&gt;</code> та <code>&lt;video&gt;</code></td>
+            </tr>
+            <tr>
+                <td>Контентне vs фонове</td>
+                <td>Якщо змінюється через адмінку → контентне (<code>&lt;img&gt;</code>)</td>
+            </tr>
+            <tr>
+                <td>Гумове <code>&lt;img&gt;</code></td>
+                <td><code>max-width: 100%; height: auto;</code> — стандартний підхід</td>
+            </tr>
+            <tr>
+                <td>Lazy loading</td>
+                <td>Нативний: <code>loading="lazy"</code>; з JS: <code>data-src</code> → <code>src</code></td>
+            </tr>
+            <tr>
+                <td><code>transform</code></td>
+                <td>Зміщення, обертання, масштабування; <code>translate(%)</code> рахується від самого елемента</td>
+            </tr>
+            <tr>
+                <td>Data-атрибути</td>
+                <td>Довільні атрибути з префіксом <code>data-</code>; для JS або <code>attr()</code> у CSS</td>
+            </tr>
+            <tr>
+                <td><code>tel:</code> / <code>mailto:</code></td>
+                <td>Протоколи в <code>href</code> для дзвінків та пошти</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+{% endblock %}

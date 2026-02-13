@@ -1,0 +1,514 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Адаптивні зображення</h1>
+    <p>Конспект лекції: flex-shrink, flex-basis, srcset, sizes, тег picture та оптимізація графіки</p>
+
+    <!-- 1. flex-shrink — коефіцієнт стиснення -->
+    <section>
+        <h2>1. flex-shrink — коефіцієнт стиснення</h2>
+
+        <p>Властивість <code>flex-shrink</code> визначає, чи може елемент всередині flex-контейнера зменшуватися, коли
+            зменшується розмір екрану.</p>
+
+        <h3>Синтаксис</h3>
+        <pre><code><span class="prop">flex-shrink</span>: <span class="val">1</span>;  <span class="comment">/* за замовчуванням — елемент стискається */</span>
+<span class="prop">flex-shrink</span>: <span class="val">0</span>;  <span
+                        class="comment">/* елемент НЕ стискається */</span></code></pre>
+
+        <p>Значення — будь-яке додатне число від 0 і вище. За замовчуванням — <code>1</code>, тобто елемент зменшується
+            разом із контейнером.</p>
+        <p>Якщо поставити <code>0</code> — елемент зберігатиме свої розміри незалежно від ширини екрану.</p>
+
+        <h3>Практичний приклад: пошуковий рядок</h3>
+        <p>Уявімо пошуковий рядок з трьома частинами: підказка зліва, input по центру, кнопка «Шукати» справа. Якщо
+            задати всім елементам розміри у відсотках — на маленьких екранах підказка розіб'ється на додаткові рядки, а
+            текст кнопки обріжеться.</p>
+        <p>Рішення: заборонити підказці та кнопці стискатися:</p>
+        <pre><code><span class="comment">/* Підказка і кнопка — фіксовані */</span>
+<span class="sel">.hint, .button</span> {
+  <span class="prop">flex-shrink</span>: <span class="val">0</span>;
+}
+
+<span class="comment">/* Input займає решту простору */</span>
+<span class="sel">.search-input</span> {
+  <span class="prop">flex-grow</span>: <span class="val">1</span>;
+}</code></pre>
+    </section>
+
+    <!-- 2. flex-grow — коефіцієнт розтягування -->
+    <section>
+        <h2>2. flex-grow — коефіцієнт розтягування</h2>
+
+        <p>Властивість <code>flex-grow</code> визначає, чи може елемент розтягуватися, щоб зайняти вільний простір.</p>
+
+        <h3>Синтаксис</h3>
+        <pre><code><span class="prop">flex-grow</span>: <span class="val">0</span>;  <span class="comment">/* за замовчуванням — не розтягується */</span>
+<span class="prop">flex-grow</span>: <span class="val">1</span>;  <span class="comment">/* розтягується, займає вільний простір */</span>
+<span class="prop">flex-grow</span>: <span class="val">2</span>;  <span class="comment">/* займає вдвічі більше, ніж flex-grow: 1 */</span></code></pre>
+
+        <p>На відміну від <code>flex-shrink</code>, різні значення <code>flex-grow</code> дійсно дають різний результат.
+            Елемент із <code>flex-grow: 2</code> займе вдвічі більше вільного простору, ніж елемент із <code>flex-grow:
+                1</code>.</p>
+
+        <h3>Комбінація flex-shrink і flex-grow</h3>
+        <p>Для пошукового рядка: підказка та кнопка не стискаються і не розтягуються, а input займає весь вільний
+            простір:</p>
+        <pre><code><span class="sel">.hint, .button</span> {
+  <span class="prop">flex-shrink</span>: <span class="val">0</span>;
+  <span class="prop">flex-grow</span>: <span class="val">0</span>;
+}
+
+<span class="sel">.search-input</span> {
+  <span class="prop">flex-grow</span>: <span class="val">1</span>;
+}</code></pre>
+        <p>Тепер на будь-якому екрані ліва і права частини займають рівно стільки місця, скільки потрібно для їхнього
+            вмісту, а input заповнює решту.</p>
+    </section>
+
+    <!-- 3. flex-basis та розміри елементів -->
+    <section>
+        <h2>3. flex-basis та розміри елементів</h2>
+
+        <p>Властивість <code>flex-basis</code> визначає початковий розмір елемента у flex-контейнері. Це аналог <code>width</code>
+            для горизонтальних та <code>height</code> для вертикальних flex-контейнерів.</p>
+
+        <h3>Синтаксис</h3>
+        <pre><code><span class="prop">flex-basis</span>: <span class="val">250px</span>;
+<span class="prop">flex-basis</span>: <span class="val">50%</span>;
+<span class="prop">flex-basis</span>: <span class="val">auto</span>;  <span
+                        class="comment">/* розмір за вмістом */</span></code></pre>
+
+        <h3>Пріоритетність</h3>
+        <p><code>flex-basis</code> — це не жорстка ширина, а <strong>максимальна бажана величина</strong>. Якщо в
+            контейнері не вистачає місця, елементи стиснуться.</p>
+        <ul>
+            <li><code>flex-basis</code> важливіша за <code>width</code> — якщо задати обидва, <code>width</code>
+                ігнорується
+            </li>
+            <li><code>min-width</code> / <code>max-width</code> важливіші за <code>flex-basis</code></li>
+        </ul>
+
+        <h3>У вертикальному flexbox</h3>
+        <p>Якщо задати <code>flex-direction: column</code>, то <code>flex-basis</code> визначає <strong>висоту</strong>
+            елемента (замість ширини). Аналогічно: <code>height</code> ігнорується, а <code>min-height</code> / <code>max-height</code>
+            мають вищий пріоритет.</p>
+
+        <h3>Правило</h3>
+        <p>Не змішуйте <code>flex-basis</code> із <code>width</code> / <code>height</code>. Використовуйте або <code>flex-basis</code>,
+            або <code>width</code> (<code>height</code>) разом із <code>min-</code>/<code>max-</code> варіантами.</p>
+    </section>
+
+    <!-- 4. Скорочений запис flex -->
+    <section>
+        <h2>4. Скорочений запис flex</h2>
+
+        <p>Властивості <code>flex-grow</code>, <code>flex-shrink</code> і <code>flex-basis</code> можна записати
+            скорочено через <code>flex</code>:</p>
+        <pre><code><span class="prop">flex</span>: <span class="val">&lt;flex-grow&gt; &lt;flex-shrink&gt; &lt;flex-basis&gt;</span>;</code></pre>
+
+        <h3>Варіанти запису</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Запис</th>
+                <th>Еквівалент</th>
+                <th>Опис</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>flex: auto</code></td>
+                <td><code>flex: 1 1 auto</code></td>
+                <td>Розтягується, стискається, розмір за вмістом</td>
+            </tr>
+            <tr>
+                <td><code>flex: initial</code></td>
+                <td><code>flex: 0 1 auto</code></td>
+                <td>Значення за замовчуванням: не розтягується, стискається</td>
+            </tr>
+            <tr>
+                <td><code>flex: none</code></td>
+                <td><code>flex: 0 0 auto</code></td>
+                <td>Не розтягується, не стискається — фіксований розмір</td>
+            </tr>
+            <tr>
+                <td><code>flex: 1</code></td>
+                <td><code>flex: 1 1 0</code></td>
+                <td>Розтягується і стискається пропорційно</td>
+            </tr>
+            <tr>
+                <td><code>flex: 2</code></td>
+                <td><code>flex: 2 1 0</code></td>
+                <td>Займає вдвічі більше простору, ніж <code>flex: 1</code></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Друге значення — число чи розмір?</h3>
+        <p>Браузер автоматично визначає: якщо друге значення — просте число (1, 2, 3) — це <code>flex-shrink</code>.
+            Якщо це величина з одиницями (px, %, rem) — це <code>flex-basis</code>:</p>
+        <pre><code><span class="prop">flex</span>: <span class="val">0 auto</span>;    <span class="comment">/* flex-grow: 0, flex-basis: auto (flex-shrink: 1 за замовчуванням) */</span>
+<span class="prop">flex</span>: <span class="val">1 200px</span>;   <span class="comment">/* flex-grow: 1, flex-basis: 200px */</span></code></pre>
+
+        <h3>Спрощення пошукового рядка</h3>
+        <pre><code><span class="sel">.hint, .button</span> {
+  <span class="prop">flex</span>: <span class="val">none</span>;   <span class="comment">/* не стискається, не розтягується */</span>
+}
+
+<span class="sel">.search-input</span> {
+  <span class="prop">flex</span>: <span class="val">1</span>;      <span class="comment">/* займає весь вільний простір */</span>
+}</code></pre>
+    </section>
+
+    <!-- 5. Розподіл простору через flex -->
+    <section>
+        <h2>5. Розподіл простору через flex</h2>
+
+        <p>Замість відсотків можна використовувати <code>flex</code> для розподілу простору між елементами. Числа
+            визначають пропорції:</p>
+
+        <pre><code><span class="comment">/* Три колонки: 20% + 30% + 50% */</span>
+<span class="sel">.col-1</span> { <span class="prop">flex</span>: <span class="val">2</span>; }  <span class="comment">/* 2/10 = 20% */</span>
+<span class="sel">.col-2</span> { <span class="prop">flex</span>: <span class="val">3</span>; }  <span class="comment">/* 3/10 = 30% */</span>
+<span class="sel">.col-3</span> { <span class="prop">flex</span>: <span class="val">5</span>; }  <span class="comment">/* 5/10 = 50% */</span></code></pre>
+
+        <p>Сума значень <code>flex</code> визначає «загальну кількість частин». Кожен елемент отримує свою частку.
+            Наприклад, 2 + 3 + 5 = 10 частин, і перший елемент займає 2/10 простору.</p>
+
+        <h3>Переваги перед відсотками</h3>
+        <ul>
+            <li>Додавання нових елементів — простір перерозподіляється автоматично</li>
+            <li>Однакові <code>flex: 1</code> для всіх — елементи завжди однакового розміру</li>
+            <li>На мобільних — вимикаєте <code>display: flex</code>, і блоки стають звичайними div, які падають один під
+                одного
+            </li>
+        </ul>
+
+        <h3>Адаптивна колонкова верстка</h3>
+        <pre><code><span class="sel">.container</span> {
+  <span class="prop">display</span>: <span class="val">flex</span>;
+}
+
+<span class="sel">.main</span> { <span class="prop">flex</span>: <span class="val">2</span>; }   <span class="comment">/* 2/3 простору */</span>
+<span class="sel">.sidebar</span> { <span class="prop">flex</span>: <span class="val">1</span>; } <span class="comment">/* 1/3 простору */</span>
+
+<span class="sel">@media (max-width: 768px)</span> {
+  <span class="sel">.container</span> {
+    <span class="prop">display</span>: <span class="val">block</span>; <span class="comment">/* відключаємо flex — блоки падають один під одного */</span>
+  }
+}</code></pre>
+    </section>
+
+    <!-- 6. Властивість order -->
+    <section>
+        <h2>6. Властивість order</h2>
+
+        <p>Властивість <code>order</code> змінює порядок відображення елементів у flex-контейнері <strong>без зміни
+                HTML</strong>. Працює лише в flexbox.</p>
+
+        <h3>Синтаксис</h3>
+        <pre><code><span class="prop">order</span>: <span class="val">0</span>;   <span class="comment">/* за замовчуванням */</span>
+<span class="prop">order</span>: <span class="val">1</span>;   <span class="comment">/* відобразити пізніше */</span>
+<span class="prop">order</span>: <span class="val">-1</span>;  <span
+                        class="comment">/* відобразити раніше */</span></code></pre>
+
+        <p>Значення — будь-яке ціле число (додатне або від'ємне). Чим менше число — тим раніше елемент з'являється:</p>
+        <ul>
+            <li>У горизонтальному flexbox: менше число — лівіше</li>
+            <li>У вертикальному flexbox: менше число — вище</li>
+        </ul>
+
+        <h3>Приклад: картка новини</h3>
+        <p>На десктопі: зображення → заголовок → теги → текст. На мобільному дизайнер хоче теги під текстом. Рішення —
+            додати <code>order</code> через медіазапит:</p>
+        <pre><code><span class="sel">.card</span> {
+  <span class="prop">display</span>: <span class="val">flex</span>;
+  <span class="prop">flex-direction</span>: <span class="val">column</span>;
+}
+
+<span class="sel">@media (max-width: 480px)</span> {
+  <span class="sel">.card-tags</span> {
+    <span class="prop">order</span>: <span class="val">1</span>; <span class="comment">/* 1 > 0, тому теги переміщуються вниз */</span>
+  }
+}</code></pre>
+        <p>На десктопі всі елементи мають <code>order: 0</code> і відображаються в порядку HTML. На мобільному теги
+            отримують <code>order: 1</code> і переміщуються вниз.</p>
+
+        <h3>Семантика HTML</h3>
+        <p>Перевірити семантику верстки можна, вимкнувши CSS у браузері. Без стилів сторінка повинна читатися логічно:
+            заголовки — це заголовки, списки — це списки (а не div зі span), навігація — це <code>&lt;nav&gt;</code> з
+            <code>&lt;ul&gt;</code>.</p>
+    </section>
+
+    <!-- 7. Тег picture -->
+    <section>
+        <h2>7. Тег picture</h2>
+
+        <p>Тег <code>&lt;picture&gt;</code> дозволяє показувати різні зображення на різних пристроях. Це обгортка (як
+            <code>&lt;div&gt;</code>), яка сама нічого не відображає.</p>
+
+        <h3>Структура</h3>
+        <pre><code><span class="tag">&lt;picture&gt;</span>
+  <span class="tag">&lt;source</span>
+    <span class="attr">srcset</span>=<span class="val">"banner-mobile.webp 1x, banner-mobile-2x.webp 2x"</span>
+    <span class="attr">media</span>=<span class="val">"(max-width: 480px)"</span>
+  <span class="tag">&gt;</span>
+  <span class="tag">&lt;source</span>
+    <span class="attr">srcset</span>=<span class="val">"banner-desktop.webp 1x, banner-desktop-2x.webp 2x"</span>
+  <span class="tag">&gt;</span>
+  <span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="val">"banner-desktop.webp"</span> <span
+                        class="attr">alt</span>=<span class="val">"Банер"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;/picture&gt;</span></code></pre>
+
+        <h3>Як це працює</h3>
+        <ul>
+            <li><code>&lt;source&gt;</code> — аналог <code>&lt;img&gt;</code>, задає зображення через
+                <code>srcset</code></li>
+            <li>Атрибут <code>media</code> — ті самі медіазапити, що й у CSS (<code>min-width</code>,
+                <code>orientation</code> тощо)
+            </li>
+            <li>Атрибут <code>srcset</code> — список зображень із умовами (<code>1x</code>, <code>2x</code> для
+                щільності пікселів або <code>320w</code>, <code>768w</code> для ширини)
+            </li>
+            <li><code>&lt;img&gt;</code> в кінці — обов'язковий; потрібний для атрибута <code>alt</code> та як fallback
+                при проблемах із завантаженням
+            </li>
+        </ul>
+
+        <h3>Коли використовувати</h3>
+        <ul>
+            <li><strong>Банери</strong> — горизонтальний банер на десктопі, вертикальний на мобільному</li>
+            <li><strong>Різні формати</strong> — WebP для сучасних браузерів, PNG/JPEG як fallback</li>
+            <li><strong>Різний вміст</strong> — детальне зображення на великому екрані, спрощене на маленькому</li>
+        </ul>
+    </section>
+
+    <!-- 8. Атрибут srcset -->
+    <section>
+        <h2>8. Атрибут srcset</h2>
+
+        <p>Атрибут <code>srcset</code> можна використовувати як у <code>&lt;source&gt;</code>, так і безпосередньо в
+            <code>&lt;img&gt;</code>:</p>
+
+        <pre><code><span class="tag">&lt;img</span>
+  <span class="attr">src</span>=<span class="val">"photo.jpg"</span>
+  <span class="attr">srcset</span>=<span class="val">"photo.jpg 1x, photo-2x.jpg 2x, photo-3x.jpg 3x"</span>
+  <span class="attr">alt</span>=<span class="val">"Фото"</span>
+<span class="tag">&gt;</span></code></pre>
+
+        <h3>Дескриптори</h3>
+        <ul>
+            <li><code>1x</code>, <code>2x</code>, <code>3x</code> — щільність пікселів (1x = звичайний екран, 2x =
+                Retina)
+            </li>
+            <li><code>320w</code>, <code>768w</code> — ширина зображення в пікселях (браузер обирає найкраще за шириною
+                viewport)
+            </li>
+        </ul>
+
+        <h3>Особливості кешування</h3>
+        <p>Браузер кешує зображення і не «понижує» якість: якщо вже завантажено 2x-версію, при зменшенні вікна він не
+            завантажить 1x. Для тестування увімкніть <code>Disable cache</code> у DevTools.</p>
+
+        <h3>SVG як адаптивне зображення</h3>
+        <p>Всередині SVG-файлу можна писати медіазапити. Елементи SVG будуть показуватися або зникати залежно від
+            розміру. Наприклад, іконка будинку: на маленькому екрані — спрощена, на великому — з деталями (вікна,
+            двері).</p>
+    </section>
+
+    <!-- 9. Функція calc() -->
+    <section>
+        <h2>9. Функція calc()</h2>
+
+        <p>CSS-функція <code>calc()</code> дозволяє виконувати математичні операції з різними одиницями виміру прямо в
+            CSS. Обчислення відбуваються динамічно.</p>
+
+        <h3>Синтаксис</h3>
+        <pre><code><span class="prop">height</span>: <span class="val">calc(100vh - 50px - 4rem)</span>;
+<span class="prop">width</span>: <span class="val">calc(100% - 20px)</span>;
+<span class="prop">font-size</span>: <span class="val">calc(1rem + 0.5vw)</span>;</code></pre>
+
+        <h3>Приклад: прибитий футер</h3>
+        <p>Завдання: футер завжди прибитий до низу сторінки, а якщо контенту більше — футер просто під контентом:</p>
+        <pre><code><span class="sel">.header</span> {
+  <span class="prop">height</span>: <span class="val">50px</span>;
+}
+
+<span class="sel">.footer</span> {
+  <span class="prop">height</span>: <span class="val">4rem</span>;
+}
+
+<span class="sel">.content</span> {
+  <span class="prop">min-height</span>: <span class="val">calc(100vh - 50px - 4rem)</span>;
+}</code></pre>
+        <p>Ключовий момент — використання <code>min-height</code> замість <code>height</code>. Мінімальна висота
+            контенту дорівнює висоті вікна мінус хедер і футер. Якщо контент більший — блок просто розтягнеться, і футер
+            зсунеться вниз.</p>
+
+        <h3>Операції</h3>
+        <ul>
+            <li>Додавання: <code>calc(100% + 20px)</code></li>
+            <li>Віднімання: <code>calc(100vh - 80px)</code></li>
+            <li>Множення: <code>calc(10px * 3)</code></li>
+            <li>Ділення: <code>calc(100% / 3)</code></li>
+        </ul>
+        <p>Можна змішувати будь-які одиниці: vh з px, rem з %, vw з em.</p>
+    </section>
+
+    <!-- 10. CSS-змінні (custom properties) -->
+    <section>
+        <h2>10. CSS-змінні (custom properties)</h2>
+
+        <p>CSS-змінні (кастомні властивості) дозволяють зберігати значення і використовувати їх по всій сторінці.</p>
+
+        <h3>Оголошення і використання</h3>
+        <pre><code><span class="sel">:root</span> {
+  <span class="prop">--header-height</span>: <span class="val">50px</span>;
+  <span class="prop">--footer-height</span>: <span class="val">4rem</span>;
+  <span class="prop">--primary-color</span>: <span class="val">#3498db</span>;
+}
+
+<span class="sel">.header</span> {
+  <span class="prop">height</span>: <span class="val">var(--header-height)</span>;
+}
+
+<span class="sel">.footer</span> {
+  <span class="prop">height</span>: <span class="val">var(--footer-height)</span>;
+}
+
+<span class="sel">.content</span> {
+  <span class="prop">min-height</span>: <span
+                        class="val">calc(100vh - var(--header-height) - var(--footer-height))</span>;
+}</code></pre>
+
+        <h3>Область видимості</h3>
+        <ul>
+            <li><code>:root</code> — змінні доступні скрізь на сторінці (глобальні)</li>
+            <li>Якщо оголосити в конкретному селекторі — змінні доступні лише всередині цього елемента та його
+                нащадків
+            </li>
+        </ul>
+
+        <h3>Використання зі style guide</h3>
+        <p>Style guide від дизайнера визначає всі кольори, розміри шрифтів, відступи. Мінімальний padding (наприклад,
+            10px) означає, що всі відступи кратні цьому числу: 10, 20, 30px. CSS-змінні ідеально підходять для
+            зберігання таких значень:</p>
+        <pre><code><span class="sel">:root</span> {
+  <span class="prop">--spacing-unit</span>: <span class="val">10px</span>;
+  <span class="prop">--font-heading</span>: <span class="val">24px</span>;
+  <span class="prop">--font-body</span>: <span class="val">16px</span>;
+  <span class="prop">--color-primary</span>: <span class="val">#2c3e50</span>;
+  <span class="prop">--color-accent</span>: <span class="val">#e74c3c</span>;
+}</code></pre>
+    </section>
+
+    <!-- 11. @supports — перевірка підтримки CSS -->
+    <section>
+        <h2>11. @supports — перевірка підтримки CSS</h2>
+
+        <p>Правило <code>@supports</code> перевіряє, чи підтримує браузер певну CSS-властивість, і застосовує стилі
+            тільки якщо підтримує.</p>
+
+        <h3>Синтаксис</h3>
+        <pre><code><span class="sel">@supports (display: grid)</span> {
+  <span class="sel">.container</span> {
+    <span class="prop">display</span>: <span class="val">grid</span>;
+    <span class="prop">grid-template-columns</span>: <span class="val">repeat(3, 1fr)</span>;
+  }
+}</code></pre>
+
+        <h3>Логічні оператори</h3>
+        <pre><code><span class="comment">/* АБО */</span>
+<span class="sel">@supports (display: grid) or (display: flex)</span> { ... }
+
+<span class="comment">/* І */</span>
+<span class="sel">@supports (display: grid) and (gap: 10px)</span> { ... }
+
+<span class="comment">/* НЕ — використовувати обережно */</span>
+<span class="sel">@supports not (display: grid)</span> { ... }</code></pre>
+
+        <p><strong>Увага щодо <code>not</code>:</strong> якщо браузер не підтримує сам <code>@supports</code>, він
+            проігнорує весь блок, включно з <code>not</code>-варіантом. Тому <code>@supports not (...)</code> —
+            ненадійний варіант для старих браузерів.</p>
+
+        <h3>Практичне застосування</h3>
+        <p>Використовуйте <code>@supports</code>, коли хочете застосувати нову CSS-властивість, але не впевнені в
+            підтримці. Базові стилі пишете без <code>@supports</code>, а покращені — всередині:</p>
+        <pre><code><span class="comment">/* Базовий варіант */</span>
+<span class="sel">.layout</span> {
+  <span class="prop">display</span>: <span class="val">flex</span>;
+  <span class="prop">flex-wrap</span>: <span class="val">wrap</span>;
+}
+
+<span class="comment">/* Покращений варіант для браузерів із підтримкою grid */</span>
+<span class="sel">@supports (display: grid)</span> {
+  <span class="sel">.layout</span> {
+    <span class="prop">display</span>: <span class="val">grid</span>;
+    <span class="prop">grid-template-columns</span>: <span class="val">repeat(auto-fit, minmax(250px, 1fr))</span>;
+    <span class="prop">gap</span>: <span class="val">20px</span>;
+  }
+}</code></pre>
+    </section>
+
+    <!-- 12. Підсумкова таблиця -->
+    <section>
+        <h2>12. Підсумкова таблиця</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Тема</th>
+                <th>Що запам'ятати</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>flex-shrink</code></td>
+                <td>Коефіцієнт стиснення; за замовчуванням 1 (стискається); 0 — заборонити стиснення</td>
+            </tr>
+            <tr>
+                <td><code>flex-grow</code></td>
+                <td>Коефіцієнт розтягування; за замовчуванням 0 (не розтягується); 1+ — займає вільний простір</td>
+            </tr>
+            <tr>
+                <td><code>flex-basis</code></td>
+                <td>Початковий розмір елемента; важливіший за width/height; поступається min-/max-width/height</td>
+            </tr>
+            <tr>
+                <td><code>flex</code> (скорочення)</td>
+                <td><code>flex: none</code> — фіксований; <code>flex: 1</code> — гнучкий; <code>flex: auto</code> — за
+                    вмістом
+                </td>
+            </tr>
+            <tr>
+                <td><code>order</code></td>
+                <td>Змінює порядок відображення у flexbox; за замовчуванням 0; менше число — раніше</td>
+            </tr>
+            <tr>
+                <td><code>&lt;picture&gt;</code></td>
+                <td>Різні зображення на різних пристроях; <code>&lt;source&gt;</code> + <code>media</code> + <code>srcset</code>;
+                    <code>&lt;img&gt;</code> обов'язковий
+                </td>
+            </tr>
+            <tr>
+                <td><code>srcset</code></td>
+                <td>Список зображень із дескрипторами: 1x/2x (щільність) або 320w/768w (ширина)</td>
+            </tr>
+            <tr>
+                <td><code>calc()</code></td>
+                <td>Математика в CSS; змішує одиниці (vh - px - rem); динамічний перерахунок</td>
+            </tr>
+            <tr>
+                <td>CSS-змінні</td>
+                <td><code>:root { --name: value }</code> + <code>var(--name)</code>; глобальні або локальні</td>
+            </tr>
+            <tr>
+                <td><code>@supports</code></td>
+                <td>Перевірка підтримки CSS-властивостей; оператори and, or, not</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+{% endblock %}

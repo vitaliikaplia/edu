@@ -1,0 +1,764 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Позиціювання flex-елементів</h1>
+    <p>Конспект лекції: align-items, align-self, flex-wrap, order, flex-grow та інші властивості Flexbox</p>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>1. align-items — вирівнювання по додатковій осі</h2>
+
+        <p>Властивість <code>align-items</code> задається <strong>flex-контейнеру</strong> і керує розміщенням елементів
+            уздовж <strong>додаткової (cross) осі</strong>.</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Значення</th>
+                <th>Поведінка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>flex-start</code></td>
+                <td>Притиснути до початку додаткової осі</td>
+            </tr>
+            <tr>
+                <td><code>flex-end</code></td>
+                <td>Притиснути до кінця додаткової осі</td>
+            </tr>
+            <tr>
+                <td><code>center</code></td>
+                <td>Центрувати по додатковій осі</td>
+            </tr>
+            <tr>
+                <td><code>baseline</code></td>
+                <td>Вирівняти по базовій лінії тексту (корисно, коли різний <code>font-size</code>)</td>
+            </tr>
+            <tr>
+                <td><code>stretch</code> (за замовчуванням)</td>
+                <td>Розтягнути елементи на всю висоту контейнера</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>Пам'ятайте:</strong> «вертикаль» і «горизонталь» у Flexbox — умовні. Якщо <code>flex-direction:
+                column</code>, осі міняються місцями: головна йде зверху вниз, додаткова — зліва направо.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>2. justify-content — вирівнювання по головній осі</h2>
+
+        <p>Властивість <code>justify-content</code> керує розподілом елементів та вільного простору уздовж <strong>головної
+                (main) осі</strong>.</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Значення</th>
+                <th>Поведінка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>flex-start</code> (за замовчуванням)</td>
+                <td>Притиснути до початку головної осі</td>
+            </tr>
+            <tr>
+                <td><code>flex-end</code></td>
+                <td>Притиснути до кінця головної осі</td>
+            </tr>
+            <tr>
+                <td><code>center</code></td>
+                <td>Центрувати елементи</td>
+            </tr>
+            <tr>
+                <td><code>space-between</code></td>
+                <td>Крайні елементи притиснуті до меж, вільний простір — рівномірно між елементами</td>
+            </tr>
+            <tr>
+                <td><code>space-around</code></td>
+                <td>Рівні проміжки навколо кожного елемента (крайні = половина внутрішніх)</td>
+            </tr>
+            <tr>
+                <td><code>space-evenly</code></td>
+                <td>Усі проміжки абсолютно рівні (і між елементами, і від краю)</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Центрування модального вікна</h3>
+
+        <pre><code><span class="sel">.popup</span> {
+    <span class="prop">display</span>: <span class="val">flex</span>;
+    <span class="prop">justify-content</span>: <span class="val">center</span>;  <span class="comment">/* по горизонталі */</span>
+    <span class="prop">align-items</span>: <span class="val">center</span>;      <span class="comment">/* по вертикалі */</span>
+}</code></pre>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>3. position: fixed — фіксоване позиціювання</h2>
+
+        <p><code>position: fixed</code> поводиться <strong>майже як <code>absolute</code></strong>, але з однією
+            ключовою відмінністю: елемент <strong>фіксується при прокрутці</strong>.</p>
+
+        <h3>Спільне з absolute</h3>
+        <ul>
+            <li>Ширина/висота рахуються за контентом (а не 100% батька)</li>
+            <li>Елемент невидимий для сусідів і батька</li>
+            <li>Можна задавати <code>width</code>/<code>height</code> навіть інлайновим елементам</li>
+            <li>Керується через <code>top</code>, <code>right</code>, <code>bottom</code>, <code>left</code></li>
+        </ul>
+
+        <h3>Відмінність від absolute</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th>absolute</th>
+                <th>fixed</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><strong>Точка відліку</strong></td>
+                <td>Найближчий батько з <code>position: relative</code> (або viewport, якщо немає)</td>
+                <td><strong>Завжди</strong> viewport (вікно браузера)</td>
+            </tr>
+            <tr>
+                <td><strong>При прокрутці</strong></td>
+                <td>Прокручується разом зі сторінкою</td>
+                <td><strong>Залишається на місці</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Реагує на relative батька</strong></td>
+                <td>Так</td>
+                <td>Ні</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Типові приклади fixed</h3>
+        <ul>
+            <li><strong>Фіксована шапка</strong> — завжди вгорі при прокрутці</li>
+            <li><strong>Модальне вікно</strong> — перекриває весь екран, не рухається</li>
+            <li><strong>Кнопка «Нагору»</strong> — завжди в куті екрана</li>
+            <li><strong>Чат-бот</strong> — віконце підтримки внизу справа</li>
+            <li><strong>Бічне меню (dashboard)</strong> — фіксована навігація зліва</li>
+        </ul>
+
+        <pre><code><span class="comment">/* Модальне вікно — fixed замість absolute */</span>
+<span class="sel">.popup</span> {
+    <span class="prop">position</span>: <span class="val">fixed</span>;
+    <span class="prop">top</span>: <span class="val">0</span>;
+    <span class="prop">right</span>: <span class="val">0</span>;
+    <span class="prop">bottom</span>: <span class="val">0</span>;
+    <span class="prop">left</span>: <span class="val">0</span>;
+    <span class="prop">z-index</span>: <span class="val">9999</span>;          <span class="comment">/* гарантовано поверх усього */</span>
+    <span class="prop">display</span>: <span class="val">flex</span>;
+    <span class="prop">justify-content</span>: <span class="val">center</span>;
+    <span class="prop">align-items</span>: <span class="val">center</span>;
+}</code></pre>
+
+        <div class="tip">
+            <strong>Великий z-index (9999)</strong> використовується для модальних вікон, щоб гарантовано перекрити всі
+            інші елементи на сторінці — фіксовані шапки, чат-боти тощо.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>4. display: none — повне приховування</h2>
+
+        <p><code>display: none</code> повністю прибирає елемент зі сторінки — ніби його видалили з HTML.</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Спосіб приховування</th>
+                <th>Видимий?</th>
+                <th>Займає місце?</th>
+                <th>Інтерактивний?</th>
+                <th>Доступний для скрінрідерів?</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>display: none</code></td>
+                <td>Ні</td>
+                <td>Ні</td>
+                <td>Ні</td>
+                <td>Ні</td>
+            </tr>
+            <tr>
+                <td><code>opacity: 0</code></td>
+                <td>Ні</td>
+                <td><strong>Так</strong></td>
+                <td><strong>Так</strong> (можна клікнути)</td>
+                <td><strong>Так</strong></td>
+            </tr>
+            <tr>
+                <td>Візуальне приховування (<code>clip-path</code>)</td>
+                <td>Ні</td>
+                <td>Ні</td>
+                <td><strong>Так</strong> (Tab)</td>
+                <td><strong>Так</strong></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="warning">
+            <strong>Коли що використовувати:</strong>
+            <ul>
+                <li><code>display: none</code> — елемент <strong>не повинен існувати</strong> на сторінці (закрите
+                    модальне вікно, прихований таб)
+                </li>
+                <li>Візуальне приховування (<code>clip-path</code>) — елемент <strong>потрібен</strong>, але не видимий
+                    (текст для скрінрідерів, приховані label)
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>5. Показ/приховування через класи (popup-паттерн)</h2>
+
+        <p>Класичний підхід для модальних вікон, випадаючих меню, табів:</p>
+
+        <pre><code><span class="comment">/* Базовий стан — приховано */</span>
+<span class="sel">.popup</span> {
+    <span class="prop">position</span>: <span class="val">fixed</span>;
+    <span class="prop">top</span>: <span class="val">0</span>;
+    <span class="prop">right</span>: <span class="val">0</span>;
+    <span class="prop">bottom</span>: <span class="val">0</span>;
+    <span class="prop">left</span>: <span class="val">0</span>;
+    <span class="prop">display</span>: <span class="val">none</span>;          <span
+                        class="comment">/* приховано */</span>
+}
+
+<span class="comment">/* Активний стан — показано */</span>
+<span class="sel">.popup--active</span> {
+    <span class="prop">display</span>: <span class="val">flex</span>;           <span class="comment">/* перекриває display: none */</span>
+    <span class="prop">justify-content</span>: <span class="val">center</span>;
+    <span class="prop">align-items</span>: <span class="val">center</span>;
+}</code></pre>
+
+        <h3>Як це працює з JavaScript</h3>
+
+        <pre><code><span class="comment">// Закрити popup при кліку на хрестик</span>
+document.querySelector(<span class="val">'.popup__close'</span>)
+    .addEventListener(<span class="val">'click'</span>, <span class="prop">function</span>() {
+        document.querySelector(<span class="val">'.popup--active'</span>)
+            .classList.remove(<span class="val">'popup--active'</span>);
+    });</code></pre>
+
+        <p>JavaScript лише <strong>додає/видаляє клас</strong>. Вся стилізація — у CSS.</p>
+
+        <div class="warning">
+            <strong>Порядок має значення!</strong> Клас <code>.popup--active</code> повинен бути <strong>нижче</strong>
+            в CSS, ніж <code>.popup</code>. При однаковій специфічності браузер застосує той, що стоїть останнім.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>6. Специфічність CSS-селекторів</h2>
+
+        <p>Коли до одного елемента застосовуються кілька правил з однаковою властивістю — браузер обирає за <strong>коефіцієнтом
+                специфічності</strong>.</p>
+
+        <h3>Формула: 4 числа</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Позиція</th>
+                <th>Що рахуємо</th>
+                <th>Приклад</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><strong>A</strong></td>
+                <td>Inline-стиль (<code>style="..."</code>)</td>
+                <td>0 або 1</td>
+            </tr>
+            <tr>
+                <td><strong>B</strong></td>
+                <td>Кількість <code>id</code></td>
+                <td><code>#header</code> → 1</td>
+            </tr>
+            <tr>
+                <td><strong>C</strong></td>
+                <td>Кількість класів, псевдокласів, атрибутів</td>
+                <td><code>.nav:hover</code> → 2</td>
+            </tr>
+            <tr>
+                <td><strong>D</strong></td>
+                <td>Кількість елементів (тегів), псевдоелементів</td>
+                <td><code>div::before</code> → 2</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Приклади розрахунку</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Селектор</th>
+                <th>A</th>
+                <th>B</th>
+                <th>C</th>
+                <th>D</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>span</code></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td><code>.slogan</code></td>
+                <td>0</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td><code>#slogan</code></td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td><code>style="..."</code></td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td><code>ul &gt; .widget.socials</code></td>
+                <td>0</td>
+                <td>0</td>
+                <td>2</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td><code>.widget.socials</code></td>
+                <td>0</td>
+                <td>0</td>
+                <td>2</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td><code>div.widget:hover</code></td>
+                <td>0</td>
+                <td>0</td>
+                <td>2</td>
+                <td>1</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>Це 4 окремі числа, не одне!</strong> 0,0,0,20 все одно менше за 0,0,1,0. Селектор по класу <strong>завжди</strong>
+            специфічніший за будь-яку кількість тегів.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>7. Що НЕ впливає на специфічність</h2>
+
+        <ul>
+            <li><strong>Дочірній селектор <code>&gt;</code></strong> — не додає ваги</li>
+            <li><strong>Сусідній селектор <code>+</code></strong> — не додає ваги</li>
+            <li><strong>Загальний сусідній <code>~</code></strong> — не додає ваги</li>
+            <li><strong>Вкладений селектор (пробіл)</strong> — не додає ваги</li>
+        </ul>
+
+        <pre><code><span class="comment">/* Обидва мають специфічність 0,0,2,1 */</span>
+<span class="sel">ul &gt; .widget.socials</span>  { ... }
+<span class="sel">ul .widget.socials</span>    { ... }</code></pre>
+
+        <div class="warning">
+            <strong>Контрінтуїтивно:</strong> дочірній селектор <code>&gt;</code> «звужує» вибірку, але <strong>не
+                підвищує</strong> специфічність.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>8. Однакова специфічність → порядок у CSS</h2>
+
+        <p>Якщо два селектори мають <strong>однакову специфічність</strong>, перемагає той, що розташований <strong>нижче
+                у CSS-файлі</strong>.</p>
+
+        <pre><code><span class="comment">/* Специфічність обох: 0,0,1,0 */</span>
+<span class="sel">.slogan</span> { <span class="prop">font-size</span>: <span class="val">40px</span>; }  <span
+                        class="comment">/* ← програє */</span>
+<span class="sel">.text</span>   { <span class="prop">font-size</span>: <span class="val">20px</span>; }  <span
+                        class="comment">/* ← переможе */</span></code></pre>
+
+        <div class="tip">
+            <strong>Порядок класів у HTML не має значення.</strong> Неважливо, чи написано <code>class="slogan
+                text"</code> чи <code>class="text slogan"</code>. Має значення лише порядок правил у CSS.
+        </div>
+
+        <h3>Практичне застосування</h3>
+        <p>Тому <strong>сторонні стилі</strong> (бібліотеки, віджети) підключають <strong>до</strong> ваших стилів:</p>
+
+        <pre><code><span class="comment">&lt;!-- 1. Спочатку — сторонні стилі --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"stylesheet"</span> <span
+                        class="attr">href=</span><span class="val">"widget.css"</span><span class="tag">&gt;</span>
+<span class="comment">&lt;!-- 2. Потім — ваші стилі --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"stylesheet"</span> <span
+                        class="attr">href=</span><span class="val">"style.css"</span><span
+                        class="tag">&gt;</span></code></pre>
+
+        <p>Завдяки цьому ваш селектор з <strong>такою ж специфічністю</strong> перекриє стилі бібліотеки.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>9. Дочірній селектор <code>&gt;</code> та комбінування з тегом</h2>
+
+        <h3>Вкладений vs дочірній</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Селектор</th>
+                <th>Що обирає</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>.widget div</code></td>
+                <td><strong>Усі</strong> <code>div</code> всередині <code>.widget</code> (на будь-якому рівні
+                    вкладеності)
+                </td>
+            </tr>
+            <tr>
+                <td><code>.widget &gt; div</code></td>
+                <td>Тільки <strong>безпосередні дочірні</strong> <code>div</code> (перший рівень)</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Комбінування класу з тегом</h3>
+
+        <pre><code><span class="comment">/* Будь-який елемент з класом .card */</span>
+<span class="sel">.card</span> { ... }
+
+<span class="comment">/* Тільки &lt;article&gt; з класом .card */</span>
+<span class="sel">article.card</span> { ... }</code></pre>
+
+        <div class="warning">
+            <strong>Уникайте прив'язки до тегу!</strong> Селектор <code>div.card</code> жорстко прив'язує стилі до
+            <code>&lt;div&gt;</code>. Якщо потім змінити тег на <code>&lt;article&gt;</code> — стилі зламаються.
+            Стилізуйте за класами.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>10. !important — коли інших варіантів немає</h2>
+
+        <p><code>!important</code> підвищує пріоритет <strong>конкретної властивості</strong> (не всього селектора) вище
+            за inline-стилі:</p>
+
+        <pre><code><span class="sel">span</span> {
+    <span class="prop">font-size</span>: <span class="val">10px</span> <span class="val">!important</span>;  <span
+                        class="comment">/* переможе навіть style="font-size: 20px" */</span>
+}</code></pre>
+
+        <p>Якщо є два <code>!important</code> — перемагає той, у кого <strong>вища специфічність</strong> селектора.</p>
+
+        <div class="warning">
+            <strong><code>!important</code> — це «антипатерн».</strong> Ознака помилки в архітектурі CSS. Його дуже
+            важко «виковиряти» з коду потім.
+            <ul>
+                <li>Не використовуйте без крайньої потреби</li>
+                <li>Якщо використали — <strong>завжди залишайте коментар</strong>, чому</li>
+                <li>Допустимі випадки: швидкий хотфікс, перекриття стороннього віджета без доступу до його CSS</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>11. Рекомендації щодо архітектури CSS</h2>
+
+        <ul>
+            <li><strong>Стилізуйте за класами</strong>, не за id (id — для JavaScript)</li>
+            <li><strong>Максимально плоска структура:</strong> один клас → один селектор (<code>.popup-box</code>,
+                <code>.popup-close</code>)
+            </li>
+            <li>Уникайте глибокої вкладеності: <code>.page .main .content h1</code> — погано</li>
+            <li>Краще: <code>.main-title</code> — просто, зрозуміло, низька специфічність</li>
+            <li>Сторонні бібліотеки підключайте <strong>перед</strong> власними стилями</li>
+            <li>Не використовуйте <code>!important</code> у звичайній роботі</li>
+        </ul>
+
+        <div class="tip">
+            <strong>BEM-підхід</strong> (Block Element Modifier) допомагає підтримувати плоску специфічність: <code>.popup</code>,
+            <code>.popup__box</code>, <code>.popup--active</code> — усі мають специфічність 0,0,1,0.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>12. Підключення шрифтів — @font-face</h2>
+
+        <p>Конструкція <code>@font-face</code> <strong>описує файл шрифта</strong> для браузера. На кожне начертання —
+            окремий <code>@font-face</code>.</p>
+
+        <pre><code><span class="comment">/* Звичайне начертання */</span>
+<span class="sel">@font-face</span> {
+    <span class="prop">font-family</span>: <span class="val">"PT Sans"</span>;
+    <span class="prop">src</span>: <span class="val">url("../fonts/pt-sans-regular.woff2") format("woff2")</span>;
+    <span class="prop">font-weight</span>: <span class="val">400</span>;
+    <span class="prop">font-style</span>: <span class="val">normal</span>;
+}
+
+<span class="comment">/* Жирне начертання */</span>
+<span class="sel">@font-face</span> {
+    <span class="prop">font-family</span>: <span class="val">"PT Sans"</span>;
+    <span class="prop">src</span>: <span class="val">url("../fonts/pt-sans-bold.woff2") format("woff2")</span>;
+    <span class="prop">font-weight</span>: <span class="val">700</span>;
+    <span class="prop">font-style</span>: <span class="val">normal</span>;
+}</code></pre>
+
+        <h3>Як браузер обирає файл</h3>
+        <p>Браузер порівнює три параметри елемента з описом у <code>@font-face</code>:</p>
+        <ol>
+            <li><code>font-family</code> — збігається?</li>
+            <li><code>font-weight</code> — збігається?</li>
+            <li><code>font-style</code> — збігається?</li>
+        </ol>
+        <p>Якщо всі три збіглися — завантажується відповідний файл шрифта.</p>
+
+        <h3>Запасний шрифт (font stack)</h3>
+
+        <pre><code><span class="sel">body</span> {
+    <span class="prop">font-family</span>: <span class="val">"PT Sans", Arial, sans-serif</span>;
+}</code></pre>
+
+        <div class="tip">
+            <strong>Завжди вказуйте запасний шрифт:</strong> назва шрифта → системний шрифт (Arial, Georgia) → загальне
+            сімейство (<code>sans-serif</code> або <code>serif</code>).
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Сімейство</th>
+                <th>Опис</th>
+                <th>Приклад</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>sans-serif</code></td>
+                <td>Без засічок (гротеск)</td>
+                <td>Arial, Helvetica</td>
+            </tr>
+            <tr>
+                <td><code>serif</code></td>
+                <td>Із засічками (антиква)</td>
+                <td>Times New Roman, Georgia</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>13. Зчитування параметрів тексту з макета</h2>
+
+        <p>У Photoshop/Figma для кожного текстового шару зчитуємо:</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Параметр</th>
+                <th>CSS-властивість</th>
+                <th>Примітка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Сімейство шрифта</td>
+                <td><code>font-family</code></td>
+                <td>PT Sans, Roboto тощо</td>
+            </tr>
+            <tr>
+                <td>Начертання (Bold, Regular…)</td>
+                <td><code>font-weight</code></td>
+                <td>400 = Regular, 700 = Bold</td>
+            </tr>
+            <tr>
+                <td>Розмір шрифта</td>
+                <td><code>font-size</code></td>
+                <td>Переконайтесь, що одиниці — пікселі</td>
+            </tr>
+            <tr>
+                <td>Висота рядка</td>
+                <td><code>line-height</code></td>
+                <td>Якщо «Auto» → <code>normal</code></td>
+            </tr>
+            <tr>
+                <td>Uppercase іконка</td>
+                <td><code>text-transform: uppercase</code></td>
+                <td>—</td>
+            </tr>
+            <tr>
+                <td>Колір</td>
+                <td><code>color</code></td>
+                <td>Піпетка або панель властивостей шару</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="warning">
+            <strong>Однорядковий текст:</strong> не копіюйте <code>line-height</code> для заголовків в одну стрічку!
+            Дизайнери часто використовують висоту рядка для відступів. Якщо текст стане дворядковим — міжрядковий
+            інтервал буде занадто великим. Ставте <code>line-height: normal</code> або підберіть адекватне значення.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>14. Формати зображень</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Формат</th>
+                <th>Тип</th>
+                <th>Прозорість</th>
+                <th>Стиснення</th>
+                <th>Для чого</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><strong>JPEG</strong></td>
+                <td>Растр</td>
+                <td>Ні</td>
+                <td>З втратою якості</td>
+                <td>Фотографії, фони, ілюстрації</td>
+            </tr>
+            <tr>
+                <td><strong>PNG</strong></td>
+                <td>Растр</td>
+                <td><strong>Так</strong></td>
+                <td>Без втрати якості</td>
+                <td>Логотипи, елементи з прозорістю</td>
+            </tr>
+            <tr>
+                <td><strong>SVG</strong></td>
+                <td>Вектор</td>
+                <td><strong>Так</strong></td>
+                <td>Мінімальний розмір</td>
+                <td>Іконки, графіки, прості ілюстрації</td>
+            </tr>
+            <tr>
+                <td><strong>WebP</strong></td>
+                <td>Растр</td>
+                <td><strong>Так</strong></td>
+                <td>Краще за JPEG/PNG</td>
+                <td>Сучасна альтернатива JPEG та PNG</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>WebP</strong> — сучасний формат від Google. Підтримується усіма браузерами з 2020 року. Менший
+            розмір файлу при тій самій якості.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>15. Підсумкова таблиця</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Тема</th>
+                <th>Ключове</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>align-items</td>
+                <td>Вирівнювання по додатковій осі: <code>flex-start</code>, <code>center</code>, <code>flex-end</code>,
+                    <code>baseline</code>, <code>stretch</code></td>
+            </tr>
+            <tr>
+                <td>justify-content</td>
+                <td>Вирівнювання по головній осі: <code>center</code>, <code>space-between</code>,
+                    <code>space-around</code>, <code>space-evenly</code></td>
+            </tr>
+            <tr>
+                <td>position: fixed</td>
+                <td>Як <code>absolute</code>, але фіксується при прокрутці; завжди відносно viewport</td>
+            </tr>
+            <tr>
+                <td>display: none</td>
+                <td>Повне приховування; елемент «не існує» (не займає місце, не інтерактивний)</td>
+            </tr>
+            <tr>
+                <td>Popup-паттерн</td>
+                <td><code>.popup</code> (<code>display: none</code>) + <code>.popup--active</code> (<code>display:
+                        flex</code>); JS додає/видаляє клас
+                </td>
+            </tr>
+            <tr>
+                <td>Специфічність</td>
+                <td>4 числа: inline / id / класи+псевдокласи / теги+псевдоелементи</td>
+            </tr>
+            <tr>
+                <td>Однакова специфічність</td>
+                <td>Перемагає правило, що стоїть <strong>нижче</strong> в CSS</td>
+            </tr>
+            <tr>
+                <td>!important</td>
+                <td>Підвищує пріоритет однієї властивості; антипатерн, уникайте</td>
+            </tr>
+            <tr>
+                <td>Селектор &gt;</td>
+                <td>Дочірній (перший рівень); <strong>не впливає</strong> на специфічність</td>
+            </tr>
+            <tr>
+                <td>@font-face</td>
+                <td>Описує файл шрифта; один @font-face = одне начертання</td>
+            </tr>
+            <tr>
+                <td>font stack</td>
+                <td>Завжди: кастомний → системний → <code>sans-serif</code>/<code>serif</code></td>
+            </tr>
+            <tr>
+                <td>Формати зображень</td>
+                <td>JPEG — фото; PNG — прозорість; SVG — іконки; WebP — сучасна альтернатива</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+{% endblock %}

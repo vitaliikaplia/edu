@@ -1,0 +1,419 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Введення у верстку</h1>
+    <p>Конспект лекції — основи HTML та CSS для початківців</p>
+
+    <!-- ===== SECTION 1 ===== -->
+    <section>
+        <h2>Що таке верстка</h2>
+        <p>Верстка — це процес створення веб-сторінки на основі дизайн-макета. Верстальник перетворює графічний макет у
+            код, зрозумілий браузеру, використовуючи дві мови: <strong>HTML</strong> (структура) та <strong>CSS</strong>
+            (зовнішній вигляд).</p>
+
+        <h3>Загальний процес створення сайту</h3>
+        <ol>
+            <li><strong>Бриф</strong> — замовник описує, що йому потрібно.</li>
+            <li><strong>Аналітика</strong> — складається технічне завдання, аналізується аудиторія й ніша.</li>
+            <li><strong>Прототипування</strong> — створюється wireframe (скелет сайту чорними прямокутниками).</li>
+            <li><strong>Дизайн</strong> — дизайнер відмальовує кожну унікальну сторінку у повноцінний макет.</li>
+            <li><strong>Верстка</strong> — верстальник переводить макет у HTML + CSS.</li>
+            <li><strong>Backend-розробка</strong> — бекенд-розробник інтегрує верстку із серверною логікою.</li>
+            <li><strong>Тестування та запуск</strong>.</li>
+        </ol>
+
+        <div class="tip">Верстальник завжди отримує вихідні дані з макета. Назви шрифтів, розміри, кольори, відступи —
+            все береться з макета, нічого не вигадується з голови.
+        </div>
+
+        <h3>Формати макетів</h3>
+        <p>Залежить від студії та дизайнера: раніше — PSD (Photoshop), потім — Sketch. Зараз абсолютний стандарт
+            індустрії — <strong>Figma</strong> (Adobe XD припинив розвиток у 2023 році).</p>
+    </section>
+
+    <!-- ===== SECTION 2 ===== -->
+    <section>
+        <h2>Основи HTML</h2>
+
+        <p>HTML (HyperText Markup Language) — мова опису <strong>структури</strong> веб-сторінки. HTML описує виключно
+            скелет, ніколи — зовнішній вигляд.</p>
+
+        <div class="warning">HTML-тег ніколи не визначає зовнішній вигляд елемента. Структура і стилізація — це дві
+            різні речі. Наприклад, тег <code>&lt;strong&gt;</code> — це не «зробити жирним», а
+            <strong>акцентування</strong> тексту для пошукових систем і скрінрідерів.
+        </div>
+
+        <h3>Типи тегів</h3>
+
+        <div class="comparison">
+            <div>
+                <h3>✅ Парні теги</h3>
+                <p>Мають відкриваючу й закриваючу частину. Між ними — вміст.</p>
+                <pre><code><span class="tag">&lt;p&gt;</span>Текст абзацу<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="val">"https://example.com"</span><span
+                                class="tag">&gt;</span>Посилання<span class="tag">&lt;/a&gt;</span></code></pre>
+                <p>Закриваючий тег містить слеш <strong>перед</strong> назвою: <code>&lt;/p&gt;</code></p>
+            </div>
+            <div>
+                <h3>📎 Непарні теги</h3>
+                <p>Не мають вмісту і закриваючої частини.</p>
+                <pre><code><span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span
+                                class="attr">href</span>=<span class="val">"style.css"</span><span
+                                class="tag">&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">charset</span>=<span class="val">"UTF-8"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="val">"photo.jpg"</span> <span class="attr">alt</span>=<span
+                                class="val">"Фото"</span><span class="tag">&gt;</span></code></pre>
+            </div>
+        </div>
+
+        <h3>Атрибути</h3>
+        <ul>
+            <li>Записуються <strong>тільки у відкриваючому тезі</strong>.</li>
+            <li>Формат: <code>назва="значення"</code> — без пробілів навколо <code>=</code></li>
+            <li>Завжди подвійні лапки.</li>
+            <li>Атрибути відокремлюються один від одного пробілом.</li>
+        </ul>
+
+        <h3>Вкладеність тегів</h3>
+        <p>Теги можна вкладати один в одний, як коробки. Головне правило: <strong>внутрішній тег повинен повністю
+                міститися в зовнішньому</strong>.</p>
+
+        <div class="comparison">
+            <div>
+                <h3>✅ Правильно</h3>
+                <pre><code><span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="val">"#"</span><span
+                                class="tag">&gt;</span>Посилання<span class="tag">&lt;/a&gt;</span>
+<span class="tag">&lt;/body&gt;</span></code></pre>
+            </div>
+            <div>
+                <h3>❌ Неправильно</h3>
+                <pre><code><span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="val">"#"</span><span
+                                class="tag">&gt;</span>Посилання
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/a&gt;</span> <span class="comment">&lt;!-- перетин! --&gt;</span></code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 3 ===== -->
+    <section>
+        <h2>Мінімальний шаблон HTML-сторінки</h2>
+
+        <p>Будь-яка сторінка в інтернеті містить один і той самий набір обов'язкових тегів:</p>
+
+        <pre><code><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="val">"uk"</span><span
+                        class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;meta</span> <span class="attr">charset</span>=<span class="val">"UTF-8"</span><span
+                        class="tag">&gt;</span>
+    <span class="tag">&lt;title&gt;</span>Назва сторінки<span class="tag">&lt;/title&gt;</span>
+    <span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span
+                        class="attr">href</span>=<span class="val">"style.css"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+    <span class="comment">&lt;!-- Тут буде вміст сторінки --&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Тег</th>
+                <th>Призначення</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>&lt;!DOCTYPE html&gt;</code></td>
+                <td>Вказує браузеру на версію HTML (п'ята, сучасна)</td>
+            </tr>
+            <tr>
+                <td><code>&lt;html lang="uk"&gt;</code></td>
+                <td>Кореневий тег. Атрибут <code>lang</code> — мова сторінки (для SEO та скрінрідерів)</td>
+            </tr>
+            <tr>
+                <td><code>&lt;head&gt;</code></td>
+                <td>Метаінформація: кодування, заголовок вкладки, підключення стилів</td>
+            </tr>
+            <tr>
+                <td><code>&lt;meta charset="UTF-8"&gt;</code></td>
+                <td>Кодування сторінки. Завжди UTF-8</td>
+            </tr>
+            <tr>
+                <td><code>&lt;title&gt;</code></td>
+                <td>Текст у вкладці браузера</td>
+            </tr>
+            <tr>
+                <td><code>&lt;link&gt;</code></td>
+                <td>Підключення файлу стилів CSS</td>
+            </tr>
+            <tr>
+                <td><code>&lt;body&gt;</code></td>
+                <td>Увесь видимий вміст сторінки</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">Головний HTML-файл проєкту прийнято називати <code>index.html</code> — саме його браузер шукає
+            за замовчуванням при відкритті папки на сервері.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 4 ===== -->
+    <section>
+        <h2>Інспектор браузера (DevTools)</h2>
+        <p>Інспектор — один з основних інструментів верстальника. Відкривається:</p>
+        <ul>
+            <li><strong>F12</strong> (Windows/Linux) або <strong>Fn + F12</strong> (Mac з TouchBar)</li>
+            <li><strong>Ctrl + Shift + I</strong> / <strong>Cmd + Option + I</strong></li>
+            <li>Правий клік → «Переглянути код»</li>
+        </ul>
+
+        <h3>Що можна робити в інспекторі</h3>
+        <ul>
+            <li><strong>Вкладка Elements</strong> — перегляд і взаємодія з HTML-деревом сторінки.</li>
+            <li><strong>Вкладка Styles</strong> — перегляд CSS-стилів обраного елемента. Можна тимчасово вимикати або
+                змінювати властивості.
+            </li>
+            <li><strong>Вкладка Computed</strong> — усі фактично застосовані стилі, включно з успадкованими та
+                стандартними браузерними.
+            </li>
+        </ul>
+
+        <div class="warning">Зміни в інспекторі — тимчасові. Після оновлення сторінки все повертається до вихідного
+            стану. Редагуйте код у редакторі, а інспектор використовуйте для відлагодження.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 5 ===== -->
+    <section>
+        <h2>Основи CSS</h2>
+
+        <p>CSS (Cascading Style Sheets) — мова опису зовнішнього вигляду. Спочатку будуємо скелет в HTML, потім
+            навішуємо стилі в CSS, щоб сторінка виглядала відповідно до макета.</p>
+
+        <h3>Синтаксис CSS</h3>
+
+        <pre><code><span class="sel">body</span> {
+  <span class="prop">background-color</span>: purple;
+  <span class="prop">font-family</span>: Arial, sans-serif;
+  <span class="prop">color</span>: white;
+}</code></pre>
+
+        <ul>
+            <li><strong>Селектор</strong> (<code>body</code>) — вказує, до якого елемента застосовуються стилі.</li>
+            <li><strong>Властивість</strong> (<code>background-color</code>) — що саме стилізуємо.</li>
+            <li><strong>Значення</strong> (<code>purple</code>) — яке значення присвоюємо.</li>
+            <li>Кожне правило закінчується <strong>крапкою з комою</strong> <code>;</code></li>
+            <li>Фігурна дужка <code>{</code> — на тому ж рядку, що й селектор, через пробіл.</li>
+            <li>Кожна властивість — з нового рядка, з відступом у 2 пробіли.</li>
+        </ul>
+
+        <h3>Основні CSS-властивості тексту</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Властивість</th>
+                <th>Що робить</th>
+                <th>Приклади значень</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>font-family</code></td>
+                <td>Назва шрифту</td>
+                <td><code>Arial, Tahoma, sans-serif</code></td>
+            </tr>
+            <tr>
+                <td><code>font-size</code></td>
+                <td>Розмір шрифту</td>
+                <td><code>16px</code>, <code>50px</code></td>
+            </tr>
+            <tr>
+                <td><code>font-weight</code></td>
+                <td>Товщина шрифту</td>
+                <td><code>normal</code> (400), <code>bold</code> (700), <code>100</code>–<code>900</code></td>
+            </tr>
+            <tr>
+                <td><code>font-style</code></td>
+                <td>Накреслення</td>
+                <td><code>normal</code>, <code>italic</code>, <code>oblique</code></td>
+            </tr>
+            <tr>
+                <td><code>color</code></td>
+                <td>Колір тексту</td>
+                <td><code>white</code>, <code>#ffffff</code>, <code>#333</code></td>
+            </tr>
+            <tr>
+                <td><code>background-color</code></td>
+                <td>Колір фону</td>
+                <td><code>purple</code>, <code>#800080</code></td>
+            </tr>
+            <tr>
+                <td><code>text-decoration</code></td>
+                <td>Декорування тексту</td>
+                <td><code>none</code>, <code>underline</code>, <code>line-through</code></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="warning">Колір тексту — це <code>color</code>, а не <code>font-color</code>. Це частий камінь
+            спотикання для новачків.
+        </div>
+
+        <h3>font-family: запасні шрифти</h3>
+        <p>Завжди вказуйте кілька шрифтів через кому і в кінці — сімейство:</p>
+        <pre><code><span class="prop">font-family</span>: Arial, Tahoma, <span
+                        class="val">sans-serif</span>;</code></pre>
+        <ul>
+            <li>Браузер спробує перший шрифт. Якщо не знайде — другий, і так далі.</li>
+            <li><code>sans-serif</code> — шрифт без засічок (Arial, Helvetica).</li>
+            <li><code>serif</code> — шрифт із засічками (Times New Roman, Georgia).</li>
+            <li><code>monospace</code> — моноширинний шрифт (Courier, Consolas).</li>
+        </ul>
+
+        <h3>Кольори в CSS</h3>
+        <p>Кольори задаються кількома способами:</p>
+        <ul>
+            <li><strong>Ключове слово:</strong> <code>white</code>, <code>black</code>, <code>purple</code></li>
+            <li><strong>HEX-формат:</strong> <code>#ff0000</code> — по два символи на кожен компонент (R, G, B)</li>
+            <li><code>#ffffff</code> — білий (максимум усіх компонентів)</li>
+            <li><code>#000000</code> — чорний (мінімум усіх)</li>
+        </ul>
+        <div class="tip">Коди кольорів завжди беруться з макета за допомогою піпетки. Запам'ятовувати їх не потрібно.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 6 ===== -->
+    <section>
+        <h2>Каскадність і спадкування</h2>
+
+        <p>CSS — <strong>каскадні</strong> таблиці стилів. Це означає, що стилі можуть перекривати одне одного за
+            правилами пріоритетності.</p>
+
+        <h3>Три джерела стилів (від менш до більш пріоритетного)</h3>
+        <ol>
+            <li><strong>Успадковані стилі</strong> — елемент наслідує деякі властивості від батьківського (наприклад,
+                шрифт від <code>body</code>).
+            </li>
+            <li><strong>Вбудовані браузерні стилі</strong> — кожен тег має стандартні стилі від розробників браузера
+                (наприклад, посилання — сині з підкресленням).
+            </li>
+            <li><strong>Ваші власні стилі</strong> — завжди мають найвищий пріоритет.</li>
+        </ol>
+
+        <div class="example">Посилання <code>&lt;a&gt;</code> успадковує <code>color: white</code> від <code>body</code>.
+            Але браузерний стиль перебиває це на синій. Щоб зробити посилання білим, потрібно явно задати <code>a {
+                color: white; }</code> — і ваш стиль переможе.
+        </div>
+
+        <h3>Скидання стандартних стилів</h3>
+        <p>Браузерні стилі (відступи, шрифти) часто заважають при верстці. Їх можна скинути:</p>
+        <pre><code><span class="sel">*</span> {
+  <span class="prop">margin</span>: 0;
+  <span class="prop">padding</span>: 0;
+}</code></pre>
+        <p>Селектор <code>*</code> (зірочка) — універсальний, застосовується до <strong>всіх</strong> елементів на
+            сторінці.</p>
+    </section>
+
+    <!-- ===== SECTION 7 ===== -->
+    <section>
+        <h2>Посилання (тег &lt;a&gt;)</h2>
+
+        <p>Тег <code>&lt;a&gt;</code> створює посилання. Обов'язковий атрибут — <code>href</code>, який вказує, куди
+            веде посилання.</p>
+
+        <pre><code><span class="tag">&lt;a</span> <span class="attr">href</span>=<span
+                        class="val">"https://example.com"</span><span class="tag">&gt;</span>Перейти на сайт<span
+                        class="tag">&lt;/a&gt;</span></code></pre>
+
+        <ul>
+            <li>Без <code>href</code> текст не буде клікабельним і курсор не зміниться на «руку».</li>
+            <li>За замовчуванням посилання — сині з підкресленням (браузерні стилі).</li>
+            <li>Щоб прибрати підкреслення: <code>text-decoration: none;</code></li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 8 ===== -->
+    <section>
+        <h2>Редактори коду</h2>
+        <p>Безкоштовні редактори, які не потребують складного налаштування:</p>
+        <ul>
+            <li><strong>Visual Studio Code</strong> — найпопулярніший, з величезною екосистемою плагінів. Стандарт
+                індустрії.
+            </li>
+            <li><strong>Zed</strong> — сучасний, надшвидкий (написаний на Rust), безкоштовний і з відкритим кодом.
+                Створений колишніми розробниками Atom.
+            </li>
+            <li><strong>Cursor</strong> — форк VS Code з глибокою AI-інтеграцією. Є безкоштовний тариф.</li>
+            <li><strong>Sublime Text</strong> — легкий і швидкий, але платний ($99).</li>
+        </ul>
+        <p>Професійні IDE: <strong>WebStorm</strong> (JetBrains) — потужне середовище для JavaScript/TypeScript.
+            Безкоштовний для навчання та особистих проєктів (non-commercial license з 2024 року).</p>
+        <div class="tip">Найкращий редактор — той, у якому ви найефективніші. Для проходження курсу достатньо
+            безкоштовного VS Code.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 9 ===== -->
+    <section>
+        <h2>Пісочниці (онлайн-редактори)</h2>
+
+        <p>Пісочниця — веб-сайт для швидкого написання та перегляду HTML/CSS без створення файлів.</p>
+
+        <h3>Популярні пісочниці</h3>
+        <ul>
+            <li><strong>CodePen</strong> (codepen.io) — найпопулярніша, зручна для навчання HTML/CSS</li>
+            <li><strong>JSFiddle</strong> (jsfiddle.net) — легка, не потребує реєстрації</li>
+            <li><strong>CodeSandbox</strong> (codesandbox.io) — для складніших проєктів з npm-пакетами</li>
+            <li><strong>StackBlitz</strong> (stackblitz.com) — працює повністю в браузері, підтримує Node.js</li>
+        </ul>
+
+        <h3>Чим пісочниця відрізняється від редактора</h3>
+        <ul>
+            <li>Не потрібен мінімальний шаблон — ви одразу працюєте всередині <code>&lt;body&gt;</code>.</li>
+            <li>CSS-файл автоматично підключений.</li>
+            <li>Результат оновлюється миттєво без ручного оновлення сторінки.</li>
+            <li>Генерується унікальне посилання — зручно ділитися результатом.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 10 ===== -->
+    <section>
+        <h2>Про препроцесори та інші технології</h2>
+        <p>Браузер працює рівно з трьома технологіями: <strong>HTML</strong>, <strong>CSS</strong> та
+            <strong>JavaScript</strong>. Все інше (SASS, SCSS, LESS, React, TypeScript тощо) — це надбудови та
+            інструменти, що прискорюють розробку.</p>
+
+        <div class="tip">Якщо ви добре знаєте базовий CSS, будь-який препроцесор (SASS, LESS) вивчається за кілька днів.
+            Спочатку — база, потім — інструменти.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 11 ===== -->
+    <section>
+        <h2>Поради початківцям</h2>
+        <ul>
+            <li><strong>Вивчайте англійську</strong> — уся верстка базується на англійській мові. Що грамотніше ви нею
+                володієте, тим легше буде.
+            </li>
+            <li><strong>Будьте уважні</strong> — кожна пропущена крапка чи лапка може зламати сторінку.</li>
+            <li><strong>Не зупиняйтесь на верстці</strong> — чистий верстальник без JavaScript зараз мало затребуваний.
+                Вивчайте JS, фреймворки, ставайте фронтенд-розробником.
+            </li>
+            <li><strong>Набирайте досвід</strong> — після курсів потрібна практика. Верстайте для себе, для знайомих,
+                беріть маленькі фріланс-проєкти.
+            </li>
+            <li><strong>Гугліть правильно</strong> — головне не скопіювати готове рішення, а
+                <strong>розібратися</strong>, чому воно працює саме так.
+            </li>
+        </ul>
+    </section>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "overall/base.twig" %}
+
+{% block base %}
+
+{% include 'overall/breadcrumbs.twig' %}
+{% include 'overall/reading-time.twig' %}
+
+<div class="lesson-layout">
+    <article class="lesson-content">
+        {% block lesson %}{% endblock %}
+    </article>
+    {% if toc is defined and toc|length > 1 %}
+    {% include 'overall/toc-sidebar.twig' %}
+    {% endif %}
+</div>
+
+{% endblock %}

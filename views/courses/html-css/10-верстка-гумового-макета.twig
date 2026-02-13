@@ -1,0 +1,474 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Верстка гумового макета</h1>
+    <p>Конспект лекції: фіксована, гумова та адаптивна верстка, відносні одиниці, відсоткові розміри</p>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>1. Фіксована, гумова та адаптивна верстка</h2>
+
+        <p>Існує три основних підходи до верстки:</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Підхід</th>
+                <th>Одиниці</th>
+                <th>Поведінка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><strong>Фіксована</strong></td>
+                <td>Пікселі (<code>px</code>)</td>
+                <td>Розміри жорстко задані. При зменшенні вікна з'являється горизонтальна прокрутка</td>
+            </tr>
+            <tr>
+                <td><strong>Гумова (fluid)</strong></td>
+                <td>Відсотки (<code>%</code>)</td>
+                <td>Елементи пропорційно змінюють розмір разом із батьківським блоком, але <strong>залишаються на своїх
+                        місцях</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Адаптивна (responsive)</strong></td>
+                <td><code>%</code> + медіазапити</td>
+                <td>На певній точці елементи змінюють розташування (наприклад, дві колонки стають однією)</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>На практиці</strong> гумова та адаптивна верстка завжди використовуються разом: у певному діапазоні
+            працює «гума», а коли місця залишається занадто мало — спрацьовує медіазапит і змінюється розкладка.
+        </div>
+
+        <p>Більше 60–80 % користувачів сучасних сайтів заходять з мобільних пристроїв, тому адаптивність — обов'язкова
+            вимога.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>2. Ширина у відсотках</h2>
+
+        <p>Ширина у відсотках розраховується від <strong>ширини батьківського елемента</strong>.</p>
+
+        <pre><code><span class="comment">/* Фіксована верстка */</span>
+<span class="sel">.container</span> { <span class="prop">width</span>: <span class="val">1000px</span>; }
+<span class="sel">.content</span>  { <span class="prop">width</span>: <span class="val">650px</span>; }
+<span class="sel">.sidebar</span>  { <span class="prop">width</span>: <span class="val">350px</span>; }
+
+<span class="comment">/* Гумова верстка */</span>
+<span class="sel">.content</span>  { <span class="prop">width</span>: <span class="val">65%</span>; }
+<span class="sel">.sidebar</span>  { <span class="prop">width</span>: <span class="val">35%</span>; }</code></pre>
+
+        <p>Блочний елемент за замовчуванням займає 100 % доступної ширини, тому батьківському контейнеру <code>width:
+                100%</code> можна не задавати.</p>
+
+        <p>Коли вікно браузера звужується — ширина батьківського блоку зменшується, а разом з нею пропорційно
+            зменшуються й дочірні елементи.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>3. Висота у відсотках</h2>
+
+        <p>Висота у відсотках працює <strong>лише тоді</strong>, коли батьківський елемент має <strong>явно задану
+                висоту</strong>.</p>
+
+        <pre><code><span class="comment">/* Не працює — висота батька auto */</span>
+<span class="sel">.parent</span> { }
+<span class="sel">.child</span>  { <span class="prop">height</span>: <span class="val">50%</span>; } <span
+                        class="comment">/* ігнорується */</span>
+
+<span class="comment">/* Працює — висота батька задана явно */</span>
+<span class="sel">.parent</span> { <span class="prop">height</span>: <span class="val">400px</span>; }
+<span class="sel">.child</span>  { <span class="prop">height</span>: <span class="val">50%</span>; } <span
+                        class="comment">/* = 200px */</span></code></pre>
+
+        <div class="tip">
+            <strong>Чому для ширини не потрібна явна ширина батька?</strong> Браузер завжди знає ширину — вона обмежена
+            шириною вікна. А висота за замовчуванням <code>auto</code> і визначається контентом, тому відсоток від
+            <code>auto</code> браузер обчислити не може.
+        </div>
+
+        <p>Фіксувати висоту для блоків з динамічним контентом — погана практика: якщо контенту більше, він виллється за
+            межі блоку.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>4. Відсотки для position: absolute і fixed</h2>
+
+        <p>Для абсолютно позиціонованих елементів розміри у відсотках беруться не від прямого батька, а від <strong>найближчого
+                предка з <code>position: relative</code></strong> (контексту позиціонування).</p>
+
+        <pre><code><span class="sel">.wrapper</span> {
+    <span class="prop">position</span>: <span class="val">relative</span>;
+    <span class="prop">width</span>: <span class="val">500px</span>;
+    <span class="prop">height</span>: <span class="val">300px</span>;
+}
+
+<span class="sel">.parent</span> {
+    <span class="prop">width</span>: <span class="val">100px</span>;
+    <span class="prop">height</span>: <span class="val">100px</span>;
+}
+
+<span class="sel">.child</span> {
+    <span class="prop">position</span>: <span class="val">absolute</span>;
+    <span class="prop">top</span>: <span class="val">0</span>;
+    <span class="prop">left</span>: <span class="val">0</span>;
+    <span class="prop">width</span>: <span class="val">100%</span>;  <span
+                        class="comment">/* = 500px (від wrapper) */</span>
+    <span class="prop">height</span>: <span class="val">100%</span>; <span
+                        class="comment">/* = 300px (від wrapper) */</span>
+}</code></pre>
+
+        <p>Для <code>position: fixed</code> розміри завжди беруться від <strong>viewport</strong> — вікна браузера.
+            <code>width: 100%</code> = вся ширина екрана, <code>height: 100%</code> = вся висота екрана.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>5. max-width і min-width</h2>
+
+        <p>Коли ширина задана у відсотках або не обмежена — на широких екранах блок розтягується занадто сильно: текст
+            стає важко читати, зображення надмірно обрізаються.</p>
+
+        <pre><code><span class="sel">.container</span> {
+    <span class="prop">width</span>: <span class="val">100%</span>;
+    <span class="prop">max-width</span>: <span class="val">1280px</span>;
+    <span class="prop">margin-left</span>: <span class="val">auto</span>;
+    <span class="prop">margin-right</span>: <span class="val">auto</span>;
+}</code></pre>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Властивість</th>
+                <th>Що робить</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>max-width</code></td>
+                <td>Обмежує максимальну ширину. Блок «гумовий», але ніколи не стане ширшим за вказане значення</td>
+            </tr>
+            <tr>
+                <td><code>min-width</code></td>
+                <td>Обмежує мінімальну ширину. Якщо екран вужчий — з'являється горизонтальна прокрутка</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>Важливо:</strong> при використанні <code>max-width</code> обов'язково додайте <code>margin-left:
+                auto</code> і <code>margin-right: auto</code>, щоб центрувати блок. Інакше він притиснеться до лівого
+            краю.
+        </div>
+
+        <p><code>min-width</code> — це тимчасове рішення: воно не позбавляє горизонтальної прокрутки. Для коректного
+            відображення на вузьких екранах потрібна адаптивна верстка з медіазапитами.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>6. margin-left: auto та margin-right: auto — запис</h2>
+
+        <p>Для центрування блоку краще писати розгорнуті властивості замість скороченого запису:</p>
+
+        <pre><code><span class="comment">/* Скорочений запис — задає зайві margin-top і margin-bottom */</span>
+<span class="sel">.container</span> { <span class="prop">margin</span>: <span class="val">0 auto</span>; }
+
+<span class="comment">/* Розгорнутий запис — задає лише потрібне */</span>
+<span class="sel">.container</span> {
+    <span class="prop">margin-left</span>: <span class="val">auto</span>;
+    <span class="prop">margin-right</span>: <span class="val">auto</span>;
+}</code></pre>
+
+        <p>Проблема скороченого запису: <code>margin: 0 auto</code> обнулює <code>margin-top</code> і <code>margin-bottom</code>.
+            Якщо десь вище у CSS ви задали вертикальні відступи — вони будуть перезаписані. З розгорнутими властивостями
+            цього конфлікту не буде.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>7. margin і padding у відсотках</h2>
+
+        <p><strong>Контрінтуїтивне правило:</strong> і горизонтальні, і вертикальні <code>margin</code> та
+            <code>padding</code> у відсотках розраховуються від <strong>ширини батьківського елемента</strong>.</p>
+
+        <pre><code><span class="sel">.wrapper</span> { <span class="prop">width</span>: <span class="val">1000px</span>; }
+<span class="sel">.card</span> {
+    <span class="prop">margin</span>: <span class="val">1%</span>;   <span class="comment">/* top, right, bottom, left — усі = 10px */</span>
+    <span class="prop">padding</span>: <span class="val">1%</span>;  <span class="comment">/* top, right, bottom, left — усі = 10px */</span>
+}</code></pre>
+
+        <div class="tip">
+            <strong>Запам'ятайте:</strong> навіть <code>margin-top</code>, <code>margin-bottom</code>,
+            <code>padding-top</code>, <code>padding-bottom</code> у відсотках беруться від <strong>ширини</strong>
+            батька, а не від висоти. Це стандартна поведінка CSS.
+        </div>
+
+        <p>На практиці відступи зазвичай задають у пікселях, тому ця особливість рідко створює проблеми. Але вона лежить
+            в основі цікавої техніки — збереження пропорцій блоку.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>8. Техніка збереження пропорцій блоку (padding-hack)</h2>
+
+        <p>Оскільки <code>padding-bottom</code> у відсотках рахується від ширини батьківського елемента, ми можемо
+            створити блок, який <strong>завжди зберігає свої пропорції</strong>:</p>
+
+        <pre><code><span class="sel">.aspect-ratio-box</span> {
+    <span class="prop">height</span>: <span class="val">0</span>;
+    <span class="prop">padding-bottom</span>: <span class="val">100%</span>; <span class="comment">/* квадрат */</span>
+    <span class="prop">overflow</span>: <span class="val">hidden</span>;
+}</code></pre>
+
+        <p>Принцип роботи:</p>
+        <ol>
+            <li><code>height: 0</code> — висота контенту не впливає на розмір блоку</li>
+            <li><code>padding-bottom: 100%</code> — висота блоку дорівнює його ширині (бо padding рахується від ширини
+                батька)
+            </li>
+            <li><code>overflow: hidden</code> — обрізає контент, що виходить за межі</li>
+        </ol>
+
+        <p>Значення <code>padding-bottom</code> для різних пропорцій:</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Пропорція</th>
+                <th>padding-bottom</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1:1 (квадрат)</td>
+                <td><code>100%</code></td>
+            </tr>
+            <tr>
+                <td>16:9 (відео)</td>
+                <td><code>56.25%</code></td>
+            </tr>
+            <tr>
+                <td>4:3</td>
+                <td><code>75%</code></td>
+            </tr>
+            <tr>
+                <td>3:2</td>
+                <td><code>66.66%</code></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>9. Вбудовування відео з YouTube (реальний приклад)</h2>
+
+        <p>Найпоширеніший випадок застосування padding-hack — створення гумового контейнера для вбудованого відео:</p>
+
+        <pre><code><span class="comment">&lt;!-- HTML --&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="val">"video-wrapper"</span><span
+                        class="tag">&gt;</span>
+    <span class="tag">&lt;iframe</span> <span class="attr">src</span>=<span class="val">"https://www.youtube.com/embed/VIDEO_ID"</span>
+            <span class="attr">allowfullscreen</span><span class="tag">&gt;&lt;/iframe&gt;</span>
+<span class="tag">&lt;/div&gt;</span></code></pre>
+
+        <pre><code><span class="comment">/* CSS */</span>
+<span class="sel">.video-wrapper</span> {
+    <span class="prop">position</span>: <span class="val">relative</span>;
+    <span class="prop">height</span>: <span class="val">0</span>;
+    <span class="prop">padding-bottom</span>: <span class="val">56.25%</span>; <span class="comment">/* 16:9 */</span>
+    <span class="prop">overflow</span>: <span class="val">hidden</span>;
+}
+
+<span class="sel">.video-wrapper iframe</span> {
+    <span class="prop">position</span>: <span class="val">absolute</span>;
+    <span class="prop">top</span>: <span class="val">0</span>;
+    <span class="prop">left</span>: <span class="val">0</span>;
+    <span class="prop">width</span>: <span class="val">100%</span>;
+    <span class="prop">height</span>: <span class="val">100%</span>;
+}</code></pre>
+
+        <p>Як це працює:</p>
+        <ol>
+            <li><code>iframe</code> з <code>position: absolute</code> не впливає на висоту батька</li>
+            <li>Висота <code>.video-wrapper</code> визначається лише <code>padding-bottom</code></li>
+            <li><code>iframe</code> розтягується на 100 % ширини та висоти обгортки</li>
+            <li>При зміні ширини екрана відео зберігає пропорції 16:9</li>
+        </ol>
+
+        <div class="tip">
+            <strong>Сучасна альтернатива:</strong> у CSS є властивість <code>aspect-ratio</code>, яка вирішує цю задачу
+            елегантніше: <code>aspect-ratio: 16 / 9</code>. Підтримується всіма сучасними браузерами (Chrome 88+,
+            Firefox 89+, Safari 15+). Але padding-hack досі зустрічається у старих проєктах.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>10. font-size у відсотках</h2>
+
+        <p>Розмір шрифту у відсотках рахується від <code>font-size</code> <strong>батьківського елемента</strong>:</p>
+
+        <pre><code><span class="sel">.parent</span> { <span class="prop">font-size</span>: <span class="val">20px</span>; }
+<span class="sel">.child</span>  { <span class="prop">font-size</span>: <span class="val">50%</span>; }  <span
+                        class="comment">/* = 10px */</span></code></pre>
+
+        <h3>Практичний приклад: кнопка <code>&lt;button&gt;</code></h3>
+
+        <p>Елемент <code>&lt;button&gt;</code> має дефолтний <code>font-size: 13.333px</code>, який не наслідується від
+            батька. Щоб розмір тексту кнопки збігався з розміром тексту контейнера:</p>
+
+        <pre><code><span class="sel">button</span> {
+    <span class="prop">font-size</span>: <span class="val">100%</span>; <span class="comment">/* наслідує розмір від батьківського елемента */</span>
+}</code></pre>
+
+        <p>Це дозволяє змінювати розмір шрифту в одному місці (на батьківському елементі), і він автоматично оновиться у
+            кнопці.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>11. Flexbox: повторення ключових концепцій</h2>
+
+        <h3>Дві осі</h3>
+        <p>У Flexbox є <strong>головна (main)</strong> і <strong>додаткова (cross)</strong> осі. Замість
+            «ліворуч/праворуч» коректно казати «початок/кінець осі».</p>
+
+        <h3>Висота елементів у рядку</h3>
+        <p>За замовчуванням flex-елементи у рядку розтягуються на однакову висоту — це поведінка <code>align-items:
+                stretch</code>. Колонки однакової висоти — це дефолтна поведінка Flexbox, не потрібно нічого додатково
+            налаштовувати.</p>
+
+        <h3>Зміна напрямку додаткової осі</h3>
+        <p>Напрямок додаткової осі можна змінити двома способами:</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Спосіб</th>
+                <th>Пояснення</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>flex-direction: column</code></td>
+                <td>Головна ось стає вертикальною → додаткова стає горизонтальною</td>
+            </tr>
+            <tr>
+                <td><code>flex-wrap: wrap-reverse</code></td>
+                <td>Елементи переносяться у зворотному напрямку → додаткова ось змінює напрямок</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>12. Flexbox замість float</h2>
+
+        <p>Float для створення колонок — застарілий підхід. Всі сучасні браузери повноцінно підтримують Flexbox.</p>
+
+        <h3>Flexbox автоматично скасовує float</h3>
+
+        <pre><code><span class="sel">.news-item</span> {
+    <span class="prop">float</span>: <span class="val">left</span>; <span class="comment">/* старий підхід для колонок */</span>
+}
+
+<span class="sel">.news</span> {
+    <span class="prop">display</span>: <span class="val">flex</span>; <span class="comment">/* float автоматично перестає працювати */</span>
+}</code></pre>
+
+        <p>Якщо для батьківського елемента задано <code>display: flex</code>, то <code>float</code> дочірніх елементів
+            <strong>ігнорується</strong>. Це закладено в специфікацію Flexbox.</p>
+
+        <h3>Проблеми float, які вирішує Flexbox</h3>
+        <ul>
+            <li>Батьківський блок «втрачає» висоту (потрібен clearfix-хак)</li>
+            <li>Складніше керувати вирівнюванням та розподілом простору</li>
+            <li>Потрібні додаткові хаки для однакової висоти колонок</li>
+        </ul>
+
+        <div class="tip">
+            <strong>Правило:</strong> якщо бачите <code>float</code>, який використовується для колонок — сміливо
+            замінюйте на <code>display: flex</code>. Залишайте <code>float</code> лише для його початкового призначення
+            — обтікання зображень текстом.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>13. Clearfix — хак для float (історична довідка)</h2>
+
+        <p>Коли <code>float</code> використовувався для колонок, батьківський блок «схлопувався» — не враховував висоту
+            float-елементів. Для виправлення застосовували clearfix:</p>
+
+        <pre><code><span class="sel">.clearfix::after</span> {
+    <span class="prop">content</span>: <span class="val">""</span>;
+    <span class="prop">display</span>: <span class="val">table</span>;
+    <span class="prop">clear</span>: <span class="val">both</span>;
+}</code></pre>
+
+        <p>У сучасній верстці з Flexbox clearfix не потрібен — це повністю застарілий прийом.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>14. Підсумкова таблиця: відсотки у CSS</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Властивість</th>
+                <th>Від чого рахуються %</th>
+                <th>Примітка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>width</code></td>
+                <td>Ширина батьківського елемента</td>
+                <td>Працює завжди</td>
+            </tr>
+            <tr>
+                <td><code>height</code></td>
+                <td>Висота батьківського елемента</td>
+                <td>Тільки якщо висота батька задана явно</td>
+            </tr>
+            <tr>
+                <td><code>margin</code> (всі сторони)</td>
+                <td>Ширина батьківського елемента</td>
+                <td>Навіть вертикальні — від ширини!</td>
+            </tr>
+            <tr>
+                <td><code>padding</code> (всі сторони)</td>
+                <td>Ширина батьківського елемента</td>
+                <td>Навіть вертикальні — від ширини!</td>
+            </tr>
+            <tr>
+                <td><code>font-size</code></td>
+                <td><code>font-size</code> батьківського елемента</td>
+                <td>Є кращі одиниці (<code>em</code>, <code>rem</code>)</td>
+            </tr>
+            <tr>
+                <td><code>width</code> / <code>height</code> при <code>position: absolute</code></td>
+                <td>Розміри найближчого предка з <code>position: relative</code></td>
+                <td>Не від прямого батька!</td>
+            </tr>
+            <tr>
+                <td><code>width</code> / <code>height</code> при <code>position: fixed</code></td>
+                <td>Розміри viewport (вікна браузера)</td>
+                <td>Завжди від вікна</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+{% endblock %}

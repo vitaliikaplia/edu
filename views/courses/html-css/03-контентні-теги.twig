@@ -1,0 +1,641 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Контентні теги</h1>
+    <p>Теги для розмітки текстового вмісту сторінки: заголовки, абзаци, списки, зображення. CSS-властивості блочної
+        моделі та нові типи селекторів.</p>
+
+    <!-- ===== SECTION 1: Заголовки ===== -->
+    <section>
+        <h2>Заголовки: h1 — h6</h2>
+
+        <p>Заголовки — головний спосіб структурування інформації на сторінці. HTML надає <strong>шість рівнів</strong>
+            заголовків: від <code>&lt;h1&gt;</code> до <code>&lt;h6&gt;</code>. На практиці зазвичай вистачає 3–4 рівнів
+            навіть для складних сторінок.</p>
+
+        <h3>Правила використання</h3>
+        <ul>
+            <li><code>&lt;h1&gt;</code> — головний заголовок сторінки, має бути <strong>лише один</strong> на сторінку.
+                Він інтенсивно індексується пошуковими системами.
+            </li>
+            <li>Рівні йдуть послідовно: <code>h1 → h2 → h3 → h4</code>. Не можна пропускати рівні (наприклад, одразу
+                після <code>h1</code> ставити <code>h4</code>).
+            </li>
+            <li>Заголовки одного рівня можуть повторюватися скільки завгодно разів.</li>
+            <li>Навіть якщо дизайнер не намалював головний заголовок — все одно зверстайте <code>&lt;h1&gt;</code> і
+                сховайте його візуально через CSS.
+            </li>
+        </ul>
+
+        <div class="warning">Рівень заголовка визначається логічною структурою документа, а <strong>не</strong> його
+            візуальним розміром. Зовнішній вигляд задає CSS.
+        </div>
+
+        <div class="example">Стаття про Шевченка: <code>&lt;h1&gt;</code> — «Тарас Шевченко», <code>&lt;h2&gt;</code> —
+            «Біографія» та «Творчість», <code>&lt;h3&gt;</code> — «Дитинство», «Молодість» тощо.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 2: Абзаци ===== -->
+    <section>
+        <h2>Абзаци: &lt;p&gt;</h2>
+
+        <p>Тег <code>&lt;p&gt;</code> (paragraph) розмічає фрагмент тексту, об'єднаний спільним змістом. Назви розділів
+            або рубрик абзацом верстати не слід — для них є заголовки.</p>
+
+        <h3>Важливі нюанси</h3>
+        <ul>
+            <li>Тег <code>&lt;p&gt;</code> сам по собі не додає відступу — відступи створюються стилями браузера за
+                замовчуванням. У реальному макеті між абзацами може взагалі не бути відстані.
+            </li>
+            <li>Якщо абзац цільний, залишайте його в одному рядку коду (переноси стосуються лише ширини вікна
+                редактора).
+            </li>
+            <li>Оформлення відкриваючого і закриваючого тегів має бути однотипним: або обидва на окремих рядках, або
+                обидва на одному рядку з текстом.
+            </li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 3: line-height ===== -->
+    <section>
+        <h2>Міжрядковий інтервал: line-height</h2>
+
+        <p>CSS-властивість <code>line-height</code> задає відстань між рядками тексту.</p>
+
+        <h3>Абсолютне значення (у пікселях)</h3>
+        <pre><code><span class="sel">p</span> {
+  <span class="prop">line-height</span>: <span class="val">24px</span>;
+}</code></pre>
+        <p>Міжрядковий інтервал фіксується жорстко. Якщо розмір шрифту зміниться — інтервал залишиться тим самим, і
+            текст може виглядати «злиплим» або занадто розрідженим.</p>
+
+        <h3>Відносне значення (без одиниць виміру)</h3>
+        <p>Відносна одиниця — це частка від розміру шрифту. Записується <strong>без</strong> одиниць виміру:</p>
+        <pre><code><span class="sel">p</span> {
+  <span class="prop">line-height</span>: <span class="val">1.5</span>;
+}</code></pre>
+        <p>Якщо <code>font-size: 16px</code>, то <code>line-height: 1.5</code> = 16 × 1.5 = <strong>24px</strong>.</p>
+
+        <div class="tip">Формула розрахунку: <code>line-height = потрібний_інтервал_px ÷ font-size_px</code>. Наприклад,
+            24 ÷ 16 = 1.5.
+        </div>
+
+        <p>Перевага відносних одиниць: при будь-якій зміні розміру шрифту <code>line-height</code> перераховується
+            автоматично, і візуально кількість «повітря» між рядками залишається пропорційною.</p>
+
+        <p>Побачити, у що браузер перерахував значення, можна на вкладці <strong>Computed</strong> у DevTools.</p>
+
+        <div class="tip">Розмір шрифту за замовчуванням для сторінки — <strong>16px</strong>. Якщо ви не задали <code>font-size</code>
+            для елемента, він успадковує це значення.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 4: Списки ===== -->
+    <section>
+        <h2>Списки: &lt;ol&gt;, &lt;ul&gt;, &lt;li&gt;</h2>
+
+        <p>Для розмітки переліків використовуються теги списків. Кожен елемент списку обгортається тегом <code>&lt;li&gt;</code>
+            (list item).</p>
+
+        <h3>Два типи списків</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Тег</th>
+                <th>Тип</th>
+                <th>Коли використовувати</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>&lt;ol&gt;</code></td>
+                <td>Упорядкований (Ordered List)</td>
+                <td>Порядок елементів <strong>важливий</strong> (кроки інструкції, хронологія подій)</td>
+            </tr>
+            <tr>
+                <td><code>&lt;ul&gt;</code></td>
+                <td>Неупорядкований (Unordered List)</td>
+                <td>Порядок елементів <strong>не важливий</strong> (пункти меню, перелік навичок)</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="warning">Називати списки «маркований» і «нумерований» не зовсім коректно: маркери та нумерація — це
+            лише стилізація через CSS. Вибір тегу визначається <em>логікою</em> переліку, а не його зовнішнім виглядом.
+        </div>
+
+        <h3>Правила вкладеності</h3>
+        <ul>
+            <li>Усередині <code>&lt;ol&gt;</code> або <code>&lt;ul&gt;</code> можуть бути <strong>лише</strong> теги
+                <code>&lt;li&gt;</code> — жодних інших тегів безпосередньо всередині списку.
+            </li>
+            <li>Усередині <code>&lt;li&gt;</code> можна використовувати будь-які теги: абзаци, зображення, таблиці, інші
+                списки тощо.
+            </li>
+            <li>Вкладений список розміщується <strong>всередині</strong> тегу <code>&lt;li&gt;</code> батьківського
+                списку.
+            </li>
+        </ul>
+
+        <h3>Стилізація маркерів: list-style-type</h3>
+        <p>CSS-властивість <code>list-style-type</code> змінює тип маркера або нумерації:</p>
+        <pre><code><span class="sel">ol</span> {
+  <span class="prop">list-style-type</span>: <span class="val">disc</span>;  <span class="comment">/* чорний кружечок замість цифр */</span>
+}</code></pre>
+        <p>Популярні значення: <code>disc</code>, <code>circle</code>, <code>square</code>, <code>decimal</code>, <code>lower-alpha</code>,
+            <code>none</code>. Повний перелік — у довіднику <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/CSS/list-style-type" target="_blank">MDN:
+                list-style-type</a>.</p>
+
+        <div class="tip">Упорядкований список <code>&lt;ol&gt;</code> можна стилізувати маркерами (кружечками), а
+            неупорядкований <code>&lt;ul&gt;</code> — нумерацією. Тег визначає семантику, а CSS — зовнішній вигляд.
+        </div>
+
+        <h3>Для чого потрібна семантика списків</h3>
+        <p>Скрін-рідери (програми для незрячих) озвучують тип списку: «упорядкований список, 5 пунктів» або
+            «неупорядкований список». Коректна розмітка робить сайт доступним для всіх користувачів і підвищує позицію в
+            пошуковій видачі.</p>
+    </section>
+
+    <!-- ===== SECTION 5: Зображення ===== -->
+    <section>
+        <h2>Зображення: &lt;img&gt;</h2>
+
+        <p>Тег <code>&lt;img&gt;</code> — одиночний (без закриваючої частини), вставляє зображення на сторінку. Має
+            <strong>два обов'язкові атрибути</strong>.</p>
+
+        <h3>Атрибут src</h3>
+        <p><code>src</code> (source) — шлях до зображення. Може бути абсолютним (URL з інтернету) або відносним (шлях до
+            локального файлу).</p>
+        <pre><code><span class="tag">&lt;img</span> <span class="attr">src</span>=<span
+                        class="val">"images/photo.jpg"</span> <span class="attr">alt</span>=<span class="val">"Опис зображення"</span><span
+                        class="tag">&gt;</span></code></pre>
+
+        <div class="warning">Часта помилка: пишуть <code>scr</code> замість <code>src</code>. Пам'ятайте:
+            <strong>s-r-c</strong> (source).
+        </div>
+
+        <h3>Атрибут alt</h3>
+        <p><code>alt</code> (alternative text) — альтернативний текст. Він потрібен для трьох цілей:</p>
+        <ol>
+            <li><strong>Якщо зображення не завантажиться</strong> — браузер покаже текст з <code>alt</code> замість
+                картинки.
+            </li>
+            <li><strong>Для пошукових систем</strong> — пошуковики не «бачать» зображення, вони індексують значення
+                <code>alt</code> і використовують його у пошуку по зображеннях.
+            </li>
+            <li><strong>Для скрін-рідерів</strong> — незрячі користувачі чують опис зображення, коли фокус потрапляє на
+                нього.
+            </li>
+        </ol>
+
+        <div class="warning"><code>alt</code> — це <strong>не</strong> спливаюча підказка. Для підказки використовується
+            атрибут <code>title</code>. Вони не мають бути однаковими.
+        </div>
+
+        <h3>Атрибут title</h3>
+        <p>Універсальний атрибут для будь-якого тегу. При наведенні курсора з'являється спливаюча підказка. Корисно для
+            іконкових інтерфейсів, де не завжди зрозуміло, що робить кнопка.</p>
+
+        <div class="tip">Стилізувати <code>title</code> через CSS не можна. Для кастомної підказки потрібен JavaScript.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 6: figure & figcaption ===== -->
+    <section>
+        <h2>Зображення з підписом: &lt;figure&gt; і &lt;figcaption&gt;</h2>
+
+        <p>Якщо зображення має пояснювальний підпис — використовуйте обгортку <code>&lt;figure&gt;</code> та тег підпису
+            <code>&lt;figcaption&gt;</code>.</p>
+
+        <pre><code><span class="tag">&lt;figure&gt;</span>
+  <span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="val">"photo.jpg"</span> <span
+                        class="attr">alt</span>=<span class="val">"Опис"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;figcaption&gt;</span>Підпис до зображення<span class="tag">&lt;/figcaption&gt;</span>
+<span class="tag">&lt;/figure&gt;</span></code></pre>
+
+        <h3>Особливості</h3>
+        <ul>
+            <li><code>&lt;figure&gt;</code> — семантична обгортка, що вказує браузеру: тут пов'язаний з контентом
+                медіаелемент (картинка, відео, код тощо).
+            </li>
+            <li>Усередині <code>&lt;figure&gt;</code> може бути лише <strong>один</strong>
+                <code>&lt;figcaption&gt;</code>.
+            </li>
+            <li><code>&lt;figcaption&gt;</code> є необов'язковим — його може не бути.</li>
+            <li><code>&lt;figure&gt;</code> — це <strong>не</strong> картинка. Контентне зображення — лише <code>&lt;img&gt;</code>.
+            </li>
+            <li>У тексті не слід посилатися на місцеположення figure («як показано на рисунку вище»). Натомість
+                використовуйте номерні посилання («рисунок 1»), щоб при переміщенні блоку логіка не порушувалась.
+            </li>
+        </ul>
+
+        <div class="tip">Якщо у картинки немає підпису, але вона безпосередньо доповнює текст — її все одно можна
+            обгорнути в <code>&lt;figure&gt;</code>.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 7: float ===== -->
+    <section>
+        <h2>Обтікання тексту: float</h2>
+
+        <p>CSS-властивість <code>float</code> змушує елемент «плавати» до лівого або правого краю, а текст — обтікати
+            його з протилежного боку.</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Значення</th>
+                <th>Ефект</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>left</code></td>
+                <td>Елемент притискається ліворуч, текст обтікає справа</td>
+            </tr>
+            <tr>
+                <td><code>right</code></td>
+                <td>Елемент притискається праворуч, текст обтікає зліва</td>
+            </tr>
+            <tr>
+                <td><code>none</code></td>
+                <td>Без обтікання (за замовчуванням)</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <pre><code><span class="sel">figure</span> {
+  <span class="prop">float</span>: <span class="val">left</span>;
+}</code></pre>
+
+        <div class="warning"><code>float</code> призначений <strong>виключно</strong> для обтікання тексту. Не
+            використовуйте його для створення розкладки сторінки (сайдбар + контент). Для розкладки існують Flexbox і
+            CSS Grid.
+        </div>
+
+        <p>Якщо картинка обгорнута в <code>&lt;figure&gt;</code> — обтікати потрібно саме <code>figure</code>
+            (найзовнішній батьківський тег).</p>
+    </section>
+
+    <!-- ===== SECTION 8: padding ===== -->
+    <section>
+        <h2>Внутрішні відступи: padding</h2>
+
+        <p>Властивість <code>padding</code> задає відступи від меж елемента <strong>всередину</strong>, до його вмісту.
+            Це аналог полів у документі — відстань від краю аркуша до тексту.</p>
+
+        <h3>Підробні властивості</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Властивість</th>
+                <th>Сторона</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>padding-top</code></td>
+                <td>Верхній відступ</td>
+            </tr>
+            <tr>
+                <td><code>padding-right</code></td>
+                <td>Правий відступ</td>
+            </tr>
+            <tr>
+                <td><code>padding-bottom</code></td>
+                <td>Нижній відступ</td>
+            </tr>
+            <tr>
+                <td><code>padding-left</code></td>
+                <td>Лівий відступ</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Скорочений запис</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Запис</th>
+                <th>Значення</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>padding: 10px 20px 15px 5px;</code></td>
+                <td>верх, право, низ, лів (за годинниковою стрілкою)</td>
+            </tr>
+            <tr>
+                <td><code>padding: 10px 20px 15px;</code></td>
+                <td>верх, ліво+право, низ</td>
+            </tr>
+            <tr>
+                <td><code>padding: 10px 20px;</code></td>
+                <td>верх+низ, ліво+право</td>
+            </tr>
+            <tr>
+                <td><code>padding: 10px;</code></td>
+                <td>однаково з усіх боків</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="warning"><strong>Не задати</strong> властивість і <strong>задати 0</strong> — це різні речі в CSS.
+            Якщо не задати — елемент може успадкувати значення з браузерних стилів або з інших правил.
+        </div>
+
+        <div class="tip">Використовуйте скорочений запис <code>padding</code> лише тоді, коли вам потрібно задати
+            <strong>всі чотири</strong> сторони. Якщо потрібні лише деякі — пишіть підробні властивості (<code>padding-top</code>,
+            <code>padding-left</code> тощо).
+        </div>
+    </section>
+
+    <!-- ===== SECTION 9: border ===== -->
+    <section>
+        <h2>Рамка: border</h2>
+
+        <p>Рамка (<code>border</code>) знаходиться зовні від <code>padding</code>. За замовчуванням вона невидима у всіх
+            елементів, але доступна для стилізації.</p>
+
+        <h3>Три складові рамки</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Властивість</th>
+                <th>Що задає</th>
+                <th>Приклад</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>border-width</code></td>
+                <td>Товщина</td>
+                <td><code>2px</code></td>
+            </tr>
+            <tr>
+                <td><code>border-style</code></td>
+                <td>Стиль</td>
+                <td><code>solid</code>, <code>dashed</code>, <code>dotted</code>, <code>double</code>, <code>none</code>
+                </td>
+            </tr>
+            <tr>
+                <td><code>border-color</code></td>
+                <td>Колір</td>
+                <td><code>#ddd</code>, <code>red</code></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p>Кожна з цих властивостей має 4 підвластивості для окремих сторін (наприклад, <code>border-top-width</code>,
+            <code>border-left-style</code> тощо).</p>
+
+        <h3>Скорочений запис</h3>
+        <p>Якщо всі 4 сторони однакові, використовуйте:</p>
+        <pre><code><span class="sel">figure</span> {
+  <span class="prop">border</span>: <span class="val">2px solid #ddd</span>;  <span class="comment">/* товщина стиль колір */</span>
+  <span class="prop">padding</span>: <span class="val">15px</span>;
+}</code></pre>
+
+        <div class="tip">Порядок у скороченому записі: товщина → стиль → колір. Дробні значення товщини краще не
+            використовувати — різні браузери можуть округлювати їх по-різному.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 10: margin ===== -->
+    <section>
+        <h2>Зовнішні відступи: margin</h2>
+
+        <p>Властивість <code>margin</code> задає відступи <strong>зовні</strong> від елемента. Синтаксис і скорочений
+            запис — абсолютно такі самі, як у <code>padding</code>.</p>
+
+        <pre><code><span class="sel">figure</span> {
+  <span class="prop">margin</span>: <span class="val">0 30px 25px 0</span>;  <span class="comment">/* верх право низ лів */</span>
+}</code></pre>
+
+        <div class="example">Якщо потрібно обнулити зовнішні відступи, задані у стилях браузера, — пишіть <code>margin:
+                0</code> явно, а не просто не задавайте їх.
+        </div>
+
+        <h3>Блочна модель: загальна картина</h3>
+        <div class="box-model">
+            <div class="box-model-diagram">
+                <div class="margin-zone">
+                    <div class="label">margin (зовнішній відступ)</div>
+                    <div class="border-zone">
+                        <div class="label">border (рамка)</div>
+                        <div class="padding-zone">
+                            <div class="label">padding (внутрішній відступ)</div>
+                            <div class="content-zone">content (вміст)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p>У DevTools: голубий — контент, зелений — padding, жовтий — border, оранжевий — margin.</p>
+    </section>
+
+    <!-- ===== SECTION 11: Інлайнова стилізація: span ===== -->
+    <section>
+        <h2>Інлайнова розмітка: &lt;span&gt;</h2>
+
+        <p>Тег <code>&lt;span&gt;</code> — універсальний інлайновий контейнер без власного семантичного значення.
+            Використовується для стилізації окремих слів або словосполучень.</p>
+
+        <div class="comparison">
+            <div>
+                <strong>Коли &lt;span&gt;</strong>
+                <ul>
+                    <li>Потрібно візуально виділити текст (жирний, курсив, колір), але він не є акцентним за змістом
+                    </li>
+                    <li>Немає відповідного семантичного тегу</li>
+                </ul>
+            </div>
+            <div>
+                <strong>Коли &lt;strong&gt; / &lt;em&gt;</strong>
+                <ul>
+                    <li>Текст потрібно виділити саме <em>за змістом</em>: це важлива інформація для пошуковиків і
+                        скрін-рідерів
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="warning">Тег <code>&lt;b&gt;</code> не рекомендований для стилізації. Усе оформлення — лише через
+            CSS. Тег <code>&lt;strong&gt;</code> — лише для семантичного акценту.
+        </div>
+
+        <div class="tip">Усі семантичні теги (<code>&lt;h1&gt;</code>–<code>&lt;h6&gt;</code>, <code>&lt;p&gt;</code>,
+            <code>&lt;ol&gt;</code>, <code>&lt;ul&gt;</code>, <code>&lt;strong&gt;</code>, <code>&lt;figure&gt;</code>
+            тощо) працюють для трьох цілей: пошукові системи, скрін-рідери та зручність читання вихідного коду.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 12: Селектори ===== -->
+    <section>
+        <h2>Нові типи селекторів</h2>
+
+        <h3>Селектор за тегом (вже відомий)</h3>
+        <pre><code><span class="sel">p</span> { <span class="prop">color</span>: <span class="val">#333</span>; }</code></pre>
+        <p>Застосовується до <strong>всіх</strong> елементів з таким тегом.</p>
+
+        <h3>Селектор за ідентифікатором: #id</h3>
+        <pre><code><span class="tag">&lt;p</span> <span class="attr">id</span>=<span class="val">"intro"</span><span
+                        class="tag">&gt;</span>Текст<span class="tag">&lt;/p&gt;</span>
+
+<span class="sel">#intro</span> { <span class="prop">color</span>: <span class="val">blue</span>; }</code></pre>
+        <ul>
+            <li>Атрибут <code>id</code> — універсальний, можна задати будь-якому тегу.</li>
+            <li>Значення <code>id</code> має бути <strong>унікальним</strong> на сторінці — два елементи з однаковим
+                <code>id</code> це невалідний код.
+            </li>
+            <li>У CSS селектор починається з <code>#</code> (решітка).</li>
+        </ul>
+        <div class="warning"><code>id</code> <strong>не рекомендується</strong> використовувати для стилізації. У нього
+            дуже високий пріоритет (специфічність), що ускладнює перевизначення стилів. Ідентифікатори використовують
+            переважно для JavaScript та якірних посилань.
+        </div>
+
+        <h3>Селектор за класом: .class</h3>
+        <pre><code><span class="tag">&lt;span</span> <span class="attr">class</span>=<span
+                        class="val">"book-name"</span><span class="tag">&gt;</span>Кобзар<span
+                        class="tag">&lt;/span&gt;</span>
+
+<span class="sel">.book-name</span> { <span class="prop">font-weight</span>: <span
+                        class="val">bold</span>; }</code></pre>
+        <ul>
+            <li>Клас <strong>може повторюватись</strong> у необмеженій кількості елементів.</li>
+            <li>У CSS селектор починається з <code>.</code> (крапка).</li>
+            <li>Один елемент може мати <strong>кілька класів</strong>, перерахованих через пробіл: <code>class="book-name
+                    primary"</code>.
+            </li>
+            <li>Називайте класи за призначенням елемента, а не за його виглядом.</li>
+        </ul>
+
+        <div class="example">Два класи на одному елементі: <code>&lt;span class="book-name primary"&gt;</code> — отримає
+            стилі і від <code>.book-name</code>, і від <code>.primary</code>.
+        </div>
+
+        <h3>Порівняння селекторів</h3>
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th>За тегом</th>
+                <th>За id</th>
+                <th>За класом</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Синтаксис</td>
+                <td><code>p { }</code></td>
+                <td><code>#name { }</code></td>
+                <td><code>.name { }</code></td>
+            </tr>
+            <tr>
+                <td>Може повторюватись</td>
+                <td>Так (теги)</td>
+                <td>Ні (унікальний)</td>
+                <td>Так</td>
+            </tr>
+            <tr>
+                <td>Кілька на елементі</td>
+                <td>—</td>
+                <td>Лише 1</td>
+                <td>Скільки завгодно</td>
+            </tr>
+            <tr>
+                <td>Рекомендація</td>
+                <td>Для базових стилів</td>
+                <td>Не для стилізації</td>
+                <td><strong>Основний спосіб</strong></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">Якщо два класи задають одну й ту саму властивість з різними значеннями — переможе те правило,
+            що стоїть <strong>пізніше у CSS-файлі</strong>. Порядок класів в атрибуті <code>class</code> не має
+            значення.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 13: Форматування коду ===== -->
+    <section>
+        <h2>Форматування коду</h2>
+
+        <p>Дотримуйтесь однакового стилю оформлення:</p>
+        <ul>
+            <li>Вкладені теги мають мати відступ <strong>2 пробіли</strong> відносно батьківського тегу.</li>
+            <li>У редакторах коду та пісочницях (CodePen тощо) є функція <strong>автоформатування</strong> —
+                використовуйте її перед перевіркою.
+            </li>
+            <li>Оформлення відкриваючого і закриваючого тегів має бути послідовним.</li>
+        </ul>
+
+        <h3>Мультирядкове редагування</h3>
+        <p>Два способи одночасного редагування кількох рядків у редакторі:</p>
+        <ul>
+            <li><strong>Cmd (Mac) / Ctrl (Windows) + клік</strong> — клікнути у потрібні рядки, курсор розширюється на
+                кілька рядків одразу.
+            </li>
+            <li><strong>Alt/Option + перетягування</strong> — «розтягнути» курсор вертикально на послідовні рядки
+                (прямокутне виділення).
+            </li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 14: Поради ===== -->
+    <section>
+        <h2>Поради початківцям</h2>
+
+        <ul>
+            <li><strong>Не бійтеся ставити запитання.</strong> Дурних запитань не існує. Будь-яке запитання веде до
+                розуміння.
+            </li>
+            <li><strong>Ставте конкретні запитання.</strong> Замість «нічого не зрозуміло» — «що означає ось ця
+                властивість?».
+            </li>
+            <li><strong>Не списуйте.</strong> Рішення, зроблене іншою людиною, не відкладається у вашій голові.</li>
+            <li><strong>Забудьте про оптимізацію на найближчі два роки.</strong> Не економте рядки коду. Якщо потрібно
+                задати лише 2 відступи — пишіть 2 підробні властивості, а не скорочений запис.
+            </li>
+            <li><strong>Звикайте до оформлення коду одразу.</strong> Вся розробка будується на дотриманні стайл-гайдів.
+            </li>
+            <li><strong>Доходьте до рішення самостійно.</strong> Наставник лише м'яко спрямовує підказками — і це
+                правильний підхід.
+            </li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 15: Підсумки ===== -->
+    <section>
+        <h2>Підсумки</h2>
+
+        <p>Що розібрали на цій лекції:</p>
+        <ol>
+            <li><strong>Заголовки</strong> <code>&lt;h1&gt;</code>–<code>&lt;h6&gt;</code> — рівні та правила
+                використання
+            </li>
+            <li><strong>Абзаци</strong> <code>&lt;p&gt;</code> — розмітка текстових фрагментів</li>
+            <li><strong>Списки</strong> <code>&lt;ol&gt;</code>, <code>&lt;ul&gt;</code>, <code>&lt;li&gt;</code> —
+                упорядковані та неупорядковані
+            </li>
+            <li><strong>Зображення</strong> <code>&lt;img&gt;</code> — атрибути <code>src</code>, <code>alt</code>,
+                <code>title</code></li>
+            <li><strong>Зображення з підписом</strong> <code>&lt;figure&gt;</code> + <code>&lt;figcaption&gt;</code>
+            </li>
+            <li><strong>CSS-властивості блочної моделі</strong>: <code>padding</code>, <code>border</code>,
+                <code>margin</code></li>
+            <li><strong>line-height</strong> — абсолютні та відносні значення</li>
+            <li><strong>list-style-type</strong> — стилізація маркерів списків</li>
+            <li><strong>float</strong> — обтікання тексту (і лише обтікання!)</li>
+            <li><strong>Селектор за id</strong> (<code>#</code>) та <strong>селектор за класом</strong> (<code>.</code>)
+            </li>
+            <li><strong>Тег &lt;span&gt;</strong> — інлайнова стилізація тексту без семантичного значення</li>
+        </ol>
+    </section>
+
+{% endblock %}

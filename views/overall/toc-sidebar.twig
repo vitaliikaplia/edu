@@ -1,0 +1,8 @@
+<aside class="toc-sidebar" id="tocSidebar" aria-label="Зміст лекції">
+    <div class="toc-title">Зміст</div>
+    <nav class="toc-nav">
+        {% for item in toc %}
+        <a href="#{{ item.id }}" class="toc-link toc-level-{{ item.level }}">{{ item.text }}</a>
+        {% endfor %}
+    </nav>
+</aside>

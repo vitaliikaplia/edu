@@ -1,0 +1,733 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Позиціювання блочних елементів</h1>
+    <p>Конспект лекції: Flexbox, CSS Grid, семантичні теги header/nav/footer, схлопування margin, псевдокласи</p>
+
+    <!-- ===== SECTION 1 ===== -->
+    <section>
+        <h2>Flexbox — основи</h2>
+        <p>Flexbox (Flexible Box Layout) — інструмент для розташування елементів у рядок або стовпець. Дозволяє гнучко
+            керувати розкладкою без хаків.</p>
+
+        <h3>Як увімкнути?</h3>
+        <p><code>display: flex</code> задається <strong>батьківському</strong> елементу (flex-контейнеру). Після цього
+            його дочірні елементи стають <strong>flex-елементами</strong>.</p>
+
+        <pre><code><span class="sel">.header</span> {
+    <span class="prop">display</span>: <span class="val">flex</span>;
+    <span class="comment">/* Дочірні елементи розташуються горизонтально */</span>
+}</code></pre>
+
+        <div class="tip">Flex-контейнер поводиться як блочний елемент (займає всю ширину). Єдина відмінність — доступні
+            спеціальні властивості для керування дочірніми елементами.
+        </div>
+
+        <h3>Принцип двох осей</h3>
+        <p>У Flexbox є дві осі:</p>
+        <ul>
+            <li><strong>Головна вісь (main axis)</strong> — напрямок, вздовж якого розташовуються flex-елементи. За
+                замовчуванням: зліва направо.
+            </li>
+            <li><strong>Поперечна вісь (cross axis)</strong> — перпендикулярна головній. За замовчуванням: згори вниз.
+            </li>
+        </ul>
+
+        <div class="warning">Уникайте термінів «вліво», «вправо», «вгору», «вниз» при роботі з Flexbox. Осі можна
+            перевертати, тому оперуйте поняттями: «початок/кінець головної осі», «початок/кінець поперечної осі».
+        </div>
+
+        <h3>Вирівнювання по висоті</h3>
+        <p>За замовчуванням flex-елементи в одному рядку <strong>вирівнюються по висоті</strong> найбільшого елемента.
+            Це дуже зручно для карток однакової висоти.</p>
+    </section>
+
+    <!-- ===== SECTION 2 ===== -->
+    <section>
+        <h2>flex-direction — напрямок головної осі</h2>
+        <p>Керує напрямком головної осі (і, відповідно, розташуванням flex-елементів).</p>
+
+        <table>
+            <tr>
+                <th>Значення</th>
+                <th>Головна вісь</th>
+                <th>Результат</th>
+            </tr>
+            <tr>
+                <td><code>row</code> (за замовчуванням)</td>
+                <td>→ зліва направо</td>
+                <td>Елементи в рядок</td>
+            </tr>
+            <tr>
+                <td><code>row-reverse</code></td>
+                <td>← справа наліво</td>
+                <td>Елементи в рядок, у зворотному порядку</td>
+            </tr>
+            <tr>
+                <td><code>column</code></td>
+                <td>↓ згори вниз</td>
+                <td>Елементи стовпцем</td>
+            </tr>
+            <tr>
+                <td><code>column-reverse</code></td>
+                <td>↑ знизу вгору</td>
+                <td>Елементи стовпцем, у зворотному порядку</td>
+            </tr>
+        </table>
+    </section>
+
+    <!-- ===== SECTION 3 ===== -->
+    <section>
+        <h2>flex-wrap — перенос елементів</h2>
+        <p>За замовчуванням flex-елементи <strong>не переносяться</strong> на новий рядок — вони стискаються.</p>
+
+        <table>
+            <tr>
+                <th>Значення</th>
+                <th>Поведінка</th>
+            </tr>
+            <tr>
+                <td><code>nowrap</code> (за замовчуванням)</td>
+                <td>Елементи стискаються, не переносяться</td>
+            </tr>
+            <tr>
+                <td><code>wrap</code></td>
+                <td>Елементи переносяться на новий рядок, якщо не вміщуються</td>
+            </tr>
+            <tr>
+                <td><code>wrap-reverse</code></td>
+                <td>Перенос у зворотному напрямку поперечної осі</td>
+            </tr>
+        </table>
+
+        <div class="example">
+            Три картки вміщуються в рядок. Четверта не влізає → при <code>wrap</code> переноситься на новий рядок. При
+            <code>nowrap</code> — усі чотири стискаються.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 4 ===== -->
+    <section>
+        <h2>Практичний приклад: шапка сайту</h2>
+        <p>Типова задача: логотип ліворуч, меню праворуч — горизонтально.</p>
+
+        <pre><code><span class="comment">&lt;!-- HTML --&gt;</span>
+<span class="tag">&lt;header</span> <span class="attr">class=</span><span class="val">"header"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;a</span> <span class="attr">href=</span><span class="val">"/"</span> <span
+                        class="attr">class=</span><span class="val">"logo"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;img</span> <span class="attr">src=</span><span class="val">"logo.svg"</span> <span
+                        class="attr">alt=</span><span class="val">"Логотип"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;/a&gt;</span>
+    <span class="tag">&lt;nav</span> <span class="attr">class=</span><span class="val">"menu"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;ul</span> <span class="attr">class=</span><span class="val">"menu-list"</span><span
+                        class="tag">&gt;</span>
+            <span class="tag">&lt;li</span> <span class="attr">class=</span><span
+                        class="val">"menu-list-item"</span><span class="tag">&gt;</span>
+                <span class="tag">&lt;a</span> <span class="attr">href=</span><span class="val">"#"</span><span
+                        class="tag">&gt;</span>Головна<span class="tag">&lt;/a&gt;</span>
+            <span class="tag">&lt;/li&gt;</span>
+            <span class="tag">&lt;li</span> <span class="attr">class=</span><span
+                        class="val">"menu-list-item"</span><span class="tag">&gt;</span>
+                <span class="tag">&lt;a</span> <span class="attr">href=</span><span class="val">"#"</span><span
+                        class="tag">&gt;</span>Про нас<span class="tag">&lt;/a&gt;</span>
+            <span class="tag">&lt;/li&gt;</span>
+        <span class="tag">&lt;/ul&gt;</span>
+    <span class="tag">&lt;/nav&gt;</span>
+<span class="tag">&lt;/header&gt;</span></code></pre>
+
+        <pre><code><span class="comment">/* CSS */</span>
+<span class="sel">.header</span> {
+    <span class="prop">display</span>: <span class="val">flex</span>;  <span class="comment">/* логотип і nav — в рядок */</span>
+}
+
+<span class="sel">.menu-list</span> {
+    <span class="prop">display</span>: <span class="val">flex</span>;  <span
+                        class="comment">/* пункти меню — в рядок */</span>
+    <span class="prop">margin</span>: <span class="val">0</span>;
+    <span class="prop">padding</span>: <span class="val">0</span>;
+    <span class="prop">list-style-type</span>: <span class="val">none</span>;
+}</code></pre>
+
+        <div class="tip"><code>display: flex</code> задається батьку тих елементів, які треба розташувати. Якщо у
+            контейнера лише один дочірній елемент — Flexbox нічого не змінить.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 5 ===== -->
+    <section>
+        <h2>Теги &lt;header&gt;, &lt;nav&gt;, &lt;footer&gt;</h2>
+
+        <h3>&lt;header&gt; — шапка</h3>
+        <ul>
+            <li>Вступна, допоміжна інформація <strong>перед</strong> основним контентом.</li>
+            <li>Може бути шапкою сайту (в <code>&lt;body&gt;</code>), статті (в <code>&lt;article&gt;</code>), секції (в
+                <code>&lt;section&gt;</code>).
+            </li>
+            <li>На сторінці може бути <strong>кілька</strong> <code>&lt;header&gt;</code> в різних контекстах.</li>
+        </ul>
+
+        <h3>&lt;nav&gt; — навігація</h3>
+        <ul>
+            <li>Блок основної навігації сайту або хлібних крихт (breadcrumbs).</li>
+            <li>Основне меню — ненумерований список <code>&lt;ul&gt;</code> (порядок не важливий).</li>
+            <li>Хлібні крихти — нумерований список <code>&lt;ol&gt;</code> (порядок важливий).</li>
+        </ul>
+
+        <h3>&lt;footer&gt; — підвал</h3>
+        <ul>
+            <li>Допоміжна інформація <strong>після</strong> основного контенту.</li>
+            <li>Як і <code>&lt;header&gt;</code>, може бути підвалом сайту, статті, секції.</li>
+            <li>Типовий вміст: копірайт, контакти, посилання на соцмережі, дата публікації.</li>
+        </ul>
+
+        <div class="warning">Коли замінюєте <code>&lt;div&gt;</code> на семантичний тег — перевіряйте, чи браузер не
+            додав стилі за замовчуванням (User Agent Stylesheet). Для <code>&lt;header&gt;</code> і
+            <code>&lt;footer&gt;</code> зазвичай лише <code>display: block</code>, проблем немає.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 6 ===== -->
+    <section>
+        <h2>Стилізація навігаційного списку</h2>
+        <p>При використанні <code>&lt;ul&gt;</code> для меню потрібно скинути стилі за замовчуванням:</p>
+
+        <pre><code><span class="sel">.menu-list</span> {
+    <span class="prop">margin</span>: <span class="val">0</span>;
+    <span class="prop">padding</span>: <span class="val">0</span>;
+    <span class="prop">list-style-type</span>: <span class="val">none</span>;  <span class="comment">/* прибрати маркери */</span>
+}</code></pre>
+
+        <div class="tip">Маркери (<code>list-style-type</code>) потрібні для списків у тексті статей. У навігації,
+            картках, табах — завжди прибирайте їх.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 7 ===== -->
+    <section>
+        <h2>Схлопування margin (margin collapsing)</h2>
+        <p>Вертикальні <code>margin-top</code> і <code>margin-bottom</code> блочних елементів мають особливу поведінку:
+        </p>
+
+        <h3>1. Схлопування між сусідами</h3>
+        <p>Коли <code>margin-bottom</code> одного елемента зустрічається з <code>margin-top</code> наступного — вони
+            <strong>не додаються</strong>, а обирається більший.</p>
+
+        <div class="example">
+            Заголовок має <code>margin-bottom: 20px</code>, параграф — <code>margin-top: 10px</code>. Відстань між ними
+            = <strong>20px</strong> (більший), а не 30px.
+        </div>
+
+        <h3>2. Вихід margin за межі батька</h3>
+        <p><code>margin-top</code> першого дочірнього і <code>margin-bottom</code> останнього дочірнього можуть
+            «витікати» за межі батьківського елемента.</p>
+
+        <h3>Як запобігти витіканню?</h3>
+        <p>Margin залишається всередині батька, якщо у батька є:</p>
+        <ul>
+            <li><code>padding</code> (хоча б <code>padding-top: 1px</code>)</li>
+            <li><code>border</code> (хоча б <code>border-top: 1px solid transparent</code>)</li>
+            <li><code>display: flex</code> або <code>display: grid</code></li>
+            <li><code>overflow</code> (зі значенням, відмінним від <code>visible</code>)</li>
+        </ul>
+
+        <div class="warning">Будьте уважні: якщо пізніше додасте <code>padding</code> або <code>border</code> батьку,
+            поведінка margin може раптово змінитися. Це часта причина «непояснюваних» зсувів у верстці.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 8 ===== -->
+    <section>
+        <h2>Псевдокласи :nth-child() та :nth-of-type()</h2>
+        <p>Псевдокласи дозволяють вибирати елементи за їхньою позицією серед сусідів. Синтаксис: <code>селектор:псевдоклас</code>
+            (через двокрапку).</p>
+
+        <h3>Різниця між nth-child і nth-of-type</h3>
+        <table>
+            <tr>
+                <th>Псевдоклас</th>
+                <th>Рахує</th>
+            </tr>
+            <tr>
+                <td><code>:nth-child()</code></td>
+                <td>Усі дочірні елементи незалежно від типу тегу</td>
+            </tr>
+            <tr>
+                <td><code>:nth-of-type()</code></td>
+                <td>Окремо кожний тип тегу (<code>&lt;div&gt;</code> — свій рахунок, <code>&lt;article&gt;</code> —
+                    свій)
+                </td>
+            </tr>
+        </table>
+
+        <h3>Значення</h3>
+        <table>
+            <tr>
+                <th>Значення</th>
+                <th>Що обирає</th>
+                <th>Приклад</th>
+            </tr>
+            <tr>
+                <td><code>odd</code></td>
+                <td>Непарні: 1, 3, 5, 7…</td>
+                <td><code>.card:nth-child(odd)</code></td>
+            </tr>
+            <tr>
+                <td><code>even</code></td>
+                <td>Парні: 2, 4, 6, 8…</td>
+                <td><code>.card:nth-child(even)</code></td>
+            </tr>
+            <tr>
+                <td>число (напр. <code>3</code>)</td>
+                <td>Конкретний елемент</td>
+                <td><code>.card:nth-child(3)</code></td>
+            </tr>
+            <tr>
+                <td>формула <code>an+b</code></td>
+                <td>Кожний <em>a</em>-й, починаючи з <em>b</em>-го</td>
+                <td><code>.card:nth-child(2n+3)</code></td>
+            </tr>
+        </table>
+
+        <div class="tip">Нумерація починається з <strong>1</strong> (не з 0, як у програмуванні).</div>
+    </section>
+
+    <!-- ===== SECTION 9 ===== -->
+    <section>
+        <h2>Формула an+b — як працює</h2>
+        <ul>
+            <li><strong>a</strong> — крок (кожний a-й елемент)</li>
+            <li><strong>n</strong> — змінна (браузер підставляє 0, 1, 2, 3…)</li>
+            <li><strong>b</strong> — зміщення (з якого елемента починати)</li>
+        </ul>
+
+        <div class="example">
+            <strong>Формула <code>2n+3</code></strong>: починаючи з 3-го, кожний 2-й.<br>
+            n=0 → 3, n=1 → 5, n=2 → 7, n=3 → 9…<br>
+            Результат: 3-й, 5-й, 7-й, 9-й елементи.
+        </div>
+
+        <h3>Типові комбінації</h3>
+        <table>
+            <tr>
+                <th>Формула</th>
+                <th>Еквівалент</th>
+                <th>Обирає</th>
+            </tr>
+            <tr>
+                <td><code>2n</code></td>
+                <td><code>even</code></td>
+                <td>Кожний парний</td>
+            </tr>
+            <tr>
+                <td><code>2n+1</code></td>
+                <td><code>odd</code></td>
+                <td>Кожний непарний</td>
+            </tr>
+            <tr>
+                <td><code>n+2</code></td>
+                <td>—</td>
+                <td>Усі, починаючи з 2-го (тобто всі крім першого)</td>
+            </tr>
+            <tr>
+                <td><code>3n</code></td>
+                <td>—</td>
+                <td>Кожний 3-й: 3, 6, 9…</td>
+            </tr>
+            <tr>
+                <td><code>-n+3</code></td>
+                <td>—</td>
+                <td>Перші 3 елементи</td>
+            </tr>
+        </table>
+    </section>
+
+    <!-- ===== SECTION 10 ===== -->
+    <section>
+        <h2>Скорочені псевдокласи</h2>
+        <table>
+            <tr>
+                <th>Псевдоклас</th>
+                <th>Еквівалент</th>
+                <th>Обирає</th>
+            </tr>
+            <tr>
+                <td><code>:first-child</code></td>
+                <td><code>:nth-child(1)</code></td>
+                <td>Перший елемент</td>
+            </tr>
+            <tr>
+                <td><code>:last-child</code></td>
+                <td>—</td>
+                <td>Останній елемент</td>
+            </tr>
+            <tr>
+                <td><code>:first-of-type</code></td>
+                <td><code>:nth-of-type(1)</code></td>
+                <td>Перший елемент кожного типу</td>
+            </tr>
+            <tr>
+                <td><code>:last-of-type</code></td>
+                <td>—</td>
+                <td>Останній елемент кожного типу</td>
+            </tr>
+        </table>
+    </section>
+
+    <!-- ===== SECTION 11 ===== -->
+    <section>
+        <h2>Практика: відступи між картками</h2>
+        <p>Типова задача: список карток із відступами між ними, але <strong>без</strong> зайвого відступу зверху.</p>
+
+        <h3>Рішення через nth-child</h3>
+        <pre><code><span class="comment">/* Відступ для всіх карток, починаючи з другої */</span>
+<span class="sel">.post:nth-child(n+2)</span> {
+    <span class="prop">margin-top</span>: <span class="val">35px</span>;
+}</code></pre>
+
+        <h3>Альтернативне рішення</h3>
+        <pre><code><span class="comment">/* Усім задати margin-top */</span>
+<span class="sel">.post</span> {
+    <span class="prop">margin-top</span>: <span class="val">35px</span>;
+}
+
+<span class="comment">/* У першого — прибрати */</span>
+<span class="sel">.post:first-child</span> {
+    <span class="prop">margin-top</span>: <span class="val">0</span>;
+}</code></pre>
+
+        <h3>Чересмужжя (кожна парна картка — інший колір)</h3>
+        <pre><code><span class="sel">.post:nth-child(even)</span> {
+    <span class="prop">background-color</span>: <span class="val">#1a1a1a</span>;
+    <span class="prop">color</span>: <span class="val">#fff</span>;
+}</code></pre>
+
+        <div class="tip">Чересмужжя часто застосовується і в таблицях — для кращої читабельності довгих списків.</div>
+
+        <h3>Сучасний підхід: gap</h3>
+        <p>Властивість <code>gap</code> задає відступи між flex-елементами без потреби у псевдокласах та margin-хаках:
+        </p>
+
+        <pre><code><span class="sel">.cards</span> {
+    <span class="prop">display</span>: <span class="val">flex</span>;
+    <span class="prop">flex-direction</span>: <span class="val">column</span>;
+    <span class="prop">gap</span>: <span class="val">35px</span>;  <span class="comment">/* відступ між картками, без зайвого зверху/знизу */</span>
+}</code></pre>
+
+        <div class="tip"><code>gap</code> повністю підтримується у Flexbox з 2021 року (усі сучасні браузери). Це
+            найчистіший спосіб задати відступи між елементами — <code>gap</code> не створює зайвих margin ні зверху, ні
+            знизу.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 12 ===== -->
+    <section>
+        <h2>Псевдоелементи ::before та ::after</h2>
+        <p>Псевдоелементи створюють віртуальні елементи в DOM для стилізації, не засмічуючи HTML.</p>
+
+        <ul>
+            <li><code>::before</code> — вставляє контент <strong>перед</strong> вмістом елемента.</li>
+            <li><code>::after</code> — вставляє контент <strong>після</strong> вмісту елемента.</li>
+            <li>Обов'язково потрібна властивість <code>content</code>.</li>
+        </ul>
+
+        <h3>Типові застосування</h3>
+        <ul>
+            <li>Зірочки обов'язкових полів у формах</li>
+            <li>Кастомні маркери для списків</li>
+            <li>Декоративні стрілки, іконки</li>
+            <li>Затемнення фону (overlay)</li>
+        </ul>
+
+        <pre><code><span class="comment">/* Зірочка для обов'язкового поля */</span>
+<span class="sel">.required::after</span> {
+    <span class="prop">content</span>: <span class="val">" *"</span>;
+    <span class="prop">color</span>: <span class="val">red</span>;
+}</code></pre>
+
+        <div class="tip">Псевдоелементи записуються з двома двокрапками (<code>::before</code>), але працюють і з однією
+            (<code>:before</code>). Рекомендується два для розрізнення з псевдокласами.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 13 ===== -->
+    <section>
+        <h2>Normalize CSS vs Reset CSS</h2>
+        <p>Стилі за замовчуванням відрізняються між браузерами. Є два підходи для уніфікації:</p>
+
+        <div class="comparison">
+            <div>
+                <strong>Normalize CSS</strong>
+                <ul>
+                    <li>Приводить стилі до єдиного вигляду</li>
+                    <li>Зберігає корисні стилі за замовчуванням</li>
+                    <li>Підходить для більшості сайтів</li>
+                    <li>Рекомендований підхід</li>
+                </ul>
+            </div>
+            <div>
+                <strong>Reset CSS</strong>
+                <ul>
+                    <li>Повністю скидає всі стилі</li>
+                    <li>Потрібно задавати все з нуля</li>
+                    <li>Підходить для веб-додатків, ігор</li>
+                    <li>Використовується рідше</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="warning">Не використовуйте <code>* { margin: 0; padding: 0; }</code> як заміну Normalize — це скидає
+            корисні відступи у статтях, списках, заголовках, і доведеться додавати їх вручну.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 14 ===== -->
+    <section>
+        <h2>CSS Grid — двовимірна розкладка</h2>
+        <p>CSS Grid Layout — інструмент для створення двовимірних розкладок (рядки <strong>і</strong> стовпці
+            одночасно). Повністю підтримується усіма сучасними браузерами.</p>
+
+        <h3>Flexbox vs Grid</h3>
+        <div class="comparison">
+            <div>
+                <strong>Flexbox</strong>
+                <ul>
+                    <li>Одновимірний (рядок <strong>або</strong> стовпець)</li>
+                    <li>Елементи визначають розмір</li>
+                    <li>Ідеальний для компонентів</li>
+                    <li>Шапка, меню, картка, форма</li>
+                </ul>
+            </div>
+            <div>
+                <strong>Grid</strong>
+                <ul>
+                    <li>Двовимірний (рядки <strong>і</strong> стовпці)</li>
+                    <li>Контейнер визначає розкладку</li>
+                    <li>Ідеальний для сторінок</li>
+                    <li>Сітка карток, макет сторінки</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tip">Flexbox і Grid — не конкуренти, а партнери. Grid — для загальної структури сторінки, Flexbox —
+            для компонентів всередині. Використовуйте обидва.
+        </div>
+
+        <h3>Як увімкнути?</h3>
+        <pre><code><span class="sel">.grid-container</span> {
+    <span class="prop">display</span>: <span class="val">grid</span>;
+    <span class="prop">grid-template-columns</span>: <span class="val">1fr 1fr 1fr</span>;  <span class="comment">/* 3 рівні стовпці */</span>
+    <span class="prop">gap</span>: <span class="val">20px</span>;  <span
+                        class="comment">/* відступи між елементами */</span>
+}</code></pre>
+
+        <p><code>display: grid</code> задається батьківському елементу (grid-контейнеру). Дочірні елементи автоматично
+            розміщуються в сітці.</p>
+    </section>
+
+    <!-- ===== SECTION 15 ===== -->
+    <section>
+        <h2>Grid: основні властивості</h2>
+
+        <h3>grid-template-columns — стовпці</h3>
+        <p>Визначає кількість і ширину стовпців:</p>
+        <pre><code><span class="comment">/* Три стовпці по 200px */</span>
+<span class="prop">grid-template-columns</span>: <span class="val">200px 200px 200px</span>;
+
+<span class="comment">/* Три рівні стовпці (гнучкі) */</span>
+<span class="prop">grid-template-columns</span>: <span class="val">1fr 1fr 1fr</span>;
+
+<span class="comment">/* Скорочення: 3 стовпці по 1fr */</span>
+<span class="prop">grid-template-columns</span>: <span class="val">repeat(3, 1fr)</span>;
+
+<span class="comment">/* Бічна панель 250px, основний контент — решта */</span>
+<span class="prop">grid-template-columns</span>: <span class="val">250px 1fr</span>;</code></pre>
+
+        <div class="tip">Одиниця <code>fr</code> (fraction) — частка вільного простору. <code>1fr 2fr</code> означає:
+            перший стовпець отримає 1/3, другий — 2/3 доступної ширини.
+        </div>
+
+        <h3>grid-template-rows — рядки</h3>
+        <pre><code><span class="comment">/* Шапка 80px, контент гнучкий, підвал 60px */</span>
+<span class="prop">grid-template-rows</span>: <span class="val">80px 1fr 60px</span>;</code></pre>
+
+        <h3>gap — відступи</h3>
+        <pre><code><span class="prop">gap</span>: <span class="val">20px</span>;            <span class="comment">/* однаковий відступ */</span>
+<span class="prop">gap</span>: <span class="val">20px 30px</span>;       <span class="comment">/* рядки: 20px, стовпці: 30px */</span>
+<span class="prop">row-gap</span>: <span class="val">20px</span>;        <span
+                        class="comment">/* тільки між рядками */</span>
+<span class="prop">column-gap</span>: <span class="val">30px</span>;     <span class="comment">/* тільки між стовпцями */</span></code></pre>
+    </section>
+
+    <!-- ===== SECTION 16 ===== -->
+    <section>
+        <h2>Grid: розміщення елементів</h2>
+
+        <h3>Автоматичне розміщення</h3>
+        <p>За замовчуванням елементи заповнюють сітку по порядку, зліва направо, рядок за рядком.</p>
+
+        <h3>Ручне розміщення</h3>
+        <p>Можна вказати, які рядки та стовпці займає елемент:</p>
+        <pre><code><span class="sel">.hero</span> {
+    <span class="prop">grid-column</span>: <span class="val">1 / 3</span>;   <span class="comment">/* від 1-ї до 3-ї лінії (2 стовпці) */</span>
+    <span class="prop">grid-row</span>: <span class="val">1 / 2</span>;      <span
+                        class="comment">/* перший рядок */</span>
+}
+
+<span class="sel">.sidebar</span> {
+    <span class="prop">grid-column</span>: <span class="val">3</span>;        <span class="comment">/* третій стовпець */</span>
+    <span class="prop">grid-row</span>: <span class="val">1 / 3</span>;      <span class="comment">/* від 1-го до 3-го рядка */</span>
+}</code></pre>
+
+        <div class="tip">Скорочення <code>span</code>: <code>grid-column: span 2</code> означає «займи 2 стовпці від
+            поточної позиції».
+        </div>
+    </section>
+
+    <!-- ===== SECTION 17 ===== -->
+    <section>
+        <h2>Grid: практичні приклади</h2>
+
+        <h3>Сітка карток (адаптивна)</h3>
+        <pre><code><span class="sel">.cards</span> {
+    <span class="prop">display</span>: <span class="val">grid</span>;
+    <span class="prop">grid-template-columns</span>: <span class="val">repeat(auto-fill, minmax(280px, 1fr))</span>;
+    <span class="prop">gap</span>: <span class="val">20px</span>;
+}</code></pre>
+        <p><code>auto-fill</code> + <code>minmax()</code> — картки автоматично переносяться на новий рядок, коли ширина
+            екрана зменшується. Без медіа-запитів!</p>
+
+        <h3>Класичний макет сторінки</h3>
+        <pre><code><span class="sel">.page</span> {
+    <span class="prop">display</span>: <span class="val">grid</span>;
+    <span class="prop">grid-template-columns</span>: <span class="val">250px 1fr</span>;
+    <span class="prop">grid-template-rows</span>: <span class="val">auto 1fr auto</span>;
+    <span class="prop">min-height</span>: <span class="val">100vh</span>;
+}
+
+<span class="sel">.page-header</span> {
+    <span class="prop">grid-column</span>: <span class="val">1 / -1</span>;  <span
+                        class="comment">/* вся ширина */</span>
+}
+
+<span class="sel">.page-footer</span> {
+    <span class="prop">grid-column</span>: <span class="val">1 / -1</span>;  <span
+                        class="comment">/* вся ширина */</span>
+}</code></pre>
+
+        <div class="example">
+            Результат: шапка на всю ширину, бічна панель (250px) + основний контент (решта), підвал на всю ширину. Усе —
+            без Flexbox-хаків.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 18 ===== -->
+    <section>
+        <h2>Коли що використовувати</h2>
+        <table>
+            <tr>
+                <th>Задача</th>
+                <th>Інструмент</th>
+                <th>Чому</th>
+            </tr>
+            <tr>
+                <td>Шапка: лого + меню</td>
+                <td>Flexbox</td>
+                <td>Один рядок, два елементи</td>
+            </tr>
+            <tr>
+                <td>Пункти меню в рядок</td>
+                <td>Flexbox</td>
+                <td>Одновимірний список</td>
+            </tr>
+            <tr>
+                <td>Сітка карток 3×N</td>
+                <td>Grid</td>
+                <td>Двовимірна сітка</td>
+            </tr>
+            <tr>
+                <td>Макет сторінки (шапка + sidebar + контент + підвал)</td>
+                <td>Grid</td>
+                <td>Складна двовимірна структура</td>
+            </tr>
+            <tr>
+                <td>Центрування одного елемента</td>
+                <td>Flexbox або Grid</td>
+                <td>Обидва підходять</td>
+            </tr>
+            <tr>
+                <td>Кнопки в ряд із відступами</td>
+                <td>Flexbox + gap</td>
+                <td>Простий рядок із gap</td>
+            </tr>
+        </table>
+    </section>
+
+    <!-- ===== SECTION 19 ===== -->
+    <section>
+        <h2>Підсумок</h2>
+        <table>
+            <tr>
+                <th>Тема</th>
+                <th>Ключове</th>
+            </tr>
+            <tr>
+                <td>Flexbox</td>
+                <td><code>display: flex</code> на батьку → дочірні в рядок</td>
+            </tr>
+            <tr>
+                <td><code>flex-direction</code></td>
+                <td><code>row</code> | <code>column</code> | <code>row-reverse</code> | <code>column-reverse</code></td>
+            </tr>
+            <tr>
+                <td><code>flex-wrap</code></td>
+                <td><code>nowrap</code> (стискає) | <code>wrap</code> (переносить)</td>
+            </tr>
+            <tr>
+                <td><code>&lt;header&gt;</code></td>
+                <td>Шапка сайту / секції / статті</td>
+            </tr>
+            <tr>
+                <td><code>&lt;nav&gt;</code></td>
+                <td>Основна навігація або хлібні крихти</td>
+            </tr>
+            <tr>
+                <td><code>&lt;footer&gt;</code></td>
+                <td>Підвал сайту / секції / статті</td>
+            </tr>
+            <tr>
+                <td>Margin collapsing</td>
+                <td>Вертикальні margin схлопуються (обирається більший)</td>
+            </tr>
+            <tr>
+                <td><code>:nth-child()</code></td>
+                <td>Вибір за позицією: <code>odd</code>, <code>even</code>, <code>an+b</code></td>
+            </tr>
+            <tr>
+                <td><code>::before</code> / <code>::after</code></td>
+                <td>Віртуальні елементи для стилізації (потрібен <code>content</code>)</td>
+            </tr>
+            <tr>
+                <td>Normalize CSS</td>
+                <td>Уніфікує стилі між браузерами (рекомендований)</td>
+            </tr>
+            <tr>
+                <td><code>gap</code></td>
+                <td>Відступи між flex/grid-елементами без margin-хаків</td>
+            </tr>
+            <tr>
+                <td>CSS Grid</td>
+                <td><code>display: grid</code> — двовимірна розкладка (рядки + стовпці)</td>
+            </tr>
+            <tr>
+                <td><code>grid-template-columns</code></td>
+                <td><code>repeat(3, 1fr)</code>, <code>minmax()</code>, <code>auto-fill</code></td>
+            </tr>
+            <tr>
+                <td>Flexbox vs Grid</td>
+                <td>Flex — компоненти (1D); Grid — сторінки (2D). Використовуйте обидва</td>
+            </tr>
+        </table>
+    </section>
+
+{% endblock %}

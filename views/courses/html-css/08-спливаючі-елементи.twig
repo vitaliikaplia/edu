@@ -1,0 +1,720 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Спливаючі елементи</h1>
+    <p>Конспект лекції: контентні та декоративні зображення, float, clearfix, обтікання та позиціювання елементів</p>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>1. Контентне vs декоративне зображення</h2>
+
+        <p>Є два способи додати зображення на сторінку — через HTML і через CSS. Вони <strong>не взаємозамінні</strong>.
+        </p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Спосіб</th>
+                <th>Технологія</th>
+                <th>Коли використовувати</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>&lt;img&gt;</code></td>
+                <td>HTML</td>
+                <td>Зображення є <strong>частиною контенту</strong> — товар, аватар, фото квартири</td>
+            </tr>
+            <tr>
+                <td><code>background-image</code></td>
+                <td>CSS</td>
+                <td>Зображення <strong>декоративне</strong> — фон шапки, абстрактна текстура</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>Як визначити тип:</strong> подумки приберіть зображення зі сторінки. Якщо втрачається важлива
+            інформація (фото товару, квартири) — це контент → <code>&lt;img&gt;</code>. Якщо нічого суттєвого не
+            змінилось — це декорація → <code>background-image</code>.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>2. Фонове зображення — базовий набір властивостей</h2>
+
+        <p>Для декоративних фонів (hero-банер, шапка з фото) майже завжди використовується один і той самий набір:</p>
+
+        <pre><code><span class="sel">.hero</span> {
+    <span class="prop">background-image</span>: <span class="val">url("img/hero.jpg")</span>;
+    <span class="prop">background-repeat</span>: <span class="val">no-repeat</span>;
+    <span class="prop">background-position</span>: <span class="val">center</span>;
+    <span class="prop">background-size</span>: <span class="val">cover</span>;
+    <span class="prop">background-color</span>: <span class="val">#000</span>;
+}</code></pre>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Властивість</th>
+                <th>Значення</th>
+                <th>Що робить</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>background-image</code></td>
+                <td><code>url("...")</code></td>
+                <td>Підключає зображення</td>
+            </tr>
+            <tr>
+                <td><code>background-repeat</code></td>
+                <td><code>no-repeat</code></td>
+                <td>Забороняє дублювання картинки</td>
+            </tr>
+            <tr>
+                <td><code>background-position</code></td>
+                <td><code>center</code></td>
+                <td>Центрує по горизонталі та вертикалі</td>
+            </tr>
+            <tr>
+                <td><code>background-size</code></td>
+                <td><code>cover</code></td>
+                <td>Заповнює блок повністю, зберігаючи пропорції</td>
+            </tr>
+            <tr>
+                <td><code>background-color</code></td>
+                <td><code>#000</code></td>
+                <td>Запасний фон, якщо зображення не завантажиться</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="warning">
+            <strong>Завжди додавайте <code>background-color</code>!</strong> Якщо зображення не завантажиться або
+            завантажується повільно — текст залишиться читабельним (білий текст на чорному фоні, а не білий на білому).
+        </div>
+
+        <h3>cover vs contain</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Значення</th>
+                <th>Поведінка</th>
+                <th>Коли використовувати</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>cover</code></td>
+                <td>Заповнює весь блок, зайве обрізає</td>
+                <td>Фонові зображення банерів, шапок</td>
+            </tr>
+            <tr>
+                <td><code>contain</code></td>
+                <td>Вписує повністю, нічого не обрізає</td>
+                <td>Іконки в псевдоелементах, логотипи</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>3. position: absolute — поведінка та властивості</h2>
+
+        <p>Коли елементу задають <code>position: absolute</code>, він <strong>радикально змінює поведінку</strong>:</p>
+
+        <ul>
+            <li><strong>Ширина та висота</strong> вираховуються за кількістю контенту (а не на 100% батька)</li>
+            <li>Елемент <strong>стає невидимим</strong> для сусідів і батьківського елемента — ніби його немає в
+                розмітці
+            </li>
+            <li>Батько <strong>не враховує</strong> абсолютний елемент при розрахунку своїх розмірів</li>
+            <li>Сусідні елементи <strong>займають його місце</strong></li>
+            <li>Елемент розміщується <strong>поверх</strong> звичайних блоків</li>
+        </ul>
+
+        <h3>Керування позицією: top, right, bottom, left</h3>
+
+        <p>Абсолютний елемент переміщується за допомогою чотирьох властивостей:</p>
+
+        <pre><code><span class="sel">.element</span> {
+    <span class="prop">position</span>: <span class="val">absolute</span>;
+    <span class="prop">top</span>: <span class="val">0</span>;     <span
+                        class="comment">/* 0 від верхнього краю */</span>
+    <span class="prop">left</span>: <span class="val">20px</span>;  <span
+                        class="comment">/* 20px від лівого краю */</span>
+}</code></pre>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Комбінація</th>
+                <th>Результат</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>top: 0; left: 0;</code></td>
+                <td>Лівий верхній кут</td>
+            </tr>
+            <tr>
+                <td><code>top: 0; right: 0;</code></td>
+                <td>Правий верхній кут</td>
+            </tr>
+            <tr>
+                <td><code>bottom: 0; left: 0;</code></td>
+                <td>Лівий нижній кут</td>
+            </tr>
+            <tr>
+                <td><code>bottom: 0; right: 0;</code></td>
+                <td>Правий нижній кут</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Розтягування абсолютного елемента</h3>
+
+        <p>Якщо ширина <strong>не задана явно</strong>, а вказано <code>left: 0</code> і <code>right: 0</code> — елемент
+            <strong>розтягнеться</strong> на всю доступну ширину. Те саме працює для вертикалі з <code>top: 0</code> і
+            <code>bottom: 0</code>:</p>
+
+        <pre><code><span class="sel">.overlay</span> {
+    <span class="prop">position</span>: <span class="val">absolute</span>;
+    <span class="prop">top</span>: <span class="val">0</span>;
+    <span class="prop">left</span>: <span class="val">0</span>;
+    <span class="prop">right</span>: <span class="val">0</span>;
+    <span class="prop">bottom</span>: <span class="val">0</span>;
+}</code></pre>
+
+        <div class="tip">
+            <strong>Якщо задана ширина</strong> (наприклад, <code>width: 300px</code>) і одночасно <code>left: 0; right:
+                0</code> — елемент <strong>не розтягнеться</strong>, а притиснеться до лівого краю. Значення
+            <code>right</code> буде проігноровано.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>4. position: relative — збереження поведінки</h2>
+
+        <p>На відміну від <code>absolute</code>, значення <code>position: relative</code> <strong>не змінює</strong>
+            стандартну поведінку блока:</p>
+
+        <ul>
+            <li>Блочний елемент залишається блочним, рядковий — рядковим</li>
+            <li>Елемент <strong>займає місце</strong> в потоці документа, як і раніше</li>
+            <li>Сусіди та батько його враховують у розрахунках</li>
+        </ul>
+
+        <h3>Два головних призначення position: relative</h3>
+
+        <ol>
+            <li><strong>Активація z-index</strong> — без <code>position</code> властивість <code>z-index</code> не
+                працює
+            </li>
+            <li><strong>Контекст позиціювання</strong> — батьківський елемент з <code>position: relative</code> стає
+                точкою відліку для дочірніх <code>position: absolute</code></li>
+        </ol>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>5. Контекст позиціювання (relative + absolute)</h2>
+
+        <p>Елемент з <code>position: absolute</code> вираховує свої <code>top/left/right/bottom</code> <strong>від
+                найближчого батьківського елемента з <code>position: relative</code></strong> (або <code>absolute</code>,
+            <code>fixed</code>).</p>
+
+        <pre><code><span class="comment">/* Батько — точка відліку */</span>
+<span class="sel">.parent</span> {
+    <span class="prop">position</span>: <span class="val">relative</span>;
+}
+
+<span class="comment">/* Дитина — позиціюється відносно .parent */</span>
+<span class="sel">.child</span> {
+    <span class="prop">position</span>: <span class="val">absolute</span>;
+    <span class="prop">top</span>: <span class="val">0</span>;
+    <span class="prop">right</span>: <span class="val">0</span>;
+}</code></pre>
+
+        <div class="warning">
+            <strong>Без <code>position: relative</code> у батька</strong> абсолютний елемент позиціюється відносно
+            першого екрана (viewport). При прокрутці він «від'їде» разом з видимою областю — це типова помилка.
+        </div>
+
+        <p>Алгоритм пошуку контексту:</p>
+        <ol>
+            <li>Перевірити свого безпосереднього батька — чи є в нього <code>position: relative</code>?</li>
+            <li>Якщо ні — перевірити наступного батька вгору по DOM</li>
+            <li>Якщо жоден батько не має <code>position</code> — позиціювання відбувається відносно viewport</li>
+        </ol>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>6. z-index — порядок накладання</h2>
+
+        <p>Властивість <code>z-index</code> керує тим, який елемент відображається <strong>поверх</strong> іншого при
+            накладанні.</p>
+
+        <ul>
+            <li><strong>Більше значення</strong> — елемент ближче до користувача (поверх інших)</li>
+            <li><strong>Працює лише</strong> з елементами, у яких задано <code>position</code> (relative, absolute,
+                fixed)
+            </li>
+            <li>Без <code>z-index</code> — порядок визначається позицією в HTML (елемент нижче в коді — вище в
+                накладанні)
+            </li>
+            <li>При однаковому <code>z-index</code> — діє правило порядку в HTML</li>
+        </ul>
+
+        <pre><code><span class="comment">/* Без z-index: третій елемент поверх усіх */</span>
+<span class="sel">.box-1</span> { <span class="prop">position</span>: <span class="val">absolute</span>; }
+<span class="sel">.box-2</span> { <span class="prop">position</span>: <span class="val">absolute</span>; }
+<span class="sel">.box-3</span> { <span class="prop">position</span>: <span class="val">absolute</span>; }
+
+<span class="comment">/* З z-index: перший елемент поверх усіх */</span>
+<span class="sel">.box-1</span> { <span class="prop">position</span>: <span class="val">absolute</span>; <span
+                        class="prop">z-index</span>: <span class="val">2</span>; }</code></pre>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>7. Техніка затемнення фону (overlay)</h2>
+
+        <p>Класична задача: фоновий банер із затемненням і білим текстом поверх. Затемнення <strong>обов'язково робимо
+                через CSS</strong>, а не в графічному редакторі — бо зображення може бути динамічним (змінюватись через
+            CMS).</p>
+
+        <h3>Ідея</h3>
+        <ol>
+            <li>Створити псевдоелемент <code>::after</code></li>
+            <li>Розтягнути його на весь блок через <code>position: absolute</code></li>
+            <li>Задати напівпрозорий чорний фон через <code>rgba()</code></li>
+            <li>Текст винести на передній план через <code>z-index</code></li>
+        </ol>
+
+        <h3>Повний приклад</h3>
+
+        <pre><code><span class="comment">/* HTML: &lt;section class="hero"&gt;&lt;div class="hero__content"&gt;...&lt;/div&gt;&lt;/section&gt; */</span>
+
+<span class="comment">/* 1. Батьківський блок */</span>
+<span class="sel">.hero</span> {
+    <span class="prop">position</span>: <span class="val">relative</span>;         <span class="comment">/* контекст для ::after */</span>
+    <span class="prop">background-image</span>: <span class="val">url("img/hero.jpg")</span>;
+    <span class="prop">background-repeat</span>: <span class="val">no-repeat</span>;
+    <span class="prop">background-position</span>: <span class="val">center</span>;
+    <span class="prop">background-size</span>: <span class="val">cover</span>;
+    <span class="prop">background-color</span>: <span class="val">#000</span>;
+}
+
+<span class="comment">/* 2. Затемнюючий шар */</span>
+<span class="sel">.hero::after</span> {
+    <span class="prop">content</span>: <span class="val">""</span>;
+    <span class="prop">position</span>: <span class="val">absolute</span>;
+    <span class="prop">top</span>: <span class="val">0</span>;
+    <span class="prop">left</span>: <span class="val">0</span>;
+    <span class="prop">right</span>: <span class="val">0</span>;
+    <span class="prop">bottom</span>: <span class="val">0</span>;
+    <span class="prop">background-color</span>: <span class="val">rgba(0, 0, 0, 0.5)</span>;
+}
+
+<span class="comment">/* 3. Контент поверх затемнення */</span>
+<span class="sel">.hero__content</span> {
+    <span class="prop">position</span>: <span class="val">relative</span>;         <span class="comment">/* активує z-index */</span>
+    <span class="prop">z-index</span>: <span class="val">1</span>;                 <span class="comment">/* вище за ::after */</span>
+    <span class="prop">color</span>: <span class="val">#fff</span>;
+}</code></pre>
+
+        <div class="tip">
+            <strong>Чому <code>::after</code>, а не окремий <code>&lt;div&gt;</code>?</strong> Порожній блок без змісту
+            не потрібен у HTML. Псевдоелемент — ідеальний інструмент для декоративних шарів.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>8. text-transform — зміна регістру через CSS</h2>
+
+        <p>Заголовок великими літерами потрібно писати <strong>звичайним текстом</strong> у HTML, а трансформувати через
+            CSS:</p>
+
+        <pre><code><span class="sel">.hero__title</span> {
+    <span class="prop">text-transform</span>: <span class="val">uppercase</span>;
+}</code></pre>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Значення</th>
+                <th>Результат</th>
+                <th>Приклад</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>none</code></td>
+                <td>Без змін (за замовчуванням)</td>
+                <td>Привіт Світ</td>
+            </tr>
+            <tr>
+                <td><code>uppercase</code></td>
+                <td>Усі великі</td>
+                <td>ПРИВІТ СВІТ</td>
+            </tr>
+            <tr>
+                <td><code>lowercase</code></td>
+                <td>Усі малі</td>
+                <td>привіт світ</td>
+            </tr>
+            <tr>
+                <td><code>capitalize</code></td>
+                <td>Кожне слово з великої</td>
+                <td>Привіт Світ</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="warning">
+            <strong>Не пишіть «ВЕЛИКИМИ» в HTML!</strong> HTML описує контент, а не оформлення. Використовуйте <code>text-transform</code>
+            у CSS.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>9. Блок соціальних мереж — правильна розмітка</h2>
+
+        <p>Блок із посиланнями на соцмережі — це <strong>список посилань</strong>. Іконки — це декоративні зображення, а
+            не контент.</p>
+
+        <h3>Розмітка</h3>
+
+        <pre><code><span class="tag">&lt;address</span> <span class="attr">class</span>=<span
+                        class="val">"social"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;ul</span> <span class="attr">class</span>=<span class="val">"social__list"</span><span
+                        class="tag">&gt;</span>
+        <span class="tag">&lt;li</span> <span class="attr">class</span>=<span class="val">"social__item"</span><span
+                        class="tag">&gt;</span>
+            <span class="tag">&lt;a</span> <span class="attr">href</span>=<span
+                        class="val">"https://facebook.com/…"</span> <span class="attr">class</span>=<span class="val">"social__link social__link--facebook"</span><span
+                        class="tag">&gt;</span>
+                <span class="tag">&lt;span</span> <span class="attr">class</span>=<span
+                        class="val">"social__text"</span><span class="tag">&gt;</span>Facebook<span class="tag">&lt;/span&gt;</span>
+            <span class="tag">&lt;/a&gt;</span>
+        <span class="tag">&lt;/li&gt;</span>
+        <span class="tag">&lt;li</span> <span class="attr">class</span>=<span class="val">"social__item"</span><span
+                        class="tag">&gt;</span>
+            <span class="tag">&lt;a</span> <span class="attr">href</span>=<span
+                        class="val">"https://instagram.com/…"</span> <span class="attr">class</span>=<span class="val">"social__link social__link--instagram"</span><span
+                        class="tag">&gt;</span>
+                <span class="tag">&lt;span</span> <span class="attr">class</span>=<span
+                        class="val">"social__text"</span><span class="tag">&gt;</span>Instagram<span class="tag">&lt;/span&gt;</span>
+            <span class="tag">&lt;/a&gt;</span>
+        <span class="tag">&lt;/li&gt;</span>
+        <span class="tag">&lt;li</span> <span class="attr">class</span>=<span class="val">"social__item"</span><span
+                        class="tag">&gt;</span>
+            <span class="tag">&lt;a</span> <span class="attr">href</span>=<span
+                        class="val">"https://youtube.com/…"</span> <span class="attr">class</span>=<span class="val">"social__link social__link--youtube"</span><span
+                        class="tag">&gt;</span>
+                <span class="tag">&lt;span</span> <span class="attr">class</span>=<span
+                        class="val">"social__text"</span><span class="tag">&gt;</span>YouTube<span class="tag">&lt;/span&gt;</span>
+            <span class="tag">&lt;/a&gt;</span>
+        <span class="tag">&lt;/li&gt;</span>
+    <span class="tag">&lt;/ul&gt;</span>
+<span class="tag">&lt;/address&gt;</span></code></pre>
+
+        <h3>Чому саме так?</h3>
+
+        <ul>
+            <li><strong><code>&lt;address&gt;</code></strong> — семантичний тег для контактної інформації (адреса,
+                телефон, соцмережі). <em>Не</em> для кнопок «Поділитися»
+            </li>
+            <li><strong>Два класи</strong> на кожному посиланні: спільний (<code>social__link</code>) — для загальних
+                стилів; унікальний (<code>social__link--facebook</code>) — для індивідуальної іконки та кольору
+            </li>
+            <li><strong>Текст у <code>&lt;span&gt;</code></strong> — приховується візуально, але доступний для
+                скрінрідерів та пошукових систем
+            </li>
+        </ul>
+
+        <h3>CSS — два класи</h3>
+
+        <pre><code><span class="comment">/* Загальні стилі — однаковий розмір, форма, background */</span>
+<span class="sel">.social__link</span> {
+    <span class="prop">display</span>: <span class="val">inline-block</span>;
+    <span class="prop">width</span>: <span class="val">40px</span>;
+    <span class="prop">height</span>: <span class="val">40px</span>;
+    <span class="prop">background-repeat</span>: <span class="val">no-repeat</span>;
+    <span class="prop">background-position</span>: <span class="val">center</span>;
+    <span class="prop">background-size</span>: <span class="val">contain</span>;
+    <span class="prop">background-color</span>: <span class="val">#3b5998</span>;  <span class="comment">/* базовий колір */</span>
+}
+
+<span class="comment">/* Унікальні стилі — іконка та колір */</span>
+<span class="sel">.social__link--facebook</span>  { <span class="prop">background-image</span>: <span class="val">url("img/fb.svg")</span>; }
+<span class="sel">.social__link--instagram</span> {
+    <span class="prop">background-image</span>: <span class="val">url("img/ig.svg")</span>;
+    <span class="prop">background-color</span>: <span class="val">#e1306c</span>;
+}
+<span class="sel">.social__link--youtube</span> {
+    <span class="prop">background-image</span>: <span class="val">url("img/yt.svg")</span>;
+    <span class="prop">background-color</span>: <span class="val">#ff0000</span>;
+}</code></pre>
+
+        <div class="tip">
+            <strong>Перевага патерну «два класи»:</strong> загальний код зібрано в одному місці. Якщо змінився розмір
+            іконок — правимо тільки <code>.social__link</code>, а не кожну мережу окремо.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>10. Тег &lt;address&gt; — стиль за замовчуванням</h2>
+
+        <p>Тег <code>&lt;address&gt;</code> має стиль за замовчуванням: <code>font-style: italic</code>. Якщо курсив не
+            потрібен — скиньте його:</p>
+
+        <pre><code><span class="sel">address</span> {
+    <span class="prop">font-style</span>: <span class="val">normal</span>;
+}</code></pre>
+
+        <div class="warning">
+            <strong>Часта помилка:</strong> розробники забувають про курсив <code>&lt;address&gt;</code> і витрачають
+            час на пошук причини, чому текст став похилим.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>11. margin vs padding — коли що використовувати</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Ситуація</th>
+                <th>Властивість</th>
+                <th>Приклад</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Відступ між <strong>сусідніми</strong> (паралельними) елементами</td>
+                <td><code>margin</code></td>
+                <td>Відстань між пунктами меню, між карточками</td>
+            </tr>
+            <tr>
+                <td>Відступ від <strong>батька до дитини</strong> (внутрішній)</td>
+                <td><code>padding</code></td>
+                <td>Поля всередині шапки, відступ контенту від краю секції</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="example">
+            <strong>Шапка сайту:</strong> логотип зліва, меню справа. Відступ від верху/низу шапки до контенту — це
+            <code>padding-top</code> / <code>padding-bottom</code> для <code>&lt;header&gt;</code>. Відступи між
+            пунктами меню — це <code>margin-left</code> або <code>margin-right</code> для кожного
+            <code>&lt;li&gt;</code>.
+        </div>
+
+        <div class="tip">
+            <strong>Важливий нюанс:</strong> якщо у блока є фоновий колір або зображення — тільки <code>padding</code>
+            буде «всередині» фону. <code>margin</code> залишиться за межами фону. У таких випадках вибір очевидний.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>12. Типові випадки position: absolute</h2>
+
+        <p><code>position: absolute</code> — <strong>не для розміщення основного контенту</strong> на сторінці. Основні
+            елементи повинні бути звичайними блоками з <code>margin</code>, <code>padding</code>, Flexbox або Grid.</p>
+
+        <p>Типові випадки для <code>absolute</code>:</p>
+
+        <ul>
+            <li><strong>Затемнюючий overlay</strong> — маска поверх фону (розділ 7)</li>
+            <li><strong>Елемент, що виступає</strong> за межі свого блока (наприклад, фото, що «виглядає» з секції)</li>
+            <li><strong>Декоративні іконки</strong> — додаються через <code>::before</code>/<code>::after</code>,
+                позиціюються абсолютно
+            </li>
+            <li><strong>Бейджі та мітки</strong> — «Новинка», «-20%» на кутку карточки товару</li>
+            <li><strong>Випадаючі меню</strong> — не повинні зсувати основний контент</li>
+        </ul>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>13. Робота з макетами — інструменти та вимірювання</h2>
+
+        <p>Для верстки за макетом потрібно вміти вимірювати відстані, кольори та розміри. Сучасні інструменти:</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Інструмент</th>
+                <th>Тип</th>
+                <th>Примітки</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><strong>Figma</strong></td>
+                <td>Онлайн-редактор</td>
+                <td>Найзручніший для верстальника: працює у браузері, автоматично показує відстані, кольори, шрифти</td>
+            </tr>
+            <tr>
+                <td><strong>Photoshop</strong></td>
+                <td>Десктоп</td>
+                <td>Відкриває PSD-файли. Потребує ручного вимірювання лінійкою та напрямними</td>
+            </tr>
+            <tr>
+                <td><strong>Zeplin</strong></td>
+                <td>Онлайн-сервіс</td>
+                <td>Приймає макети з Figma, Sketch, Adobe XD. Зручний для колаборації дизайнерів і розробників</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Основи роботи з PSD у Photoshop</h3>
+
+        <ul>
+            <li><strong>Одиниці вимірювання:</strong> в налаштуваннях поставте пікселі (Edit → Preferences → Units &
+                Rulers)
+            </li>
+            <li><strong>Відкривайте саме .psd файл</strong>, а не .jpg/.png — лише в PSD є шари</li>
+            <li><strong>Шари (Layers):</strong> кожен елемент макету — окремий шар. Панель шарів — справа</li>
+            <li><strong>Автовибір:</strong> інструмент у верхньому лівому куті — клацаєте на елемент у макеті,
+                підсвічується його шар
+            </li>
+            <li><strong>Напрямні (Guides):</strong> тягніть з лінійки на макет для точних вимірювань</li>
+            <li><strong>Лінійка (Ruler tool):</strong> вимірює відстань між двома напрямними з точністю до пікселя</li>
+        </ul>
+
+        <div class="tip">
+            <strong>Дробні значення при вимірюванні</strong> (наприклад, 900.33 px) — завжди округлюйте. Пікселі
+            неподільні: 900.33 = 900 px.
+        </div>
+
+        <div class="warning">
+            <strong>Відстані між текстовими елементами</strong> неможливо виміряти ідеально точно. У кожного шрифту є
+            внутрішні відступи (залежать від <code>font-size</code> та <code>line-height</code>). Для піксельної
+            точності використовуйте техніку pixel perfect — накладання макету на верстку.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>14. Типи шарів у Photoshop</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Тип</th>
+                <th>Позначення</th>
+                <th>Призначення</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Текстовий</td>
+                <td>Літера <strong>T</strong></td>
+                <td>Будь-який текст у макеті</td>
+            </tr>
+            <tr>
+                <td>Зображення</td>
+                <td>Мініатюра</td>
+                <td>Фото, ілюстрації, іконки</td>
+            </tr>
+            <tr>
+                <td>Фон</td>
+                <td>Кольоровий квадрат</td>
+                <td>Заливка кольором</td>
+            </tr>
+            <tr>
+                <td>Маска</td>
+                <td>Чорно-білий прямокутник</td>
+                <td>Обрізає або модифікує інший шар</td>
+            </tr>
+            <tr>
+                <td>Smart Object</td>
+                <td>Іконка з квадратиком</td>
+                <td>Група шарів, згорнута в один. Подвійний клік відкриє вміст</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>15. Підсумкова таблиця</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Тема</th>
+                <th>Ключове</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Контент vs декор</td>
+                <td><code>&lt;img&gt;</code> — контент; <code>background-image</code> — декорація</td>
+            </tr>
+            <tr>
+                <td>Фоновий набір</td>
+                <td><code>background-image</code> + <code>no-repeat</code> + <code>center</code> + <code>cover</code> +
+                    <code>background-color</code></td>
+            </tr>
+            <tr>
+                <td>cover vs contain</td>
+                <td><code>cover</code> заповнює блок (обрізає); <code>contain</code> вписує повністю</td>
+            </tr>
+            <tr>
+                <td>position: absolute</td>
+                <td>Виймає з потоку, позиціюється через <code>top/left/right/bottom</code></td>
+            </tr>
+            <tr>
+                <td>position: relative</td>
+                <td>Не змінює поведінку; активує <code>z-index</code>; створює контекст для <code>absolute</code></td>
+            </tr>
+            <tr>
+                <td>z-index</td>
+                <td>Керує порядком накладання; потребує <code>position</code></td>
+            </tr>
+            <tr>
+                <td>Overlay (затемнення)</td>
+                <td><code>::after</code> + <code>absolute</code> + <code>rgba()</code>; текст виносимо через <code>relative</code>
+                    + <code>z-index: 1</code></td>
+            </tr>
+            <tr>
+                <td>text-transform</td>
+                <td><code>uppercase</code> / <code>lowercase</code> / <code>capitalize</code> / <code>none</code></td>
+            </tr>
+            <tr>
+                <td>Блок соцмереж</td>
+                <td>Список посилань; текст прихований; іконки через CSS; <code>&lt;address&gt;</code> для контактів</td>
+            </tr>
+            <tr>
+                <td>&lt;address&gt;</td>
+                <td>Семантика контактної інформації; за замовчуванням <code>font-style: italic</code></td>
+            </tr>
+            <tr>
+                <td>margin vs padding</td>
+                <td><code>margin</code> — між сусідами; <code>padding</code> — від батька до дитини</td>
+            </tr>
+            <tr>
+                <td>Figma / Photoshop</td>
+                <td>Figma — найзручніший; PSD — відкривати в Photoshop, одиниці — пікселі</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+{% endblock %}

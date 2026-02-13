@@ -1,0 +1,12 @@
+{% if lesson is not defined %}
+<div class="toolbar" aria-label="Панель інструментів">
+    <div class="toolbar-inner">
+        <button class="toolbar-btn search-trigger" type="button" aria-label="Пошук" title="Пошук">&#128269;</button>
+        <button class="toolbar-btn theme-toggle" type="button" aria-label="Змінити тему" title="Змінити тему">
+            <span class="theme-icon-light">☀️</span>
+            <span class="theme-icon-dark">🌙</span>
+        </button>
+        <button class="toolbar-btn" type="button" id="scrollToTop" aria-label="Вгору" title="Вгору">↑</button>
+    </div>
+</div>
+{% endif %}

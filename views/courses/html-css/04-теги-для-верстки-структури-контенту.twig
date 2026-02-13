@@ -1,0 +1,523 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Теги для верстки структури контенту</h1>
+    <p>Конспект лекції: семантичні теги, блочна модель, рядкові та блочні елементи</p>
+
+    <!-- ===== SECTION 1 ===== -->
+    <section>
+        <h2>Тег &lt;div&gt; — універсальний контейнер</h2>
+        <ul>
+            <li><code>&lt;div&gt;</code> — блочний елемент для групування вмісту. Не несе жодного семантичного значення.
+            </li>
+            <li>Використовується, коли жоден семантичний тег не підходить, але потрібно згрупувати елементи або
+                застосувати спільні стилі.
+            </li>
+            <li>Якщо є більш відповідний семантичний тег (<code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>,
+                <code>&lt;article&gt;</code>, <code>&lt;aside&gt;</code>) — використовуйте його замість <code>&lt;div&gt;</code>.
+            </li>
+        </ul>
+
+        <div class="tip">Принцип: спочатку семантика, потім <code>&lt;div&gt;</code>. Не обгортайте все підряд у <code>&lt;div&gt;</code>
+            — шукайте тег із відповідним значенням.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 2 ===== -->
+    <section>
+        <h2>Іменування класів</h2>
+        <ul>
+            <li><strong>Англійською мовою</strong> — це стандарт індустрії. Класи українською чи іншими мовами не
+                прийнятні.
+            </li>
+            <li><strong>Семантичні назви</strong> — клас описує призначення елемента, а не його зовнішній вигляд.</li>
+            <li><strong>kebab-case</strong> — слова розділяються дефісом: <code>course-card</code>,
+                <code>main-nav</code>, <code>article-preview</code>.
+            </li>
+        </ul>
+
+        <div class="comparison">
+            <div>
+                <strong>✅ Правильно</strong>
+                <ul>
+                    <li><code>course-card</code></li>
+                    <li><code>article-preview</code></li>
+                    <li><code>sidebar-widget</code></li>
+                    <li><code>main-content</code></li>
+                </ul>
+            </div>
+            <div>
+                <strong>❌ Неправильно</strong>
+                <ul>
+                    <li><code>red-block</code> (колір може змінитися)</li>
+                    <li><code>big-text</code> (візуальний опис)</li>
+                    <li><code>left-column</code> (позиція може змінитися)</li>
+                    <li><code>kartka-kursu</code> (не англійською)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="warning">Ніколи не називайте класи за зовнішнім виглядом. Дизайн змінюється — назви залишаються.
+            Клас <code>red-button</code> стане безглуздим, якщо кнопку перефарбують у синій.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 3 ===== -->
+    <section>
+        <h2>Тег &lt;main&gt; — основний вміст</h2>
+        <ul>
+            <li><code>&lt;main&gt;</code> позначає основний унікальний контент сторінки — те, заради чого користувач
+                відкрив сторінку.
+            </li>
+            <li><strong>Має бути один</strong> на сторінку.</li>
+            <li>Не включає шапку, підвал, навігацію, бічну панель — лише основний контент.</li>
+            <li>На сторінці статті — це текст статті. На головній сторінці блогу — стрічка публікацій.</li>
+        </ul>
+
+        <div class="example">
+            На сайті Smashing Magazine основний контент — це текст статті. Бічна панель з рекомендаціями, шапка з
+            навігацією — все це за межами <code>&lt;main&gt;</code>.
+        </div>
+
+        <pre><code><span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;header&gt;</span>...<span class="tag">&lt;/header&gt;</span>
+    <span class="tag">&lt;main&gt;</span>
+        <span class="comment">&lt;!-- Основний контент сторінки --&gt;</span>
+        <span class="tag">&lt;h1&gt;</span>Заголовок статті<span class="tag">&lt;/h1&gt;</span>
+        <span class="tag">&lt;p&gt;</span>Текст статті...<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/main&gt;</span>
+    <span class="tag">&lt;footer&gt;</span>...<span class="tag">&lt;/footer&gt;</span>
+<span class="tag">&lt;/body&gt;</span></code></pre>
+    </section>
+
+    <!-- ===== SECTION 4 ===== -->
+    <section>
+        <h2>Тег &lt;aside&gt; — супутній контент</h2>
+        <ul>
+            <li><code>&lt;aside&gt;</code> позначає контент, пов'язаний з основним, але не є його частиною.</li>
+            <li>Може бути <strong>всередині</strong> <code>&lt;main&gt;</code> (врізка в статті, пов'язана рекламна
+                пропозиція) або <strong>ззовні</strong> (бічна панель, sidebar).
+            </li>
+            <li>На сторінці може бути <strong>кілька</strong> <code>&lt;aside&gt;</code>.</li>
+            <li>Ключовий критерій — <strong>зв'язок з основним контентом</strong>. Якщо блок ніяк не пов'язаний із
+                <code>&lt;main&gt;</code>, це не <code>&lt;aside&gt;</code>.
+            </li>
+        </ul>
+
+        <div class="example">
+            Стаття про штучний інтелект, а поруч — рекламний блок курсу з Data Science. Він опосередковано пов'язаний зі
+            змістом статті → <code>&lt;aside&gt;</code>.
+        </div>
+
+        <pre><code><span class="comment">&lt;!-- aside всередині main --&gt;</span>
+<span class="tag">&lt;main&gt;</span>
+    <span class="tag">&lt;article&gt;</span>...<span class="tag">&lt;/article&gt;</span>
+    <span class="tag">&lt;aside&gt;</span>Пов'язаний курс<span class="tag">&lt;/aside&gt;</span>
+<span class="tag">&lt;/main&gt;</span>
+
+<span class="comment">&lt;!-- aside ззовні main --&gt;</span>
+<span class="tag">&lt;main&gt;</span>...<span class="tag">&lt;/main&gt;</span>
+<span class="tag">&lt;aside&gt;</span>Бічна панель<span class="tag">&lt;/aside&gt;</span></code></pre>
+    </section>
+
+    <!-- ===== SECTION 5 ===== -->
+    <section>
+        <h2>Тег &lt;section&gt; — тематична група</h2>
+        <ul>
+            <li><code>&lt;section&gt;</code> — тематично згрупований контент, що <strong>має заголовок</strong>.</li>
+            <li>На відміну від <code>&lt;article&gt;</code>, <code>&lt;section&gt;</code> не є самостійним — він частина
+                більшого контексту.
+            </li>
+            <li>Якщо вирвати <code>&lt;section&gt;</code> зі сторінки, він може втратити сенс.</li>
+            <li><code>&lt;section&gt;</code> може містити інші <code>&lt;section&gt;</code> або
+                <code>&lt;article&gt;</code>.
+            </li>
+        </ul>
+
+        <div class="tip">Простий орієнтир: <code>&lt;section&gt;</code> — це, по суті, <code>&lt;div&gt;</code> із
+            заголовком і тематичним змістом. Є заголовок і група пов'язаних елементів — використовуйте <code>&lt;section&gt;</code>.
+        </div>
+
+        <pre><code><span class="tag">&lt;section&gt;</span>
+    <span class="tag">&lt;h2&gt;</span>Інші курси<span class="tag">&lt;/h2&gt;</span>
+    <span class="tag">&lt;article&gt;</span>Картка курсу 1<span class="tag">&lt;/article&gt;</span>
+    <span class="tag">&lt;article&gt;</span>Картка курсу 2<span class="tag">&lt;/article&gt;</span>
+    <span class="tag">&lt;article&gt;</span>Картка курсу 3<span class="tag">&lt;/article&gt;</span>
+<span class="tag">&lt;/section&gt;</span></code></pre>
+    </section>
+
+    <!-- ===== SECTION 6 ===== -->
+    <section>
+        <h2>Тег &lt;article&gt; — незалежний контент</h2>
+        <ul>
+            <li><code>&lt;article&gt;</code> — самостійна, незалежна одиниця контенту, яку можна вирвати зі сторінки й
+                використати окремо.
+            </li>
+            <li>У <code>&lt;article&gt;</code> <strong>обов'язково</strong> має бути заголовок.</li>
+            <li>Типові приклади: картка товару, новина в стрічці, пост у блозі, коментар.</li>
+            <li><code>&lt;article&gt;</code> <strong>не може</strong> містити інший <code>&lt;article&gt;</code>.</li>
+        </ul>
+
+        <div class="comparison">
+            <div>
+                <strong>&lt;article&gt;</strong>
+                <ul>
+                    <li>Незалежний від контексту</li>
+                    <li>Можна перенести в інше місце</li>
+                    <li>Обов'язковий заголовок</li>
+                    <li>Не вкладається сам у себе</li>
+                </ul>
+            </div>
+            <div>
+                <strong>&lt;section&gt;</strong>
+                <ul>
+                    <li>Частина більшого контексту</li>
+                    <li>При винесенні може втратити сенс</li>
+                    <li>Заголовок бажаний</li>
+                    <li>Може вкладатися сам у себе</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 7 ===== -->
+    <section>
+        <h2>Пріоритет семантичних тегів</h2>
+        <p>Під час розмітки сторінки визначайте теги у такому порядку:</p>
+        <ol>
+            <li><strong><code>&lt;main&gt;</code></strong> — виділіть основний контент сторінки.</li>
+            <li><strong><code>&lt;aside&gt;</code></strong> — знайдіть блоки, пов'язані з основним контентом.</li>
+            <li><strong><code>&lt;article&gt;</code></strong> — визначте незалежні самодостатні елементи.</li>
+            <li><strong><code>&lt;section&gt;</code></strong> — згрупуйте тематичні блоки із заголовками.</li>
+            <li><strong><code>&lt;div&gt;</code></strong> — все, що не підійшло під семантичні теги.</li>
+        </ol>
+
+        <div class="warning">Не потрібно «страждати семантикою» і засовувати семантичні теги всюди. Основне призначення
+            — дати загальне уявлення про структуру сторінки пошуковим системам та скрінрідерам.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 8 ===== -->
+    <section>
+        <h2>Приклад розмітки сторінки</h2>
+        <p>Уявімо сторінку новинного сайту зі статтею та рекомендаціями:</p>
+
+        <pre><code><span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;header&gt;</span>Шапка сайту<span class="tag">&lt;/header&gt;</span>
+
+    <span class="tag">&lt;main&gt;</span>
+        <span class="comment">&lt;!-- Стаття — основний контент --&gt;</span>
+        <span class="tag">&lt;section&gt;</span>
+            <span class="tag">&lt;h1&gt;</span>Заголовок статті<span class="tag">&lt;/h1&gt;</span>
+            <span class="tag">&lt;p&gt;</span>Перша частина тексту...<span class="tag">&lt;/p&gt;</span>
+        <span class="tag">&lt;/section&gt;</span>
+        <span class="tag">&lt;section&gt;</span>
+            <span class="tag">&lt;h2&gt;</span>Другий розділ<span class="tag">&lt;/h2&gt;</span>
+            <span class="tag">&lt;p&gt;</span>Друга частина тексту...<span class="tag">&lt;/p&gt;</span>
+        <span class="tag">&lt;/section&gt;</span>
+
+        <span class="comment">&lt;!-- Пов'язана пропозиція --&gt;</span>
+        <span class="tag">&lt;aside&gt;</span>Спецкурс із теми статті<span class="tag">&lt;/aside&gt;</span>
+    <span class="tag">&lt;/main&gt;</span>
+
+    <span class="comment">&lt;!-- Блок рекомендованих курсів --&gt;</span>
+    <span class="tag">&lt;section&gt;</span>
+        <span class="tag">&lt;h2&gt;</span>Інші курси<span class="tag">&lt;/h2&gt;</span>
+        <span class="tag">&lt;article&gt;</span>Картка курсу 1<span class="tag">&lt;/article&gt;</span>
+        <span class="tag">&lt;article&gt;</span>Картка курсу 2<span class="tag">&lt;/article&gt;</span>
+    <span class="tag">&lt;/section&gt;</span>
+
+    <span class="tag">&lt;footer&gt;</span>Підвал сайту<span class="tag">&lt;/footer&gt;</span>
+<span class="tag">&lt;/body&gt;</span></code></pre>
+
+        <div class="tip">Вивчайте розмітку якісних сайтів (наприклад, Smashing Magazine) через інспектор браузера — це
+            допоможе розвинути «професійний погляд» на структуру сторінки.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 9 ===== -->
+    <section>
+        <h2>Блочна модель (Box Model)</h2>
+        <p>Кожен елемент на сторінці — це прямокутник (бокс). Браузер будує розкладку, спираючись на розміри цих
+            боксів.</p>
+
+        <h3>Складові елемента</h3>
+        <ol>
+            <li><strong>Контентна область (content)</strong> — область, де розміщується текст або дочірні елементи.</li>
+            <li><strong>Внутрішні відступи (padding)</strong> — простір між контентом і межею.</li>
+            <li><strong>Межа (border)</strong> — видима рамка елемента.</li>
+        </ol>
+
+        <p><strong>Елемент</strong> = content + padding + border</p>
+
+        <h3>Що таке бокс?</h3>
+        <p><strong>Бокс</strong> = елемент + зовнішні відступи (margin). Саме боксами елементи «бачать» одне одного і
+            взаємодіють на сторінці.</p>
+
+        <div class="box-model">
+            <div class="box-model-diagram">
+                <div class="margin-zone">
+                    <div class="label">margin</div>
+                    <div class="border-zone">
+                        <div class="label">border</div>
+                        <div class="padding-zone">
+                            <div class="label">padding</div>
+                            <div class="content-zone">content</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Формули розрахунку</h3>
+        <ul>
+            <li><strong>Ширина елемента</strong> = width + padding-left + padding-right + border-left + border-right
+            </li>
+            <li><strong>Висота елемента</strong> = height + padding-top + padding-bottom + border-top + border-bottom
+            </li>
+            <li><strong>Ширина боксу</strong> = ширина елемента + margin-left + margin-right</li>
+        </ul>
+
+        <div class="warning">Якщо сума ширин дочірніх елементів перевищує ширину батьківського — елементи переносяться
+            на новий рядок. Навіть 1 зайвий піксель спричинить перенос.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 10 ===== -->
+    <section>
+        <h2>Властивість box-sizing</h2>
+        <p><code>box-sizing</code> змінює, на що саме впливають властивості <code>width</code> і <code>height</code>.
+        </p>
+
+        <table>
+            <tr>
+                <th>Значення</th>
+                <th><code>width</code> задає</th>
+                <th>Розрахунок</th>
+            </tr>
+            <tr>
+                <td><code>content-box</code> (за замовчуванням)</td>
+                <td>ширину <strong>контентної області</strong></td>
+                <td>Загальна ширина = width + padding + border</td>
+            </tr>
+            <tr>
+                <td><code>border-box</code></td>
+                <td>ширину <strong>всього елемента</strong></td>
+                <td>Браузер автоматично зменшить контентну область</td>
+            </tr>
+        </table>
+
+        <div class="example">
+            Задано <code>width: 300px</code> і <code>padding: 50px</code>.<br>
+            При <code>content-box</code>: загальна ширина = 300 + 50 + 50 = <strong>400px</strong>.<br>
+            При <code>border-box</code>: загальна ширина = <strong>300px</strong> (контент автоматично = 200px).
+        </div>
+
+        <div class="tip"><code>box-sizing</code> не впливає на <code>margin</code> — це властивість боксу, а не
+            елемента. <code>box-sizing</code> змінює лише поведінку <code>width</code> та <code>height</code>.
+        </div>
+
+        <div class="warning"><code>box-sizing</code> <strong>не успадковується</strong>. Його потрібно задавати кожному
+            елементу окремо (або через універсальний селектор <code>*</code>).
+        </div>
+    </section>
+
+    <!-- ===== SECTION 11 ===== -->
+    <section>
+        <h2>Рядкові та блочні елементи</h2>
+        <p>Властивість <code>display</code> визначає, як елемент поводиться на сторінці.</p>
+
+        <h3>display: inline (рядкові)</h3>
+        <ul>
+            <li>Поводяться як слова в реченні — вишиковуються одне за одним у рядок.</li>
+            <li><strong>Не застосовується блочна модель</strong>: <code>width</code>, <code>height</code>, вертикальні
+                <code>margin</code> — не працюють.
+            </li>
+            <li><code>padding</code> відображається, але <strong>не взаємодіє</strong> з сусідніми елементами (налізає
+                на текст).
+            </li>
+            <li>Розмір визначається лише внутрішнім вмістом.</li>
+        </ul>
+        <p><strong>Приклади:</strong> <code>&lt;a&gt;</code>, <code>&lt;span&gt;</code>, <code>&lt;strong&gt;</code>,
+            <code>&lt;em&gt;</code>, <code>&lt;time&gt;</code>.</p>
+
+        <h3>display: block (блочні)</h3>
+        <ul>
+            <li>Займають <strong>всю ширину</strong> контентної області батька за замовчуванням.</li>
+            <li>Застосовується <strong>повна блочна модель</strong>: <code>width</code>, <code>height</code>, <code>margin</code>,
+                <code>padding</code>, <code>border</code>.
+            </li>
+            <li>Кожен блочний елемент починається з нового рядка.</li>
+        </ul>
+        <p><strong>Приклади:</strong> <code>&lt;div&gt;</code>, <code>&lt;h1&gt;</code>–<code>&lt;h6&gt;</code>, <code>&lt;ul&gt;</code>,
+            <code>&lt;ol&gt;</code>, <code>&lt;li&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code>.
+        </p>
+
+        <h3>Особливий випадок: &lt;p&gt;</h3>
+        <p>Тег <code>&lt;p&gt;</code> має <strong>рядковий контекст форматування</strong> (всередині — тільки рядкові
+            елементи), але до нього <strong>застосовується блочна модель</strong> (<code>width</code>,
+            <code>margin</code>, <code>padding</code> працюють).</p>
+
+        <div class="tip">Як перевірити тип елемента: якщо елемент за замовчуванням займає всю ширину — він блочний. Якщо
+            його ширина дорівнює вмісту — рядковий. Або відкрийте довідник на <a
+                    href="https://developer.mozilla.org/uk/" target="_blank">MDN</a>.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 12 ===== -->
+    <section>
+        <h2>Зміна типу елемента</h2>
+        <p>Рядковий елемент можна зробити блочним (і навпаки) через <code>display</code>:</p>
+
+        <pre><code><span class="comment">/* Зробити посилання блочною */</span>
+<span class="sel">a</span> {
+    <span class="prop">display</span>: <span class="val">block</span>;
+    <span class="prop">width</span>: <span class="val">375px</span>;
+    <span class="prop">margin-top</span>: <span class="val">20px</span>;
+}</code></pre>
+
+        <p>Після <code>display: block</code> посилання:</p>
+        <ul>
+            <li>Займає всю ширину батька (або задану <code>width</code>).</li>
+            <li>Реагує на <code>margin-top</code>, <code>padding</code>.</li>
+            <li>Починається з нового рядка.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 13 ===== -->
+    <section>
+        <h2>Вирівнювання тексту: text-align</h2>
+        <ul>
+            <li><code>text-align</code> вирівнює <strong>рядковий вміст</strong> всередині <strong>блочного
+                    елемента</strong>.
+            </li>
+            <li>Застосовується до батьківського блочного елемента, а не до самого тексту.</li>
+            <li><strong>Не працює</strong> для рядкових елементів (інлайнових) — вони вже частина рядка.</li>
+        </ul>
+
+        <div class="example">
+            Щоб відцентрувати текст рядкового посилання, оберніть його в блочний елемент і задайте <code>text-align:
+                center</code> обгортці.
+        </div>
+
+        <pre><code><span class="tag">&lt;div</span> <span class="attr">class=</span><span
+                        class="val">"action"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;a</span> <span class="attr">href=</span><span class="val">"#"</span><span
+                        class="tag">&gt;</span>Читати далі<span class="tag">&lt;/a&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="comment">&lt;!-- CSS --&gt;</span>
+<span class="sel">.action</span> { <span class="prop">text-align</span>: <span class="val">center</span>; }</code></pre>
+    </section>
+
+    <!-- ===== SECTION 14 ===== -->
+    <section>
+        <h2>Центрування блочного елемента</h2>
+        <p>Щоб відцентрувати блочний елемент горизонтально, потрібні <strong>дві умови</strong>:</p>
+        <ol>
+            <li>Елементу задано <strong>явну ширину</strong> (<code>width</code>).</li>
+            <li>Задано <strong>автоматичні бокові margin</strong>.</li>
+        </ol>
+
+        <pre><code><span class="sel">.news</span> {
+    <span class="prop">width</span>: <span class="val">485px</span>;
+    <span class="prop">margin-left</span>: <span class="val">auto</span>;
+    <span class="prop">margin-right</span>: <span class="val">auto</span>;
+}</code></pre>
+
+        <p>Браузер автоматично розподілить вільний простір порівну між лівим і правим margin.</p>
+
+        <div class="warning">Якщо ширина не задана — блочний елемент і так займає всю ширину батька, і центрування не
+            має сенсу.
+        </div>
+
+        <div class="tip">Не використовуйте скорочення <code>margin: auto</code> — воно перезапише вертикальні відступи.
+            Задавайте <code>margin-left: auto</code> і <code>margin-right: auto</code> окремо.
+        </div>
+
+        <h3>Один auto-margin</h3>
+        <ul>
+            <li><code>margin-left: auto</code> — притискає елемент <strong>вправо</strong>.</li>
+            <li><code>margin-right: auto</code> — нічого не змінює (елемент і так ліворуч).</li>
+            <li>Обидва <code>auto</code> — елемент по центру.</li>
+        </ul>
+
+        <div class="warning">Вертикальні auto-margin (<code>margin-top: auto</code>, <code>margin-bottom: auto</code>)
+            <strong>не працюють</strong> для центрування в нормальному потоці.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 15 ===== -->
+    <section>
+        <h2>Успадкування властивостей</h2>
+        <ul>
+            <li><strong>Текстові властивості успадковуються:</strong> <code>font-family</code>, <code>font-size</code>,
+                <code>color</code>, <code>line-height</code>, <code>text-align</code> тощо.
+            </li>
+            <li>Задайте їх на <code>body</code> — і всі дочірні елементи отримають ці значення.</li>
+            <li><strong>Властивості блочної моделі НЕ успадковуються:</strong> <code>margin</code>, <code>padding</code>,
+                <code>border</code>, <code>width</code>, <code>height</code>, <code>box-sizing</code>.
+            </li>
+        </ul>
+
+        <pre><code><span class="sel">body</span> {
+    <span class="prop">font-family</span>: <span class="val">"Segoe UI", sans-serif</span>;
+    <span class="prop">color</span>: <span class="val">#333</span>;
+    <span class="prop">line-height</span>: <span class="val">1.6</span>;
+    <span class="comment">/* Усі дочірні елементи успадкують ці значення */</span>
+}</code></pre>
+    </section>
+
+    <!-- ===== SECTION 16 ===== -->
+    <section>
+        <h2>Підсумок</h2>
+        <table>
+            <tr>
+                <th>Тема</th>
+                <th>Ключове</th>
+            </tr>
+            <tr>
+                <td><code>&lt;div&gt;</code></td>
+                <td>Універсальний контейнер без семантики</td>
+            </tr>
+            <tr>
+                <td><code>&lt;main&gt;</code></td>
+                <td>Основний контент, один на сторінку</td>
+            </tr>
+            <tr>
+                <td><code>&lt;aside&gt;</code></td>
+                <td>Супутній контент, пов'язаний з основним</td>
+            </tr>
+            <tr>
+                <td><code>&lt;article&gt;</code></td>
+                <td>Незалежний контент із заголовком</td>
+            </tr>
+            <tr>
+                <td><code>&lt;section&gt;</code></td>
+                <td>Тематична група із заголовком</td>
+            </tr>
+            <tr>
+                <td>Box Model</td>
+                <td>content + padding + border = елемент; + margin = бокс</td>
+            </tr>
+            <tr>
+                <td><code>box-sizing</code></td>
+                <td><code>content-box</code>: width → контент; <code>border-box</code>: width → весь елемент</td>
+            </tr>
+            <tr>
+                <td>Рядкові vs Блочні</td>
+                <td>Inline: без блочної моделі; Block: повна блочна модель</td>
+            </tr>
+            <tr>
+                <td>Центрування блока</td>
+                <td><code>width</code> + <code>margin-left/right: auto</code></td>
+            </tr>
+            <tr>
+                <td>Успадкування</td>
+                <td>Текстові — так; блочна модель — ні</td>
+            </tr>
+        </table>
+    </section>
+
+{% endblock %}

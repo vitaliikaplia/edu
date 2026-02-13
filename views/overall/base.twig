@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="{{ site.html_loc }}">
+{% include 'overall/html-header.twig' %}
+<body class="{{ body_classes }}">
+{% if 'course-lesson' in body_classes %}
+<div class="reading-progress" id="readingProgress"></div>
+{% endif %}
+{% include 'overall/header.twig' %}
+<div class="container">
+{% block base %}{% endblock %}
+</div>
+{% include 'overall/lesson-pagination.twig' %}
+{% include 'overall/floating-controls.twig' %}
+{% include 'overall/footer.twig' %}
+{% include 'overall/search-overlay.twig' %}
+{% include 'overall/html-footer.twig' %}
+</body>
+</html>

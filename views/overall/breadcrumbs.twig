@@ -1,0 +1,16 @@
+{% if breadcrumbs is defined and breadcrumbs | length > 0 %}
+<nav class="breadcrumbs" aria-label="Breadcrumbs">
+    <ol class="breadcrumbs-list" itemscope itemtype="https://schema.org/BreadcrumbList">
+        {% for crumb in breadcrumbs %}
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            {% if crumb.url is defined %}
+                <a href="{{ crumb.url }}" itemprop="item"><span itemprop="name">{{ crumb.title }}</span></a>
+            {% else %}
+                <span class="current" itemprop="name">{{ crumb.title }}</span>
+            {% endif %}
+            <meta itemprop="position" content="{{ loop.index }}" />
+        </li>
+        {% endfor %}
+    </ol>
+</nav>
+{% endif %}

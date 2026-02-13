@@ -1,0 +1,630 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Верстка адаптивного макета</h1>
+    <p>Конспект лекції: кросбраузерність, caniuse.com, вендорні префікси, стратегії адаптивної верстки</p>
+
+    <!-- 1. Кросбраузерність та caniuse.com -->
+    <section>
+        <h2>1. Кросбраузерність та caniuse.com</h2>
+        <p>Кросбраузерність — це здатність сайту коректно відображатись у різних браузерах. Це одна з найпоширеніших
+            проблем верстальників.</p>
+        <p>Сервіс <a href="https://caniuse.com" target="_blank">caniuse.com</a> дозволяє перевірити підтримку будь-якої
+            CSS/HTML/JS технології у сучасних браузерах. Ви вводите назву технології та бачите повну розкладку підтримки
+            по версіях браузерів.</p>
+        <p>Приклади використання:</p>
+        <ul>
+            <li>Перевірка підтримки CSS Custom Properties (змінних)</li>
+            <li>Перевірка підтримки <code>-webkit-line-clamp</code></li>
+            <li>Перевірка підтримки тега <code>&lt;picture&gt;</code></li>
+            <li>Перевірка нових CSS/JS можливостей</li>
+        </ul>
+    </section>
+
+    <!-- 2. Вендорні префікси -->
+    <section>
+        <h2>2. Вендорні префікси</h2>
+        <p>Вендорні префікси — це спеціальні приставки до CSS-властивостей, які браузери використовували для
+            експериментальних можливостей:</p>
+        <ul>
+            <li><code>-webkit-</code> — Chrome, Safari, новіші версії Opera</li>
+            <li><code>-moz-</code> — Firefox</li>
+            <li><code>-o-</code> — старі версії Opera</li>
+            <li><code>-ms-</code> — Internet Explorer, Edge (старіший)</li>
+        </ul>
+        <p>Спочатку ці префікси створювались для демонстрації майбутніх можливостей. Згодом розробники почали
+            використовувати їх як повноцінні властивості, що призвело до проблем із сумісністю.</p>
+        <p>Приклад властивості з вендорним префіксом:</p>
+        <pre><code><span class="sel">.element</span> {
+  <span class="prop">-webkit-line-clamp</span>: <span class="val">3</span>;
+  <span class="prop">display</span>: <span class="val">-webkit-box</span>;
+  <span class="prop">-webkit-box-orient</span>: <span class="val">vertical</span>;
+  <span class="prop">overflow</span>: <span class="val">hidden</span>;
+}</code></pre>
+        <p>Сьогодні більшість властивостей підтримуються без префіксів. Перевіряйте актуальність на <a
+                    href="https://caniuse.com" target="_blank">caniuse.com</a>.</p>
+    </section>
+
+    <!-- 3. Обрізка тексту: text-overflow та line-clamp -->
+    <section>
+        <h2>3. Обрізка тексту: text-overflow та line-clamp</h2>
+        <h3>Однорядкова обрізка з трикрапкою</h3>
+        <p>Для обрізки тексту в одну строку з трикрапкою потрібна комбінація трьох властивостей:</p>
+        <pre><code><span class="sel">.truncate</span> {
+  <span class="prop">white-space</span>: <span class="val">nowrap</span>;        <span class="comment">/* Забороняємо перенос */</span>
+  <span class="prop">overflow</span>: <span class="val">hidden</span>;           <span class="comment">/* Ховаємо зайве */</span>
+  <span class="prop">text-overflow</span>: <span class="val">ellipsis</span>;    <span class="comment">/* Додаємо трикрапку */</span>
+}</code></pre>
+        <p>Усі три властивості обов'язкові — без будь-якої з них ефект не працюватиме.</p>
+
+        <h3>Багаторядкова обрізка з -webkit-line-clamp</h3>
+        <p>Для обрізки після певної кількості рядків використовується <code>-webkit-line-clamp</code>:</p>
+        <pre><code><span class="sel">.multiline-truncate</span> {
+  <span class="prop">display</span>: <span class="val">-webkit-box</span>;
+  <span class="prop">-webkit-box-orient</span>: <span class="val">vertical</span>;
+  <span class="prop">-webkit-line-clamp</span>: <span class="val">3</span>;    <span class="comment">/* Кількість рядків */</span>
+  <span class="prop">overflow</span>: <span class="val">hidden</span>;
+}</code></pre>
+        <p>Незважаючи на префікс <code>-webkit-</code>, ця властивість працює у всіх сучасних браузерах.</p>
+    </section>
+
+    <!-- 4. BrowserHacks -->
+    <section>
+        <h2>4. BrowserHacks (CSS-хаки)</h2>
+        <p>BrowserHacks — це збірник CSS/JS-костилів для визначення конкретного браузера або його версії. Це спеціальні
+            конструкції без логічного сенсу, які працюють тільки в певних браузерах.</p>
+        <p>Приклад хака для визначення Chrome:</p>
+        <pre><code><span class="comment">/* Спрацює тільки в Chrome */</span>
+<span class="sel">@media screen and (-webkit-min-device-pixel-ratio: 0)</span> {
+  <span class="sel">.element</span> {
+    <span class="prop">color</span>: <span class="val">red</span>;
+  }
+}</code></pre>
+        <p>Використовувати хаки не рекомендується — це свідчить про низьку якість верстки. Якщо все ж доводиться,
+            обов'язково залишайте коментарі в коді.</p>
+    </section>
+
+    <!-- 5. Типи верстки: адаптивна, відгукова, гумова -->
+    <section>
+        <h2>5. Типи верстки: адаптивна, відгукова, гумова</h2>
+        <h3>Гумова верстка (Fluid/Liquid)</h3>
+        <p>Сайт розтягується разом з вікном браузера. Усі блоки мають відносні розміри (у відсотках). Приклад —
+            Вікіпедія.</p>
+        <p>Проблема: на дуже широких екранах текст стає важко читати — рядки занадто довгі. Рішення:</p>
+        <ul>
+            <li>Обмежити максимальну ширину (<code>max-width</code>)</li>
+            <li>Розбити текст на колонки (CSS <code>columns</code>)</li>
+        </ul>
+
+        <h3>Адаптивна/Відгукова верстка (Responsive)</h3>
+        <p>Сайт перебудовується при зміні ширини вікна за допомогою медіазапитів. Елементи змінюють розташування,
+            розміри, видимість. Це найпоширеніший підхід.</p>
+
+        <h3>overflow: hidden як костиль</h3>
+        <p>Поширена помилка — замість пошуку причини горизонтальної прокрутки ставити <code>overflow: hidden</code> на
+            <code>body</code>. Це лише маскує проблему, а не вирішує її.</p>
+    </section>
+
+    <!-- 6. Практичний приклад: адаптивна картка -->
+    <section>
+        <h2>6. Практичний приклад: адаптивна картка користувача</h2>
+        <p>Розглянемо верстку картки, яка на десктопі показує фото, ім'я, посаду та контакти вертикально, а на
+            мобільному — фото на весь екран із накладеним текстом.</p>
+
+        <h3>HTML-структура</h3>
+        <pre><code><span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"card"</span><span
+                        class="tag">&gt;</span>
+  <span class="tag">&lt;img</span> <span class="attr">class=</span><span class="val">"card__image"</span>
+       <span class="attr">src=</span><span class="val">"photo.jpg"</span>
+       <span class="attr">alt=</span><span class="val">"Фото"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"card__info"</span><span
+                        class="tag">&gt;</span>
+    <span class="tag">&lt;h2</span> <span class="attr">class=</span><span class="val">"card__name"</span><span
+                        class="tag">&gt;</span>Jane Smith<span class="tag">&lt;/h2&gt;</span>
+    <span class="tag">&lt;p</span> <span class="attr">class=</span><span class="val">"card__post"</span><span
+                        class="tag">&gt;</span>Photographer<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;a</span> <span class="attr">class=</span><span class="val">"card__contact"</span> <span
+                        class="attr">href=</span><span class="val">"tel:+380501234567"</span><span
+                        class="tag">&gt;</span>+380 50 123 45 67<span class="tag">&lt;/a&gt;</span>
+    <span class="tag">&lt;a</span> <span class="attr">class=</span><span class="val">"card__contact"</span> <span
+                        class="attr">href=</span><span class="val">"mailto:test@example.com"</span><span class="tag">&gt;</span>test@example.com<span
+                        class="tag">&lt;/a&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span></code></pre>
+
+        <h3>Десктопна версія (object-fit: cover)</h3>
+        <pre><code><span class="sel">.card</span> {
+  <span class="prop">display</span>: <span class="val">flex</span>;
+  <span class="prop">flex-direction</span>: <span class="val">column</span>;
+  <span class="prop">align-items</span>: <span class="val">center</span>;
+  <span class="prop">justify-content</span>: <span class="val">center</span>;
+  <span class="prop">min-height</span>: <span class="val">100vh</span>;
+  <span class="prop">text-align</span>: <span class="val">center</span>;
+  <span class="prop">background</span>: <span class="val">blue</span>;
+  <span class="prop">color</span>: <span class="val">white</span>;
+}
+
+<span class="sel">.card__image</span> {
+  <span class="prop">width</span>: <span class="val">100px</span>;
+  <span class="prop">height</span>: <span class="val">100px</span>;
+  <span class="prop">object-fit</span>: <span class="val">cover</span>;        <span class="comment">/* Зберігаємо пропорції */</span>
+  <span class="prop">border-radius</span>: <span class="val">50%</span>;       <span class="comment">/* Коло */</span>
+  <span class="prop">border</span>: <span class="val">4px solid white</span>;
+}</code></pre>
+
+        <h3>Мобільна версія (шари з position і z-index)</h3>
+        <pre><code><span class="sel">.card</span> {
+  <span class="prop">position</span>: <span class="val">relative</span>;
+}
+
+<span class="sel">.card__image</span> {
+  <span class="prop">position</span>: <span class="val">absolute</span>;
+  <span class="prop">width</span>: <span class="val">100%</span>;
+  <span class="prop">height</span>: <span class="val">100%</span>;
+  <span class="prop">object-fit</span>: <span class="val">cover</span>;
+  <span class="prop">z-index</span>: <span class="val">1</span>;
+}
+
+<span class="sel">.card__info</span> {
+  <span class="prop">position</span>: <span class="val">relative</span>;
+  <span class="prop">z-index</span>: <span class="val">2</span>;
+  <span class="prop">background</span>: <span class="val">rgba(0, 0, 255, 0.5)</span>;   <span class="comment">/* Напівпрозорий фон */</span>
+}</code></pre>
+        <p>Ключовий прийом: зображення розтягується на весь блок через <code>position: absolute</code>, а текстовий блок
+            із <code>z-index</code> вищим накладається зверху з напівпрозорим фоном.</p>
+    </section>
+
+    <!-- 7. CSS-трикутники через border -->
+    <section>
+        <h2>7. CSS-трикутники через border</h2>
+        <p>Коли елемент має нульову ширину та висоту, а рамки — великий розмір, кожна з чотирьох рамок утворює
+            трикутник:</p>
+        <pre><code><span class="sel">.triangle</span> {
+  <span class="prop">width</span>: <span class="val">0</span>;
+  <span class="prop">height</span>: <span class="val">0</span>;
+  <span class="prop">border-width</span>: <span class="val">100px</span>;
+  <span class="prop">border-style</span>: <span class="val">solid</span>;
+  <span class="prop">border-color</span>: <span class="val">red green blue black</span>;
+}</code></pre>
+        <p>Щоб залишити один трикутник, робимо решту рамок прозорими:</p>
+        <pre><code><span class="comment">/* Трикутник вправо */</span>
+<span class="sel">.triangle-right</span> {
+  <span class="prop">width</span>: <span class="val">0</span>;
+  <span class="prop">height</span>: <span class="val">0</span>;
+  <span class="prop">border-top</span>: <span class="val">50px solid transparent</span>;
+  <span class="prop">border-bottom</span>: <span class="val">50px solid transparent</span>;
+  <span class="prop">border-left</span>: <span class="val">100px solid green</span>;
+  <span class="prop">border-right</span>: <span class="val">0</span>;
+}</code></pre>
+        <p>Трикутники використовуються для стрілок випадаючих меню, підказок (tooltips), складових фігур (трапецій
+            тощо). Технологія проста та не потребує зображень.</p>
+    </section>
+
+    <!-- 8. Логічні оператори в медіазапитах -->
+    <section>
+        <h2>8. Логічні оператори в медіазапитах</h2>
+
+        <h3>Кома (OR — логічне АБО)</h3>
+        <p>Об'єднує кілька незалежних медіазапитів. Стилі застосовуються, якщо хоча б один з них справджується:</p>
+        <pre><code><span class="sel">@media (max-width: 600px), (orientation: portrait)</span> {
+  <span class="comment">/* Спрацює при ширині до 600px АБО при портретній орієнтації */</span>
+}</code></pre>
+
+        <h3>and (логічне І)</h3>
+        <p>Об'єднує умови — стилі застосовуються тільки коли всі умови справджуються одночасно:</p>
+        <pre><code><span class="sel">@media (min-width: 768px) and (max-width: 1024px)</span> {
+  <span class="comment">/* Тільки для ширин від 768px до 1024px */</span>
+}</code></pre>
+
+        <h3>not (логічне НЕ)</h3>
+        <p>Заперечення — стилі застосовуються для всіх випадків, крім вказаного:</p>
+        <pre><code><span class="sel">@media not print</span> {
+  <span class="comment">/* Для всіх пристроїв, крім друку */</span>
+}</code></pre>
+        <p>На практиці підходу Mobile First із <code>min-width</code> зазвичай достатньо. Логічні оператори рідко
+            потрібні, але корисно знати про їхнє існування.</p>
+    </section>
+
+    <!-- 9. Повноекранний фон: background-size: cover -->
+    <section>
+        <h2>9. Повноекранний фон: background-size: cover</h2>
+        <p>Для створення повноекранного блоку з фоновим зображенням використовується комбінація:</p>
+        <pre><code><span class="sel">.hero</span> {
+  <span class="prop">height</span>: <span class="val">100vh</span>;                    <span class="comment">/* Вся висота вікна */</span>
+  <span class="prop">background-image</span>: <span class="val">url('hero.jpg')</span>;
+  <span class="prop">background-size</span>: <span class="val">cover</span>;            <span class="comment">/* Заповнює весь блок */</span>
+  <span class="prop">background-position</span>: <span class="val">center</span>;
+  <span class="prop">background-repeat</span>: <span class="val">no-repeat</span>;
+}</code></pre>
+        <p><code>cover</code> гарантує, що зображення заповнить весь блок без спотворень, обрізаючи зайве.
+            <code>contain</code> натомість вмістить усе зображення, але можуть залишитися порожні смуги.</p>
+        <p>Для адаптивних мобільних версій краще використовувати тег <code>&lt;picture&gt;</code>, який дозволяє
+            підвантажувати різні зображення для різних розмірів екрану.</p>
+    </section>
+
+    <!-- 10. Тег <picture> для адаптивних зображень -->
+    <section>
+        <h2>10. Тег &lt;picture&gt; для адаптивних зображень</h2>
+        <p>Тег <code>&lt;picture&gt;</code> дозволяє показувати різні зображення залежно від медіазапиту:</p>
+        <pre><code><span class="tag">&lt;picture&gt;</span>
+  <span class="tag">&lt;source</span> <span class="attr">srcset=</span><span class="val">"mobile.jpg"</span>
+          <span class="attr">media=</span><span class="val">"(max-width: 480px)"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;source</span> <span class="attr">srcset=</span><span class="val">"tablet.jpg"</span>
+          <span class="attr">media=</span><span class="val">"(max-width: 1024px)"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;img</span> <span class="attr">src=</span><span class="val">"desktop.jpg"</span>
+       <span class="attr">alt=</span><span class="val">"Опис зображення"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;/picture&gt;</span></code></pre>
+        <p>Переваги:</p>
+        <ul>
+            <li>На мобільному завантажується менше зображення — швидше завантаження</li>
+            <li>Можна показувати різний кроп для різних пристроїв</li>
+            <li>Тег <code>&lt;img&gt;</code> всередині забезпечує зворотну сумісність зі старими браузерами</li>
+            <li>Адреси зображень в HTML — зручно для інших розробників (front-end, back-end)</li>
+        </ul>
+    </section>
+
+    <!-- 11. 100vh для повноекранних секцій -->
+    <section>
+        <h2>11. 100vh для повноекранних секцій</h2>
+        <p>Для створення блоку на всю висоту вікна використовують одиницю <code>vh</code>:</p>
+        <pre><code><span class="sel">.fullscreen-section</span> {
+  <span class="prop">height</span>: <span class="val">100vh</span>;   <span
+                        class="comment">/* 100% висоти viewport */</span>
+}</code></pre>
+        <p>Для коректної роботи на мобільних пристроях (де адресний рядок впливає на висоту) у сучасних браузерах можна
+            використовувати <code>100dvh</code> (dynamic viewport height).</p>
+    </section>
+
+    <!-- 12. Модульна сітка -->
+    <section>
+        <h2>12. Модульна сітка</h2>
+        <p>Модульна сітка — це розбиття простору на рівні колонки, відносно яких розміщується контент. Ця концепція
+            прийшла з типографіки (газети, журнали, енциклопедії).</p>
+        <p>Стандарт — <strong>12 колонок</strong>, бо число 12 ділиться на 2, 3, 4 і 6:</p>
+        <table>
+            <thead>
+            <tr>
+                <th>Поділ</th>
+                <th>Модулі</th>
+                <th>Відсотки</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>На 2 частини</td>
+                <td>6 + 6</td>
+                <td>50% + 50%</td>
+            </tr>
+            <tr>
+                <td>На 3 частини</td>
+                <td>4 + 4 + 4</td>
+                <td>33.33% + 33.33% + 33.33%</td>
+            </tr>
+            <tr>
+                <td>На 4 частини</td>
+                <td>3 + 3 + 3 + 3</td>
+                <td>25% + 25% + 25% + 25%</td>
+            </tr>
+            <tr>
+                <td>Бічна панель + контент</td>
+                <td>3 + 9</td>
+                <td>25% + 75%</td>
+            </tr>
+            <tr>
+                <td>Контент + бічна панель</td>
+                <td>8 + 4</td>
+                <td>66.67% + 33.33%</td>
+            </tr>
+            </tbody>
+        </table>
+        <p>Переваги модульної сітки:</p>
+        <ul>
+            <li>Простіше вирівнювати елементи — думаємо модулями, а не пікселями</li>
+            <li>Відсотки стають зрозумілими: 6 з 12 = 50%, 4 з 12 = 33.33%</li>
+            <li>Дизайнеру та верстальнику легше спілкуватися</li>
+        </ul>
+    </section>
+
+    <!-- 13. Bootstrap: сітка та компоненти -->
+    <section>
+        <h2>13. Bootstrap: сітка та компоненти</h2>
+
+        <h3>Фреймворк vs бібліотека</h3>
+        <p><strong>Фреймворк</strong> (Bootstrap) — це комплексне рішення: сітка, компоненти (кнопки, модальні вікна,
+            каруселі, акордеони тощо). <strong>Бібліотека</strong> (FlexboxGrid) — вирішує одну задачу (наприклад,
+            тільки сітку).</p>
+
+        <h3>Підключення Bootstrap</h3>
+        <pre><code><span class="comment">&lt;!-- CSS --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"stylesheet"</span>
+      <span class="attr">href=</span><span class="val">"https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css"</span><span
+                        class="tag">&gt;</span>
+
+<span class="comment">&lt;!-- JS (для інтерактивних компонентів) --&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">src=</span><span class="val">"https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"</span><span
+                        class="tag">&gt;&lt;/script&gt;</span></code></pre>
+
+        <h3>Контейнер (container)</h3>
+        <p>Клас <code>container</code> створює центровану колонку з фіксованою шириною для кожної точки злому:</p>
+        <table>
+            <thead>
+            <tr>
+                <th>Ширина вікна</th>
+                <th>Ширина контейнера</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>&lt; 576px</td>
+                <td>100%</td>
+            </tr>
+            <tr>
+                <td>&ge; 576px</td>
+                <td>540px</td>
+            </tr>
+            <tr>
+                <td>&ge; 768px</td>
+                <td>720px</td>
+            </tr>
+            <tr>
+                <td>&ge; 992px</td>
+                <td>960px</td>
+            </tr>
+            <tr>
+                <td>&ge; 1200px</td>
+                <td>1140px</td>
+            </tr>
+            <tr>
+                <td>&ge; 1400px</td>
+                <td>1320px</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Точки злому (Breakpoints)</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Префікс</th>
+                <th>Мінімальна ширина</th>
+                <th>Назва</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>(без префікса)</td>
+                <td>&lt; 576px</td>
+                <td>Extra small</td>
+            </tr>
+            <tr>
+                <td><code>sm</code></td>
+                <td>&ge; 576px</td>
+                <td>Small</td>
+            </tr>
+            <tr>
+                <td><code>md</code></td>
+                <td>&ge; 768px</td>
+                <td>Medium</td>
+            </tr>
+            <tr>
+                <td><code>lg</code></td>
+                <td>&ge; 992px</td>
+                <td>Large</td>
+            </tr>
+            <tr>
+                <td><code>xl</code></td>
+                <td>&ge; 1200px</td>
+                <td>Extra large</td>
+            </tr>
+            <tr>
+                <td><code>xxl</code></td>
+                <td>&ge; 1400px</td>
+                <td>Extra extra large</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Сітка (Grid System)</h3>
+        <p>Bootstrap використовує систему <code>container</code> → <code>row</code> → <code>col</code>:</p>
+        <pre><code><span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"container"</span><span
+                        class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"row"</span><span
+                        class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"col-8"</span><span class="tag">&gt;</span>8 модулів з 12 (66.67%)<span
+                        class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"col-4"</span><span class="tag">&gt;</span>4 модулі з 12 (33.33%)<span
+                        class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span></code></pre>
+
+        <h3>Адаптивні колонки</h3>
+        <p>Додаючи префікс точки злому, задаємо різну кількість модулів для різних пристроїв:</p>
+        <pre><code><span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"row"</span><span
+                        class="tag">&gt;</span>
+  <span class="comment">&lt;!-- На sm і вище: 8 модулів, менше sm: 100% --&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"col-sm-8"</span><span class="tag">&gt;</span>Основний контент<span
+                        class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"col-sm-4"</span><span class="tag">&gt;</span>Бічна панель<span
+                        class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"row"</span><span
+                        class="tag">&gt;</span>
+  <span class="comment">&lt;!-- Кілька точок злому одночасно --&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class=</span><span
+                        class="val">"col-12 col-sm-8 col-md-6 col-lg-4"</span><span class="tag">&gt;</span>
+    Адаптивний блок
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span></code></pre>
+
+        <h3>Коли використовувати Bootstrap</h3>
+        <ul>
+            <li>Адміністративні панелі (де дизайн не принциповий)</li>
+            <li>Швидке прототипування для показу клієнту</li>
+            <li>Великі портали з повторюваними компонентами</li>
+            <li>Проєкти, де більшість компонентів Bootstrap дійсно потрібні</li>
+        </ul>
+    </section>
+
+    <!-- 14. FlexboxGrid -->
+    <section>
+        <h2>14. FlexboxGrid</h2>
+        <p>FlexboxGrid — це легка бібліотека, яка реалізує тільки модульну сітку на основі Flexbox. Класи практично
+            ідентичні Bootstrap: <code>container</code>, <code>row</code>, <code>col</code>.</p>
+        <p>Приклад використання:</p>
+        <pre><code><span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"row"</span><span
+                        class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"col-xs-12 col-sm-8 col-md-6 col-lg-4"</span><span
+                        class="tag">&gt;</span>
+    Контент
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span></code></pre>
+        <p>Підходить, коли потрібна лише сітка без компонентів. Для сучасних проєктів розгляньте також CSS Grid Layout
+            як нативну альтернативу.</p>
+    </section>
+
+    <!-- 15. Правила найменування CSS-класів -->
+    <section>
+        <h2>15. Правила найменування CSS-класів</h2>
+
+        <h3>Що НЕ варто робити</h3>
+        <ul>
+            <li><strong>Не називайте класи кольорами:</strong> <code>.red-button</code> → краще
+                <code>.button-danger</code> або <code>.button-primary</code>. Колірна тема може змінитися
+            </li>
+            <li><strong>Не вказуйте теги в класах:</strong> <code>.div-header</code> → краще <code>.header</code>. Тег
+                може змінитися
+            </li>
+            <li><strong>Не використовуйте порядкові номери:</strong> <code>.item-1</code>, <code>.item-2</code> → при
+                додаванні нових елементів нумерація втрачає сенс
+            </li>
+            <li><strong>Не об'єднуйте незв'язані блоки:</strong> <code>.header, .footer, .sidebar { width: 100%;
+                    }</code> → тримайте стилі блоків окремо
+            </li>
+        </ul>
+
+        <h3>Що ВАРТО робити</h3>
+        <ul>
+            <li><strong>Використовуйте семантичні назви:</strong> <code>.card__image</code>, <code>.nav__link</code>
+            </li>
+            <li><strong>Один клас = один селектор:</strong> найкращий селектор — це один клас без вкладеності</li>
+            <li><strong>Дотримуйтесь єдиного стилю роздільників:</strong> якщо використовуєте дефіс — використовуйте
+                скрізь, якщо camelCase — скрізь
+            </li>
+            <li><strong>Методологія BEM:</strong> Block__Element--Modifier — перевірений підхід до іменування</li>
+            <li><strong>Переносьте логіку в HTML:</strong> замість <code>:nth-child</code> краще додати клас <code>.item--first</code>
+            </li>
+        </ul>
+
+        <h3>Простота коду</h3>
+        <p>Чим простіші ваші CSS-правила — тим легше іншим розробникам (і вам самим через час) розібратися в коді.
+            Простий код також швидше обробляється браузером.</p>
+    </section>
+
+    <!-- 16. scroll-behavior: smooth -->
+    <section>
+        <h2>16. scroll-behavior: smooth</h2>
+        <p>CSS-властивість для плавної прокрутки при переході за якірними посиланнями:</p>
+        <pre><code><span class="sel">html</span> {
+  <span class="prop">scroll-behavior</span>: <span class="val">smooth</span>;
+}</code></pre>
+        <p>Після цього кліки на якірні посилання (наприклад, <code>&lt;a href="#section"&gt;</code>) будуть плавно
+            прокручувати сторінку до потрібного елемента замість різкого стрибка.</p>
+    </section>
+
+    <!-- 17. Швидкість завантаження сайту -->
+    <section>
+        <h2>17. Швидкість завантаження сайту</h2>
+        <p>Формула швидкості завантаження:</p>
+        <p><strong>Час = Кількість файлів &times; Об'єм файлів + Складність обробки</strong></p>
+        <p>Як впливати на кожну складову:</p>
+        <ul>
+            <li><strong>Кількість файлів:</strong> об'єднання CSS/JS-файлів, використання спрайтів/SVG замість окремих
+                іконок
+            </li>
+            <li><strong>Об'єм файлів:</strong> мініфікація, стиснення зображень, lazy loading</li>
+            <li><strong>Складність:</strong> простіші CSS-селектори, менше анімацій, Critical CSS</li>
+        </ul>
+    </section>
+
+    <!-- 18. Підсумкова таблиця -->
+    <section>
+        <h2>18. Підсумкова таблиця</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Тема</th>
+                <th>Ключове</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>caniuse.com</td>
+                <td>Перевірка підтримки технологій у браузерах</td>
+            </tr>
+            <tr>
+                <td>Вендорні префікси</td>
+                <td><code>-webkit-</code>, <code>-moz-</code>, <code>-o-</code>, <code>-ms-</code></td>
+            </tr>
+            <tr>
+                <td>text-overflow: ellipsis</td>
+                <td>+ white-space: nowrap + overflow: hidden</td>
+            </tr>
+            <tr>
+                <td>-webkit-line-clamp</td>
+                <td>Багаторядкова обрізка з трикрапкою</td>
+            </tr>
+            <tr>
+                <td>Типи верстки</td>
+                <td>Гумова, адаптивна/відгукова</td>
+            </tr>
+            <tr>
+                <td>object-fit: cover</td>
+                <td>Заповнення блоку зображенням зі збереженням пропорцій</td>
+            </tr>
+            <tr>
+                <td>CSS-трикутники</td>
+                <td>border + width: 0 + height: 0 + transparent</td>
+            </tr>
+            <tr>
+                <td>Логічні оператори</td>
+                <td>Кома (OR), and (І), not (НЕ)</td>
+            </tr>
+            <tr>
+                <td>background-size: cover</td>
+                <td>Повноекранний фон без спотворень</td>
+            </tr>
+            <tr>
+                <td>&lt;picture&gt;</td>
+                <td>Різні зображення для різних пристроїв</td>
+            </tr>
+            <tr>
+                <td>100vh</td>
+                <td>Блок на всю висоту вікна</td>
+            </tr>
+            <tr>
+                <td>Модульна сітка</td>
+                <td>12 колонок, прийшла з типографіки</td>
+            </tr>
+            <tr>
+                <td>Bootstrap</td>
+                <td>Фреймворк: сітка + компоненти</td>
+            </tr>
+            <tr>
+                <td>FlexboxGrid</td>
+                <td>Бібліотека: тільки сітка</td>
+            </tr>
+            <tr>
+                <td>Найменування класів</td>
+                <td>Без кольорів, тегів, номерів; BEM; прості селектори</td>
+            </tr>
+            <tr>
+                <td>scroll-behavior</td>
+                <td>smooth — плавна прокрутка до якорів</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+{% endblock %}

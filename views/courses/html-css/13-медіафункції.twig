@@ -1,0 +1,603 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Медіафункції</h1>
+    <p>Конспект лекції: чек-лист мобільного дизайну, медіафункції width, height, resolution, hover та pointer</p>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>1. Чек-лист приймання мобільного дизайну</h2>
+
+        <p>Верстальник — це «очі» між дизайнером і розробником. Перед початком верстки варто перевірити макет і дати
+            зворотний зв'язок дизайнеру.</p>
+
+        <h3>Відмінності мобільного інтерфейсу</h3>
+        <ul>
+            <li><strong>Немає hover</strong> — палець не може «навести» на елемент без натискання</li>
+            <li><strong>Більша область кліку</strong> — мінімальний розмір інтерактивного елемента ~48×48 px</li>
+            <li><strong>Немає клавіатури</strong> — вводити текст складніше, краще використовувати чекбокси,
+                радіокнопки, перемикачі
+            </li>
+            <li><strong>Жести</strong> — свайп, зум; але на сайтах жести майже не використовуються</li>
+        </ul>
+
+        <h3>Імітація hover на мобільних</h3>
+
+        <p>На iOS для імітації hover потрібен інтерактивний елемент — <code>&lt;a&gt;</code> або
+            <code>&lt;button&gt;</code>. Звичайний <code>&lt;span&gt;</code> не спрацює. На Android працює з будь-яким
+            елементом.</p>
+
+        <div class="warning">
+            <strong>Не покладайтесь на hover!</strong> Важливий контент, прихований за наведенням (опис товару,
+            підказки), на мобільних стає недоступним. Краще показувати інформацію одразу або використовувати натискання.
+        </div>
+
+        <h3>Що перевіряти в макеті</h3>
+        <ul>
+            <li>Розмір інтерактивних елементів (мін. 48×48 px)</li>
+            <li>Відсутність горизонтальних випадаючих списків</li>
+            <li>Читабельність тексту без масштабування</li>
+            <li>Достатні відступи між кнопками / посиланнями</li>
+            <li>Елементи з двома значеннями → чекбокс або перемикач</li>
+            <li>Мала кількість варіантів → радіокнопки замість випадаючого списку</li>
+        </ul>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>2. meta viewport — налаштування області перегляду</h2>
+
+        <p>Без мета-тегу viewport мобільний браузер відображає сайт як стаціонарний (із шириною ~980 px), і користувачу
+            доводиться масштабувати вручну.</p>
+
+        <pre><code><span class="tag">&lt;meta</span> <span class="attr">name</span>=<span class="val">"viewport"</span> <span
+                        class="attr">content</span>=<span
+                        class="val">"width=device-width, initial-scale=1.0"</span><span
+                        class="tag">&gt;</span></code></pre>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Параметр</th>
+                <th>Значення</th>
+                <th>Опис</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>width</code></td>
+                <td><code>device-width</code></td>
+                <td>Ширина viewport = рекомендована ширина пристрою (з урахуванням DPR)</td>
+            </tr>
+            <tr>
+                <td><code>initial-scale</code></td>
+                <td><code>1.0</code></td>
+                <td>Початковий масштаб (1.0 = 100%)</td>
+            </tr>
+            <tr>
+                <td><code>minimum-scale</code></td>
+                <td>число</td>
+                <td>Мінімальний допустимий масштаб</td>
+            </tr>
+            <tr>
+                <td><code>maximum-scale</code></td>
+                <td>число</td>
+                <td>Максимальний допустимий масштаб</td>
+            </tr>
+            <tr>
+                <td><code>user-scalable</code></td>
+                <td><code>yes</code> / <code>no</code></td>
+                <td>Дозволити/заборонити масштабування користувачем</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="warning">
+            <strong>Не забороняйте масштабування!</strong> <code>user-scalable=no</code> та <code>maximum-scale=1</code>
+            заважають користувачам збільшувати дрібний текст або розглядати зображення. Це погіршує доступність сайту.
+        </div>
+
+        <div class="tip">
+            <strong>Без viewport</strong> медіазапити на мобільних не працюватимуть коректно — браузер вважатиме ширину
+            ~980 px замість реальних 375–414 px.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>3. Медіазапроси в CSS — розширений синтаксис</h2>
+
+        <p>Медіазапрос у CSS можна поєднувати з типом пристрою:</p>
+
+        <pre><code><span class="sel">@media screen</span> {
+    <span class="sel">body</span> {
+        <span class="prop">font-size</span>: <span class="val">14px</span>;
+    }
+}</code></pre>
+
+        <p>Складніший запит — з умовою на ширину:</p>
+
+        <pre><code><span class="sel">@media (max-width: 480px)</span> {
+    <span class="comment">/* Стилі для екранів до 480px включно */</span>
+}</code></pre>
+
+        <h3>Стратегія: менше медіазапитів — краще</h3>
+
+        <p>Замість двох парних запитів (до 480 і від 481) — залиште базовий CSS для мобільних і один запит від 481:</p>
+
+        <pre><code><span class="comment">/* Базові стилі — працюють завжди (мобільні) */</span>
+<span class="sel">.sidebar</span>,
+<span class="sel">.content</span> {
+    <span class="prop">width</span>: <span class="val">100%</span>;
+}
+
+<span class="comment">/* Від 481px — додаються колонки */</span>
+<span class="sel">@media (min-width: 481px)</span> {
+    <span class="sel">.content</span>  { <span class="prop">width</span>: <span class="val">75%</span>; }
+    <span class="sel">.sidebar</span> { <span class="prop">width</span>: <span class="val">25%</span>; }
+}</code></pre>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>4. Медіазапроси в тезі link — розділення файлів</h2>
+
+        <p>При підході Mobile First базовий CSS не містить жодного <code>@media</code>. Планшетні та десктопні стилі
+            підключаються окремими файлами:</p>
+
+        <pre><code><span class="comment">&lt;!-- Базовий — без медіазапитів (мобільний) --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span
+                        class="attr">href</span>=<span class="val">"mobile.css"</span><span class="tag">&gt;</span>
+
+<span class="comment">&lt;!-- Від 769px — планшет --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span
+                        class="attr">href</span>=<span class="val">"tablet.css"</span>
+      <span class="attr">media</span>=<span class="val">"(min-width: 769px)"</span><span class="tag">&gt;</span>
+
+<span class="comment">&lt;!-- Від 1025px — десктоп --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span
+                        class="attr">href</span>=<span class="val">"desktop.css"</span>
+      <span class="attr">media</span>=<span class="val">"(min-width: 1025px)"</span><span class="tag">&gt;</span></code></pre>
+
+        <div class="tip">
+            <strong>Каскадність:</strong> на десктопі працюють стилі з усіх трьох файлів — mobile + tablet + desktop.
+            Кожен наступний файл лише додає або перевизначає правила.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>5. Критичний CSS (Critical CSS)</h2>
+
+        <p>Критичний CSS — це мінімальний набір стилів, необхідний для відображення <strong>першого екрану</strong>
+            сайту. Він вбудовується безпосередньо в <code>&lt;style&gt;</code> всередині <code>&lt;head&gt;</code>.</p>
+
+        <h3>Навіщо?</h3>
+        <ul>
+            <li>Зовнішній CSS-файл потребує часу на завантаження</li>
+            <li>Вбудований CSS відображається миттєво разом зі сторінкою</li>
+            <li>Користувач бачить контент першого екрану до завантаження основного CSS</li>
+        </ul>
+
+        <h3>Що впливає на швидкість</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Фактор</th>
+                <th>Рекомендація</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Кількість файлів</td>
+                <td>Менше файлів — менше запитів до сервера</td>
+            </tr>
+            <tr>
+                <td>Розмір файлів</td>
+                <td>Мініфікація, оптимізація зображень</td>
+            </tr>
+            <tr>
+                <td>Складність CSS</td>
+                <td>Простіші селектори — швидший рендеринг</td>
+            </tr>
+            <tr>
+                <td>Відкладене завантаження</td>
+                <td>Lazy loading для зображень поза першим екраном</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>На практиці</strong> критичний CSS генерують автоматично за допомогою інструментів збірки (Webpack,
+            Vite тощо). Вручну це робити недоцільно.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>6. Одиниця em — розмір шрифту поточного елемента</h2>
+
+        <p><code>1em</code> = значення <code>font-size</code> поточного елемента. Якщо у елемента немає явного <code>font-size</code>,
+            значення успадковується від батька вгору по ланцюжку до кореневого елемента.</p>
+
+        <pre><code><span class="sel">.box</span> {
+    <span class="prop">font-size</span>: <span class="val">20px</span>;
+    <span class="prop">width</span>: <span class="val">10em</span>;    <span
+                        class="comment">/* 10 × 20 = 200px */</span>
+    <span class="prop">padding</span>: <span class="val">1em</span>;   <span class="comment">/* 1 × 20 = 20px */</span>
+}</code></pre>
+
+        <div class="warning">
+            <strong>Обережно з em!</strong> Якщо перенести віджет у контейнер з іншим <code>font-size</code>, усі
+            розміри в <code>em</code> зміняться пропорційно. Це може призвести до неочікуваного збільшення або зменшення
+            елемента.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>7. Одиниця rem — розмір шрифту кореневого елемента</h2>
+
+        <p><code>1rem</code> = значення <code>font-size</code> елемента <code>&lt;html&gt;</code> (не
+            <code>&lt;body&gt;</code>). На відміну від <code>em</code>, <code>rem</code> не залежить від контексту
+            вкладеності.</p>
+
+        <pre><code><span class="sel">html</span> {
+    <span class="prop">font-size</span>: <span class="val">10px</span>;   <span class="comment">/* 1rem = 10px, зручно рахувати */</span>
+}
+
+<span class="sel">.box</span> {
+    <span class="prop">width</span>: <span class="val">30rem</span>;    <span class="comment">/* 300px */</span>
+    <span class="prop">padding</span>: <span class="val">1.5rem</span>; <span class="comment">/* 15px */</span>
+}</code></pre>
+
+        <h3>Коли rem зручний</h3>
+        <ul>
+            <li><strong>Версія для слабкозорих</strong> — змінюємо лише <code>font-size</code> у <code>html</code>, і
+                все масштабується
+            </li>
+            <li><strong>Глобальне масштабування</strong> — якщо клієнт попросить «зменшити все в 1.5 рази», достатньо
+                змінити одне значення
+            </li>
+        </ul>
+
+        <div class="tip">
+            <strong>Прийом:</strong> <code>html { font-size: 10px; }</code> — тоді значення з макету (наприклад, 961px)
+            просто ділиться на 10 → <code>96.1rem</code>.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>8. Де використовувати які одиниці</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Одиниця</th>
+                <th>Тип</th>
+                <th>Де використовувати</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>px</code></td>
+                <td>Відносна</td>
+                <td>Основна одиниця — все, що не потрапляє в інші категорії</td>
+            </tr>
+            <tr>
+                <td><code>%</code></td>
+                <td>Відносна</td>
+                <td>Колонки (25%, 33%, 50%, 75%, 100%) — лише коли візуально видно поділ</td>
+            </tr>
+            <tr>
+                <td><code>em</code></td>
+                <td>Відносна</td>
+                <td>Рідко; коли є чітка пропорція відносно розміру шрифту</td>
+            </tr>
+            <tr>
+                <td><code>rem</code></td>
+                <td>Відносна</td>
+                <td>Версія для слабкозорих, глобальне масштабування</td>
+            </tr>
+            <tr>
+                <td><code>vw</code>, <code>vh</code></td>
+                <td>Відносна</td>
+                <td>Адаптивність (ознайомлення на наступних заняттях)</td>
+            </tr>
+            <tr>
+                <td><code>cm</code>, <code>mm</code>, <code>in</code></td>
+                <td>Абсолютна</td>
+                <td>Тільки для друку (<code>@media print</code>)</td>
+            </tr>
+            <tr>
+                <td><code>pt</code></td>
+                <td>Абсолютна</td>
+                <td>Поліграфія, типографіка (рідко в вебі)</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="warning">
+            <strong>Не підганяйте проценти!</strong> Якщо у вас з'являються значення типу 41.5% або 21.4% — ви,
+            ймовірно, «підганяєте» макет. Такий код складно підтримувати. Використовуйте проценти лише для очевидних
+            пропорцій (1/2, 1/3, 1/4).
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>9. Не переоптимізовуйте з em</h2>
+
+        <p>Поширена помилка — побачити, що заголовок у 2.5 рази більший за текст, і замінити <code>font-size</code> на
+            <code>2.5em</code>. Це працює, поки дизайнер не змінить один розмір без іншого.</p>
+
+        <h3>Погана оптимізація</h3>
+
+        <pre><code><span class="sel">.service p</span> {
+    <span class="prop">font-size</span>: <span class="val">16px</span>;
+}
+<span class="sel">.service h2</span> {
+    <span class="prop">font-size</span>: <span class="val">2.5em</span>;  <span class="comment">/* 40px, але залежить від font-size батька */</span>
+}</code></pre>
+
+        <h3>Краще — явні значення</h3>
+
+        <pre><code><span class="sel">.service p</span> {
+    <span class="prop">font-size</span>: <span class="val">16px</span>;
+}
+<span class="sel">.service h2</span> {
+    <span class="prop">font-size</span>: <span class="val">40px</span>;
+}
+
+<span class="sel">@media (max-width: 768px)</span> {
+    <span class="sel">.service p</span>  { <span class="prop">font-size</span>: <span class="val">14px</span>; }
+    <span class="sel">.service h2</span> { <span class="prop">font-size</span>: <span class="val">28px</span>; }
+}</code></pre>
+
+        <div class="tip">
+            <strong>Правило:</strong> значення в CSS мають збігатися з тим, що ви бачите в макеті. Якщо в макеті 40px —
+            пишіть 40px, а не 2.5em. Так простіше шукати та змінювати.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>10. Центрування елементів через margin: auto</h2>
+
+        <p>У flex-контейнері <code>margin: auto</code> працює і по горизонталі, і по вертикалі (на відміну від
+            звичайного потоку, де <code>margin-top: auto</code> = 0).</p>
+
+        <pre><code><span class="sel">.container</span> {
+    <span class="prop">display</span>: <span class="val">flex</span>;
+    <span class="prop">width</span>: <span class="val">400px</span>;
+    <span class="prop">height</span>: <span class="val">400px</span>;
+}
+
+<span class="sel">.box</span> {
+    <span class="prop">width</span>: <span class="val">100px</span>;
+    <span class="prop">height</span>: <span class="val">100px</span>;
+    <span class="prop">margin</span>: <span class="val">auto</span>;  <span class="comment">/* Центрує і горизонтально, і вертикально */</span>
+}</code></pre>
+
+        <h3>margin auto у flex — розподіл елементів</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Елемент 1</th>
+                <th>Елемент 2</th>
+                <th>Результат</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>margin-left: auto</code></td>
+                <td>—</td>
+                <td>Елемент притискається вправо</td>
+            </tr>
+            <tr>
+                <td><code>margin-right: auto</code></td>
+                <td><code>margin-left: auto</code></td>
+                <td>Елементи розходяться по кутах</td>
+            </tr>
+            <tr>
+                <td><code>margin-right: auto</code></td>
+                <td><code>margin-right: auto</code></td>
+                <td>Обидва притискаються вліво</td>
+            </tr>
+            <tr>
+                <td><code>margin-left: auto</code></td>
+                <td><code>margin-left: auto</code></td>
+                <td>Обидва притискаються вправо</td>
+            </tr>
+            <tr>
+                <td colspan="2"><code>margin: auto</code> для обох</td>
+                <td>Обидва по центру</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>Порівняння з justify-content:</strong> <code>margin: auto</code> керує окремими елементами, тоді як
+            <code>justify-content</code> — усіма елементами контейнера одразу.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>11. Схлопування зовнішніх відступів (margin collapsing)</h2>
+
+        <p>У звичайному потоці (без flex) вертикальні відступи сусідніх елементів <strong>не додаються</strong>, а
+            <strong>схлопуються</strong> — залишається більший з двох.</p>
+
+        <pre><code><span class="sel">.block-1</span> {
+    <span class="prop">margin-bottom</span>: <span class="val">70px</span>;
+}
+<span class="sel">.block-2</span> {
+    <span class="prop">margin-top</span>: <span class="val">30px</span>;
+}
+<span class="comment">/* Відстань між блоками = 70px (не 100px!) */</span></code></pre>
+
+        <div class="warning">
+            <strong>У flex-контейнері</strong> схлопування не відбувається! Відступи додаються: 70 + 30 = 100px.
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Контекст</th>
+                <th>Вертикальні margin</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Звичайний потік</td>
+                <td>Схлопуються (залишається більший)</td>
+            </tr>
+            <tr>
+                <td>Flex-контейнер</td>
+                <td>Додаються (сума)</td>
+            </tr>
+            <tr>
+                <td>Grid-контейнер</td>
+                <td>Додаються (сума)</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>12. Додаткові медіафункції</h2>
+
+        <p>Крім <code>min-width</code> / <code>max-width</code> існують інші медіафункції:</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Функція</th>
+                <th>Приклад</th>
+                <th>Опис</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>orientation</code></td>
+                <td><code>@media (orientation: landscape)</code></td>
+                <td>Альбомна орієнтація пристрою</td>
+            </tr>
+            <tr>
+                <td><code>orientation</code></td>
+                <td><code>@media (orientation: portrait)</code></td>
+                <td>Портретна орієнтація пристрою</td>
+            </tr>
+            <tr>
+                <td><code>min-height</code></td>
+                <td><code>@media (min-height: 600px)</code></td>
+                <td>Мінімальна висота viewport</td>
+            </tr>
+            <tr>
+                <td><code>max-height</code></td>
+                <td><code>@media (max-height: 400px)</code></td>
+                <td>Максимальна висота viewport</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>Найчастіше використовують</strong> <code>min-width</code> / <code>max-width</code>. Орієнтація —
+            рідше. Висота — ще рідше, бо сторінка прокручується вертикально.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>13. Інструменти верстальника</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Інструмент</th>
+                <th>Призначення</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Chrome Workspaces</td>
+                <td>Зміни CSS у DevTools автоматично зберігаються у файл — без ручного копіювання</td>
+            </tr>
+            <tr>
+                <td>Pixel Perfect (розширення)</td>
+                <td>Накладає зображення макету поверх сайту для піксельного порівняння</td>
+            </tr>
+            <tr>
+                <td><code>letter-spacing</code></td>
+                <td>Регулює міжлітерну відстань (можна від'ємне значення для «ущільнення»)</td>
+            </tr>
+            <tr>
+                <td>Figma</td>
+                <td>Дозволяє копіювати часткові CSS-властивості елементів, прискорює верстку</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>14. Підсумкова таблиця</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Тема</th>
+                <th>Ключові моменти</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>meta viewport</td>
+                <td><code>width=device-width, initial-scale=1.0</code> — обов'язковий тег для адаптивної верстки</td>
+            </tr>
+            <tr>
+                <td>Медіазапити в CSS</td>
+                <td><code>@media (min-width: ...)</code> — Mobile First; <code>@media (max-width: ...)</code> — Desktop
+                    First
+                </td>
+            </tr>
+            <tr>
+                <td>Медіазапити в link</td>
+                <td>Атрибут <code>media</code> для підключення окремих CSS-файлів</td>
+            </tr>
+            <tr>
+                <td>Критичний CSS</td>
+                <td>CSS першого екрану вбудовується в <code>&lt;style&gt;</code> для миттєвого рендерингу</td>
+            </tr>
+            <tr>
+                <td>em</td>
+                <td><code>1em</code> = <code>font-size</code> поточного елемента; залежить від контексту</td>
+            </tr>
+            <tr>
+                <td>rem</td>
+                <td><code>1rem</code> = <code>font-size</code> елемента <code>&lt;html&gt;</code>; незалежний від
+                    вкладеності
+                </td>
+            </tr>
+            <tr>
+                <td>margin: auto у flex</td>
+                <td>Центрує елемент і по горизонталі, і по вертикалі (на відміну від звичайного потоку)</td>
+            </tr>
+            <tr>
+                <td>Схлопування margin</td>
+                <td>У звичайному потоці вертикальні margin схлопуються; у flex/grid — ні</td>
+            </tr>
+            <tr>
+                <td>overflow: hidden</td>
+                <td>Костиль для горизонтальної прокрутки — краще знайти першопричину</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+{% endblock %}

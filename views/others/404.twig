@@ -1,0 +1,12 @@
+{% extends "overall/base.twig" %}
+
+{% block base %}
+
+    <div class="error-page">
+        <div class="error-code">404</div>
+        <h1>Сторінку не знайдено</h1>
+        <p>Можливо, вона була переміщена або ви ввели неправильну адресу.</p>
+        <a href="{{ site.url }}" class="error-home-link">← Повернутися на головну</a>
+    </div>
+
+{% endblock %}

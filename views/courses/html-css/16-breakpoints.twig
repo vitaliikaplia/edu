@@ -1,0 +1,379 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Breakpoints</h1>
+    <p>Конспект лекції: що таке breakpoints, як їх обирати, популярні значення для телефонів, планшетів та десктопів</p>
+
+    <!-- 1. Що таке breakpoints -->
+    <section>
+        <h2>1. Що таке breakpoints</h2>
+        <p>Breakpoint (точка злому) — це значення ширини вікна, при якому змінюється розкладка сайту. Breakpoints
+            використовуються в медіазапитах для визначення, коли застосовувати ті чи інші стилі.</p>
+        <p>Наприклад, якщо до 480px — один макет, а після 480px — інший, то 480px є breakpoint.</p>
+    </section>
+
+    <!-- 2. Як обирати breakpoints -->
+    <section>
+        <h2>2. Як обирати breakpoints</h2>
+        <p>Щоб визначити breakpoints, потрібно розташувати найпопулярніші пристрої на умовній прямій від 0 до 2000+
+            пікселів. Пристрої природно групуються:</p>
+        <ul>
+            <li><strong>Телефони:</strong> 320–480px</li>
+            <li><strong>Планшети (портрет):</strong> 600–768px</li>
+            <li><strong>Планшети (ландшафт):</strong> 768–1024px</li>
+            <li><strong>Десктопи:</strong> 1280–1600px</li>
+            <li><strong>Великі десктопи:</strong> 1920px+</li>
+        </ul>
+
+        <h3>Два підходи до визначення</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Підхід</th>
+                <th>Опис</th>
+                <th>Приклад</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Через реальні пристрої</td>
+                <td>Межі проходять через ширини конкретних пристроїв</td>
+                <td>320px, 768px, 1224px, 1600px</td>
+            </tr>
+            <tr>
+                <td>Між групами</td>
+                <td>Межі проходять між групами пристроїв</td>
+                <td>600px, 900px, 1200px, 1800px</td>
+            </tr>
+            </tbody>
+        </table>
+        <p>Обидва підходи мають право на існування. У реальних проєктах breakpoints зазвичай вже визначені в технічному
+            завданні або дизайн-макетах.</p>
+    </section>
+
+    <!-- 3. Правила роботи з breakpoints -->
+    <section>
+        <h2>3. Правила роботи з breakpoints</h2>
+        <ul>
+            <li><strong>Обираємо один раз</strong> для всього проєкту — всі блоки перебудовуються на тих самих
+                breakpoints
+            </li>
+            <li><strong>Уникаємо різних breakpoints</strong> для різних блоків — це створює хаос у коді</li>
+            <li><strong>Виняток:</strong> іноді один конкретний блок (наприклад, меню) не вкладається в жоден breakpoint
+                — тоді допустимо додати окремий медіазапит тільки для нього
+            </li>
+        </ul>
+
+        <h3>Приклад з меню</h3>
+        <p>На ширині 1350px показується повне десктопне меню. На 1349px — скорочена версія (менший логотип). А на
+            планшетній ширині — мобільне меню (бургер). Для переходу між повним і скороченим меню додається окремий
+            breakpoint тільки для цього блоку.</p>
+    </section>
+
+    <!-- 4. Mobile First -->
+    <section>
+        <h2>4. Mobile First</h2>
+        <p>Mobile First — це концепція, за якою розробка починається з мобільної версії, а потім адаптується для більших
+            екранів.</p>
+
+        <h3>Чому Mobile First?</h3>
+        <ul>
+            <li><strong>Більшість користувачів</strong> заходять з мобільних пристроїв (60%+ трафіку)</li>
+            <li><strong>Від простого до складного</strong> — розробка йде швидше</li>
+            <li><strong>Оптимізація:</strong> мобільний пристрій (слабший) не завантажує зайві десктопні стилі</li>
+        </ul>
+
+        <h3>Порядок медіазапитів</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Підхід</th>
+                <th>Без медіазапиту</th>
+                <th>В медіазапитах</th>
+                <th>Медіафункція</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><strong>Desktop First</strong> (традиційний)</td>
+                <td>Десктоп</td>
+                <td>Від більшої ширини до меншої</td>
+                <td><code>max-width</code></td>
+            </tr>
+            <tr>
+                <td><strong>Mobile First</strong></td>
+                <td>Мобільна версія</td>
+                <td>Від меншої ширини до більшої</td>
+                <td><code>min-width</code></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 5. Приклад: Desktop First vs Mobile First -->
+    <section>
+        <h2>5. Приклад: Desktop First vs Mobile First</h2>
+        <p>Завдання: 4 колонки на десктопі, 2 на планшеті, 1 на мобільному.</p>
+
+        <h3>Desktop First (традиційний)</h3>
+        <pre><code><span class="comment">/* Десктоп — базові стилі */</span>
+<span class="sel">.cards</span> {
+  <span class="prop">max-width</span>: <span class="val">1920px</span>;
+  <span class="prop">margin</span>: <span class="val">0 auto</span>;
+  <span class="prop">display</span>: <span class="val">flex</span>;
+  <span class="prop">flex-wrap</span>: <span class="val">wrap</span>;
+}
+<span class="sel">.card</span> {
+  <span class="prop">width</span>: <span class="val">25%</span>;    <span class="comment">/* 4 колонки */</span>
+}
+
+<span class="comment">/* Планшет */</span>
+<span class="sel">@media (max-width: 1024px)</span> {
+  <span class="sel">.card</span> { <span class="prop">width</span>: <span class="val">50%</span>; }   <span
+                        class="comment">/* 2 колонки */</span>
+}
+
+<span class="comment">/* Мобільний */</span>
+<span class="sel">@media (max-width: 480px)</span> {
+  <span class="sel">.card</span> { <span class="prop">width</span>: <span class="val">100%</span>; }  <span
+                        class="comment">/* 1 колонка */</span>
+}</code></pre>
+
+        <h3>Mobile First</h3>
+        <pre><code><span class="comment">/* Мобільний — базові стилі */</span>
+<span class="comment">/* Нічого не потрібно! Блочні елементи вже йдуть один під одним */</span>
+
+<span class="comment">/* Планшет */</span>
+<span class="sel">@media (min-width: 480px)</span> {
+  <span class="sel">.cards</span> {
+    <span class="prop">display</span>: <span class="val">flex</span>;
+    <span class="prop">flex-wrap</span>: <span class="val">wrap</span>;
+  }
+  <span class="sel">.card</span> { <span class="prop">width</span>: <span class="val">50%</span>; }   <span
+                        class="comment">/* 2 колонки */</span>
+}
+
+<span class="comment">/* Десктоп */</span>
+<span class="sel">@media (min-width: 1024px)</span> {
+  <span class="sel">.cards</span> {
+    <span class="prop">max-width</span>: <span class="val">1920px</span>;
+    <span class="prop">margin</span>: <span class="val">0 auto</span>;
+  }
+  <span class="sel">.card</span> { <span class="prop">width</span>: <span class="val">25%</span>; }  <span
+                        class="comment">/* 4 колонки */</span>
+}</code></pre>
+        <p>У підході Mobile First мобільний пристрій не завантажує зайві стилі (<code>display: flex</code>, <code>max-width</code>,
+            центрування). Блочні елементи й так йдуть один під одним на 100% ширини.</p>
+    </section>
+
+    <!-- 6. Одиниці vh, vw -->
+    <section>
+        <h2>6. Viewport-залежні одиниці: vh і vw</h2>
+        <p>Одиниці, що залежать від розмірів вікна браузера (viewport):</p>
+        <table>
+            <thead>
+            <tr>
+                <th>Одиниця</th>
+                <th>Значення</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>1vh</code></td>
+                <td>1% від <strong>висоти</strong> вікна браузера</td>
+            </tr>
+            <tr>
+                <td><code>1vw</code></td>
+                <td>1% від <strong>ширини</strong> вікна браузера</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>100vh замість height: 100%</h3>
+        <p>Щоб зробити блок на всю висоту екрану через <code>height: 100%</code>, потрібно задати <code>height:
+                100%</code> всім батьківським елементам у ланцюжку (html, body, обгортки). Це ненадійно та жорстко
+            прив'язує до розмітки.</p>
+        <p><code>100vh</code> вирішує це одним рядком без залежності від батьків:</p>
+        <pre><code><span class="sel">.hero</span> {
+  <span class="prop">height</span>: <span class="val">100vh</span>;   <span
+                        class="comment">/* Вся висота вікна */</span>
+}</code></pre>
+
+        <h3>Проблема vw та скролбар</h3>
+        <p><code>100vw</code> — це 100% ширини вікна <strong>без урахування скролбару</strong>. Якщо на сторінці є
+            вертикальний скролбар (Windows, Linux), <code>100vw</code> буде більше за доступну ширину, що спричинить
+            горизонтальну прокрутку.</p>
+        <p>На macOS та мобільних пристроях скролбар накладається поверх контенту, тому проблема не виникає. Але на
+            Windows/Linux скролбар займає місце (~17px).</p>
+        <p>Висновок: <code>100vw</code> ≠ <code>100%</code>. Для ширини зазвичай краще використовувати відсотки.</p>
+    </section>
+
+    <!-- 7. Одиниці vmin і vmax -->
+    <section>
+        <h2>7. Одиниці vmin і vmax</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Одиниця</th>
+                <th>Значення</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>1vmin</code></td>
+                <td>1% від <strong>меншого</strong> з двох значень (ширина або висота вікна)</td>
+            </tr>
+            <tr>
+                <td><code>1vmax</code></td>
+                <td>1% від <strong>більшого</strong> з двох значень (ширина або висота вікна)</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Як це працює при зміні орієнтації</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Орієнтація</th>
+                <th>vmin поводиться як</th>
+                <th>vmax поводиться як</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Ландшафтна (ширина &gt; висота)</td>
+                <td><code>vh</code></td>
+                <td><code>vw</code></td>
+            </tr>
+            <tr>
+                <td>Портретна (висота &gt; ширина)</td>
+                <td><code>vw</code></td>
+                <td><code>vh</code></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Приклад: адаптивний заголовок</h3>
+        <pre><code><span class="sel">.hero__title</span> {
+  <span class="prop">font-size</span>: <span class="val">15vmin</span>;   <span class="comment">/* Авто-масштаб при будь-якій орієнтації */</span>
+}</code></pre>
+        <p>Замість двох медіазапитів для портретної та ландшафтної орієнтації, <code>vmin</code> автоматично обирає
+            менший вимір.</p>
+    </section>
+
+    <!-- 8. Обмеження viewport-одиниць -->
+    <section>
+        <h2>8. Обмеження viewport-залежних одиниць</h2>
+        <p>Viewport-одиниці <strong>не підходять</strong> для побудови всього сайту:</p>
+        <ul>
+            <li><strong>Немає реальної залежності</strong> розміру шрифту від висоти вікна — на екранах 1080px та 900px
+                різниця мінімальна
+            </li>
+            <li><strong>Неможливо відповідати дизайн-макету</strong> — розміри в пікселях стають непередбачуваними</li>
+            <li><strong>Мобільні пристрої</strong> із схожими ширинами (360px vs 375px) отримають різний, але непотрібно
+                різний розмір
+            </li>
+        </ul>
+        <p>Де viewport-одиниці доречні:</p>
+        <ul>
+            <li><code>100vh</code> — повноекранні секції (hero-блоки)</li>
+            <li><code>80vh</code> — великі блоки з прив'язкою до висоти вікна</li>
+            <li>Проєкти без жорсткого дизайн-макету, де потрібен базовий адаптив</li>
+        </ul>
+        <p>Основними одиницями залишаються <code>px</code>, <code>%</code>, <code>em</code>, <code>rem</code>.</p>
+    </section>
+
+    <!-- 9. Адаптивні зображення: атрибут srcset -->
+    <section>
+        <h2>9. Адаптивні зображення: атрибут srcset</h2>
+        <p>Для контентних зображень (<code>&lt;img&gt;</code>) на ретіна-дисплеях з підвищеним DPR використовується
+            атрибут <code>srcset</code>.</p>
+
+        <h3>Проблема</h3>
+        <p>На дисплеї з DPR 2 зображення звичайного розміру виглядає розмитим — фізичних пікселів удвічі більше, ніж
+            CSS-пікселів.</p>
+
+        <h3>Рішення: srcset з дескриптором x</h3>
+        <pre><code><span class="tag">&lt;img</span>
+  <span class="attr">src=</span><span class="val">"photo.jpg"</span>
+  <span class="attr">srcset=</span><span class="val">"photo.jpg 1x,
+         photo@2x.jpg 2x,
+         photo@3x.jpg 3x"</span>
+  <span class="attr">alt=</span><span class="val">"Опис зображення"</span><span class="tag">&gt;</span></code></pre>
+
+        <h3>Як це працює</h3>
+        <ul>
+            <li>Браузер визначає DPR пристрою</li>
+            <li>Завантажує <strong>тільки одне</strong> відповідне зображення (не всі)</li>
+            <li>Для DPR 2 бере <code>photo@2x.jpg</code> — зображення вдвічі більше за фізичними пікселями</li>
+            <li>Браузер ділить розміри зображення на коефіцієнт DPR для коректного відображення</li>
+            <li>Атрибут <code>src</code> залишається як fallback для старих браузерів</li>
+        </ul>
+
+        <h3>Важливі нюанси</h3>
+        <ul>
+            <li><strong>Кешування:</strong> якщо браузер вже завантажив зображення для DPR 2, він не замінить його на
+                версію для DPR 1 при перемиканні — більша версія вже є, навіщо вантажити меншу
+            </li>
+            <li><strong>Тестування:</strong> вимкніть кеш у DevTools (Disable cache while DevTools is open) перед
+                перевіркою
+            </li>
+            <li><strong>Ресурси:</strong> зображення у більшому розмірі має надати дизайнер — збільшити маленьке
+                зображення неможливо
+            </li>
+        </ul>
+    </section>
+
+    <!-- 10. Підсумкова таблиця -->
+    <section>
+        <h2>10. Підсумкова таблиця</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Тема</th>
+                <th>Ключове</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Breakpoints</td>
+                <td>Обираються один раз для всього проєкту; виняток — окремі блоки</td>
+            </tr>
+            <tr>
+                <td>Mobile First</td>
+                <td>Базові стилі для мобільного, медіазапити через <code>min-width</code> від меншої до більшої ширини
+                </td>
+            </tr>
+            <tr>
+                <td>Desktop First</td>
+                <td>Базові стилі для десктопу, медіазапити через <code>max-width</code> від більшої до меншої ширини
+                </td>
+            </tr>
+            <tr>
+                <td>vh / vw</td>
+                <td>1% від висоти / ширини вікна; <code>100vw</code> не враховує скролбар</td>
+            </tr>
+            <tr>
+                <td>vmin / vmax</td>
+                <td>1% від меншого / більшого виміру вікна; автоадаптація при зміні орієнтації</td>
+            </tr>
+            <tr>
+                <td>Viewport-одиниці для шрифтів</td>
+                <td>Не підходять для суворої відповідності дизайну, OK для проєктів без макету</td>
+            </tr>
+            <tr>
+                <td>srcset (DPR)</td>
+                <td>Атрибут для <code>&lt;img&gt;</code>: різні зображення для різних DPR (<code>1x</code>,
+                    <code>2x</code>, <code>3x</code>)
+                </td>
+            </tr>
+            <tr>
+                <td>Кеш при тестуванні srcset</td>
+                <td>Disable cache у DevTools; тестувати в повноекранному режимі</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "overall/base.twig" %}
+
+{% block base %}
+
+        <div class="hero">
+            <img src="{{ img_folder }}icon.png" alt="edu.kaplia.pro" width="64" height="64" class="hero-icon">
+            <h1>Вік живи — вік учись!</h1>
+            <p class="hero-subtitle">Освітній простір для тих, хто навчається завжди. Лекції та конспекти з IT, медіа та саморозвитку в одному місці.</p>
+            <span class="hero-domain">edu.kaplia.pro</span>
+        </div>
+
+        <h2>Доступні курси</h2>
+
+        {% if courses is defined and courses | length > 0 %}
+        <div class="courses-grid">
+            {% for slug, course in courses %}
+            <a href="{{ site.url }}{{ slug }}/" class="course-card">
+                <span class="course-card-icon">{{ course.icon }}</span>
+                <div class="course-card-body">
+                    <strong class="course-card-title">{{ course.title }}</strong>
+                    <p class="course-card-desc">{{ course.description }}</p>
+                    <span class="course-card-meta">{{ course.lessons | length }} лекцій · ≈ {{ course.total_reading_time }} хв</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+{% endblock %}

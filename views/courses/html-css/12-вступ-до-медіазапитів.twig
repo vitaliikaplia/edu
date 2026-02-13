@@ -1,0 +1,430 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Вступ до медіазапитів</h1>
+    <p>Конспект лекції: навіщо потрібна адаптивність, синтаксис @media, медіатипи та логічні оператори</p>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>1. Навіщо потрібна адаптивна верстка</h2>
+
+        <p>Один і той самий сайт за однією адресою має коректно відображатися на різних пристроях: десктоп, планшет,
+            смартфон. Різноманітність розмірів екранів та їхніх пропорцій (4:3, 16:9, 18:9, 21:9) робить адаптивність
+            обов'язковою.</p>
+
+        <p>Більше 60 % трафіку сучасних сайтів — мобільні пристрої.</p>
+
+        <h3>Два підходи до адаптивності</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Підхід</th>
+                <th>Суть</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><strong>Окрема мобільна версія</strong></td>
+                <td>Окремий домен (наприклад, <code>m.example.com</code>). Для великих сервісів з великою кількістю
+                    функціоналу
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Адаптивна верстка</strong></td>
+                <td>Один домен, один HTML — різні стилі для різних ширин екрана через медіазапити</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>Окрема мобільна версія</strong> має сенс лише для дуже великих порталів, де мобільним користувачам
+            не потрібна значна частина функціоналу. У більшості випадків — використовуйте адаптивну верстку з
+            медіазапитами.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>2. Desktop First vs Mobile First</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Підхід</th>
+                <th>Принцип</th>
+                <th>Медіазапит</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><strong>Desktop First</strong></td>
+                <td>Починаємо з десктопної версії, потім <strong>прибираємо</strong> зайве для вужчих екранів</td>
+                <td><code>max-width</code></td>
+            </tr>
+            <tr>
+                <td><strong>Mobile First</strong> (рекомендований)</td>
+                <td>Починаємо з мобільної версії, потім <strong>додаємо</strong> елементи для ширших екранів</td>
+                <td><code>min-width</code></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <strong>Mobile First краще</strong>, тому що мобільна версія — це базовий CSS без медіазапитів, а планшетна
+            та десктопна доповнюють її. Це означає менше CSS-коду і швидше завантаження для мобільних користувачів.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>3. Типи пристроїв у медіазапитах</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Тип</th>
+                <th>Опис</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>screen</code></td>
+                <td>Пристрої з екраном (монітори, планшети, смартфони)</td>
+            </tr>
+            <tr>
+                <td><code>print</code></td>
+                <td>Друк</td>
+            </tr>
+            <tr>
+                <td><code>speech</code></td>
+                <td>Голосові пристрої (скрінрідери)</td>
+            </tr>
+            <tr>
+                <td><code>all</code></td>
+                <td>Усі типи пристроїв (за замовчуванням)</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>4. Підключення окремих CSS-файлів для різних пристроїв</h2>
+
+        <p>Атрибут <code>media</code> тегу <code>&lt;link&gt;</code> дозволяє завантажувати різні CSS-файли залежно від
+            типу пристрою або ширини екрана:</p>
+
+        <pre><code><span class="comment">&lt;!-- Стилі лише для екранів --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span
+                        class="attr">href</span>=<span class="val">"screen.css"</span> <span
+                        class="attr">media</span>=<span class="val">"screen"</span><span class="tag">&gt;</span>
+
+<span class="comment">&lt;!-- Стилі лише для друку --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span
+                        class="attr">href</span>=<span class="val">"print.css"</span> <span
+                        class="attr">media</span>=<span class="val">"print"</span><span class="tag">&gt;</span>
+
+<span class="comment">&lt;!-- Стилі для планшетів і ширше (Mobile First) --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span
+                        class="attr">href</span>=<span class="val">"tablet.css"</span> <span
+                        class="attr">media</span>=<span class="val">"(min-width: 768px)"</span><span
+                        class="tag">&gt;</span></code></pre>
+
+        <div class="tip">
+            <strong>Перевага розділення файлів:</strong> мобільний пристрій завантажить лише свій CSS, а не весь код для
+            десктопа і планшета. Це економить трафік та прискорює завантаження.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>5. CSS для друку</h2>
+
+        <p>Друкована версія сторінки потребує іншого оформлення:</p>
+
+        <ul>
+            <li><strong>Прибрати</strong> меню, рекламу, бокові панелі, фонові зображення</li>
+            <li><strong>Колір тексту</strong> — чорний (кольоровий текст на друку стає блідим або невидимим)</li>
+            <li>Браузери зазвичай <strong>автоматично прибирають фон</strong> при друку для економії чорнил</li>
+            <li>Одиниці виміру на папері — <strong>абсолютні</strong> (см, мм), розмір аркуша завжди відомий</li>
+        </ul>
+
+        <pre><code><span class="comment">/* print.css — стилі для друку */</span>
+<span class="sel">.navigation</span>,
+<span class="sel">.sidebar</span>,
+<span class="sel">.advertisement</span> {
+    <span class="prop">display</span>: <span class="val">none</span>;
+}
+
+<span class="sel">body</span> {
+    <span class="prop">color</span>: <span class="val">#000</span>;
+    <span class="prop">background</span>: <span class="val">#fff</span>;
+}</code></pre>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>6. Медіазапити в CSS</h2>
+
+        <p>Основний синтаксис медіазапиту всередині CSS-файлу:</p>
+
+        <pre><code><span class="comment">/* Стилі застосовуються при ширині від 500px і ширше */</span>
+<span class="sel">@media</span> (<span class="prop">min-width</span>: <span class="val">500px</span>) {
+    <span class="sel">.box</span> {
+        <span class="prop">background</span>: <span class="val">red</span>;
+    }
+}</code></pre>
+
+        <p>Усередині <code>@media</code> пишемо звичайні CSS-правила. Вони застосовуються лише тоді, коли умова
+            медіазапиту виконується.</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Умова</th>
+                <th>Коли спрацьовує</th>
+                <th>Підхід</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>min-width: 768px</code></td>
+                <td>Ширина екрана <strong>від</strong> 768px і більше</td>
+                <td>Mobile First</td>
+            </tr>
+            <tr>
+                <td><code>max-width: 767px</code></td>
+                <td>Ширина екрана <strong>до</strong> 767px і менше</td>
+                <td>Desktop First</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>7. Типові точки переключення (breakpoints)</h2>
+
+        <p>Загальноприйняті діапазони ширини для різних типів пристроїв:</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Пристрій</th>
+                <th>Ширина</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Мобільний (портрет)</td>
+                <td>до 767px</td>
+            </tr>
+            <tr>
+                <td>Планшет</td>
+                <td>768px – 1024px</td>
+            </tr>
+            <tr>
+                <td>Невеликий десктоп</td>
+                <td>1025px – 1439px</td>
+            </tr>
+            <tr>
+                <td>Великий десктоп</td>
+                <td>від 1440px</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="warning">
+            <strong>Це орієнтовні значення.</strong> Конкретні breakpoints визначає дизайн макета, а не список
+            пристроїв. Верстайте так, щоб контент виглядав добре на <strong>будь-якій</strong> ширині, а не лише на
+            конкретних пристроях.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>8. Device Pixel Ratio — щільність пікселів</h2>
+
+        <p>Сучасні мобільні екрани мають фізичну роздільну здатність, що в 2–4 рази перевищує «CSS-пікселі».</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Пристрій</th>
+                <th>Фізична роздільна здатність</th>
+                <th>CSS-роздільна здатність</th>
+                <th>DPR</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>iPhone SE</td>
+                <td>640 × 1136</td>
+                <td>320 × 568</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>iPhone 14 Pro</td>
+                <td>1179 × 2556</td>
+                <td>393 × 852</td>
+                <td>3</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p>Завдяки DPR на маленькому екрані можна відобразити гладкі шрифти та чіткі зображення, не зменшуючи елементи
+            до нечитабельного розміру.</p>
+
+        <div class="tip">
+            <strong>Для медіазапитів використовуються CSS-пікселі</strong>, а не фізичні. Тому <code>min-width:
+                768px</code> спрацює однаково і на планшеті з DPR 2, і на моніторі з DPR 1.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>9. Тестування адаптивної верстки</h2>
+
+        <p>Послідовність перевірки — від найшвидшого до найнадійнішого:</p>
+
+        <ol>
+            <li><strong>Основний браузер</strong> — звужуємо вікно, перевіряємо візуально</li>
+            <li><strong>Інші браузери</strong> на комп'ютері (Firefox, Safari, Edge)</li>
+            <li><strong>DevTools → Toggle Device Toolbar</strong> (F12 → іконка пристроїв) — емуляція різних розмірів
+                екрана
+            </li>
+            <li><strong>Реальні пристрої</strong> — найнадійніший спосіб</li>
+        </ol>
+
+        <div class="warning">
+            <strong>Емуляція ≠ реальний пристрій.</strong> Різниця: системні елементи браузера (адресний рядок, панель
+            навігації) займають місце; рендеринг шрифтів відрізняється; деякі CSS-властивості мають баги на конкретних
+            пристроях. Чим важливіший проєкт — тим більше реальних пристроїв треба перевірити.
+        </div>
+
+        <h3>Віддалений дебаг на реальних пристроях</h3>
+        <ul>
+            <li><strong>Chrome:</strong> підключіть Android-пристрій через USB → <code>chrome://inspect</code></li>
+            <li><strong>Safari:</strong> підключіть iPhone/iPad через USB → Safari → Develop → [пристрій]</li>
+        </ul>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>10. Приклад Mobile First з розділеними файлами</h2>
+
+        <pre><code><span class="comment">&lt;!-- Базові стилі — мобільна версія (без медіазапитів) --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span
+                        class="attr">href</span>=<span class="val">"mobile.css"</span><span class="tag">&gt;</span>
+
+<span class="comment">&lt;!-- Планшет: від 768px --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span
+                        class="attr">href</span>=<span class="val">"tablet.css"</span> <span
+                        class="attr">media</span>=<span class="val">"(min-width: 768px)"</span><span
+                        class="tag">&gt;</span>
+
+<span class="comment">&lt;!-- Десктоп: від 1025px --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span
+                        class="attr">href</span>=<span class="val">"desktop.css"</span> <span class="attr">media</span>=<span
+                        class="val">"(min-width: 1025px)"</span><span class="tag">&gt;</span></code></pre>
+
+        <p>Стилі накладаються каскадно: на десктопі працюють <code>mobile.css</code> + <code>tablet.css</code> + <code>desktop.css</code>.
+            Кожен наступний файл <strong>доповнює або перевизначає</strong> попередній.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>11. align-content — вирівнювання рядків flex-контейнера</h2>
+
+        <p>Властивість <code>align-content</code> керує розподілом <strong>рядків</strong> багаторядкового
+            flex-контейнера по додатковій осі (працює лише з <code>flex-wrap: wrap</code>).</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Значення</th>
+                <th>Поведінка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>flex-start</code></td>
+                <td>Рядки притиснуті до початку</td>
+            </tr>
+            <tr>
+                <td><code>flex-end</code></td>
+                <td>Рядки притиснуті до кінця</td>
+            </tr>
+            <tr>
+                <td><code>center</code></td>
+                <td>Рядки по центру</td>
+            </tr>
+            <tr>
+                <td><code>space-between</code></td>
+                <td>Крайні рядки притиснуті до меж, простір між рядками рівномірний</td>
+            </tr>
+            <tr>
+                <td><code>space-around</code></td>
+                <td>Рівні проміжки навколо кожного рядка</td>
+            </tr>
+            <tr>
+                <td><code>stretch</code> (за замовчуванням)</td>
+                <td>Рядки розтягуються на всю висоту контейнера</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>12. Підсумкова таблиця</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Тема</th>
+                <th>Ключове</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Медіазапити</td>
+                <td><code>@media (min-width: ...)</code> або <code>@media (max-width: ...)</code> — умовне застосування
+                    стилів
+                </td>
+            </tr>
+            <tr>
+                <td>Mobile First</td>
+                <td>Базовий CSS — мобільна версія; медіазапити додають стилі для ширших екранів</td>
+            </tr>
+            <tr>
+                <td>Типи пристроїв</td>
+                <td><code>screen</code>, <code>print</code>, <code>speech</code>, <code>all</code></td>
+            </tr>
+            <tr>
+                <td>Розділення CSS</td>
+                <td>Атрибут <code>media</code> в <code>&lt;link&gt;</code> — завантажує лише потрібний CSS</td>
+            </tr>
+            <tr>
+                <td>Breakpoints</td>
+                <td>~768px (планшет), ~1025px (десктоп) — орієнтовні, диктуються дизайном</td>
+            </tr>
+            <tr>
+                <td>Device Pixel Ratio</td>
+                <td>Відношення фізичних пікселів до CSS-пікселів; медіазапити працюють з CSS-пікселями</td>
+            </tr>
+            <tr>
+                <td>Тестування</td>
+                <td>Браузери → DevTools → реальні пристрої; емуляція ≠ реальність</td>
+            </tr>
+            <tr>
+                <td><code>align-content</code></td>
+                <td>Вирівнювання рядків у багаторядковому flex-контейнері</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+{% endblock %}
