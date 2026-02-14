@@ -3,207 +3,127 @@
 {% block lesson %}
 
     <h1>Адаптивна типографіка</h1>
-    <p>Конспект лекції: aspect-ratio, orientation, clamp(), vw-одиниці та адаптивні розміри шрифтів</p>
+    <p>Конспект лекції: viewport-одиниці, rem-підхід, адаптивні розміри шрифтів та доступність</p>
 
-    <!-- 1. Медіафункції aspect-ratio та orientation -->
+    <!-- 1. Viewport-залежні одиниці: vh і vw -->
     <section>
-        <h2>1. Медіафункції aspect-ratio та orientation</h2>
-
-        <h3>device-aspect-ratio (застаріла)</h3>
-        <p>Визначає співвідношення ширини до висоти <strong>всього екрану</strong> пристрою (включно з адресним рядком,
-            кнопками навігації). Для веб-розробки марна — ми не контролюємо ці частини екрану. Буде видалена з
-            браузерів.</p>
-
-        <h3>aspect-ratio</h3>
-        <p>Визначає співвідношення ширини до висоти <strong>відображуваної області</strong> (viewport). Записується як
-            дріб:</p>
-        <pre><code><span class="sel">@media (min-aspect-ratio: 16/9)</span> {
-  <span class="comment">/* Стилі для широких екранів */</span>
-}</code></pre>
-        <p>Підтримує приставки <code>min-</code> та <code>max-</code>. Щоб зрозуміти, яке співвідношення більше —
-            переведіть дріб у десяткове: 16/9 = 1.78, 16/10 = 1.6. Отже, <code>min-aspect-ratio: 16/9</code> не включає
-            монітори 16:10.</p>
-
-        <h3>Популярні співвідношення сторін</h3>
-        <table>
-            <thead>
-            <tr>
-                <th>Співвідношення</th>
-                <th>Де зустрічається</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>4:3</td>
-                <td>Старі монітори з CRT-трубкою, дизайнерські монітори</td>
-            </tr>
-            <tr>
-                <td>16:9</td>
-                <td>Найпопулярніше: Full HD, HD, 4K</td>
-            </tr>
-            <tr>
-                <td>3:2</td>
-                <td>Microsoft Surface, деякі сучасні ноутбуки</td>
-            </tr>
-            <tr>
-                <td>16:10</td>
-                <td>MacBook Pro, деякі ноутбуки (більше висоти — зручніше для коду)</td>
-            </tr>
-            <tr>
-                <td>21:9</td>
-                <td>Ультраширокі монітори, кінематографічний формат</td>
-            </tr>
-            </tbody>
-        </table>
-
-        <h3>orientation</h3>
-        <p>Визначає орієнтацію пристрою. Приймає два значення:</p>
-        <ul>
-            <li><code>portrait</code> — вертикальна (висота &gt; ширина)</li>
-            <li><code>landscape</code> — горизонтальна (ширина &gt; висота)</li>
-        </ul>
-        <pre><code><span class="sel">@media (orientation: landscape)</span> {
-  <span class="comment">/* Стилі для горизонтальної орієнтації */</span>
-}</code></pre>
-
-        <h3>Комбінований медіазапит</h3>
-        <p>Для коректної роботи на різних пристроях часто потрібна комбінація:</p>
-        <pre><code><span class="sel">@media (min-width: 641px),
-       (orientation: landscape) and (max-width: 640px)</span> {
-  <span class="comment">/* Великі екрани АБО горизонтальні телефони */</span>
-  <span class="sel">.menu</span> {
-    <span class="prop">display</span>: <span class="val">flex</span>;
-    <span class="prop">flex-wrap</span>: <span class="val">wrap</span>;
-  }
-  <span class="sel">.menu__item</span> {
-    <span class="prop">width</span>: <span class="val">49%</span>;
-  }
-}</code></pre>
-        <p>Просто <code>orientation: landscape</code> недостатньо — на вертикально розташованому iPad (великий екран!)
-            елементи будуть по одному в рядку. А вертикально повернутий монітор теж визначиться як <code>portrait</code>.
-        </p>
-    </section>
-
-    <!-- 2. Типи input для мобільних пристроїв -->
-    <section>
-        <h2>2. Типи input для мобільних пристроїв</h2>
-        <p>HTML5 додав нові типи для <code>&lt;input&gt;</code>, які змінюють віртуальну клавіатуру на мобільних
-            пристроях:</p>
-
-        <table>
-            <thead>
-            <tr>
-                <th>Тип</th>
-                <th>Клавіатура</th>
-                <th>Додаткові можливості</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td><code>type="text"</code></td>
-                <td>Звичайна текстова</td>
-                <td>—</td>
-            </tr>
-            <tr>
-                <td><code>type="search"</code></td>
-                <td>Текстова з кнопкою "Знайти"</td>
-                <td>Хрестик для очищення поля, кнопка пошуку замість Enter</td>
-            </tr>
-            <tr>
-                <td><code>type="email"</code></td>
-                <td>Латинська з символом @</td>
-                <td>Перевірка формату з <code>required</code></td>
-            </tr>
-            <tr>
-                <td><code>type="tel"</code></td>
-                <td>Цифрова з +, -, #, *</td>
-                <td>Зручний набір номерів</td>
-            </tr>
-            <tr>
-                <td><code>type="number"</code></td>
-                <td>Цифрова</td>
-                <td>Стрілки збільшення/зменшення, атрибут <code>step</code></td>
-            </tr>
-            </tbody>
-        </table>
-
-        <p>Ці типи впливають тільки на <strong>віртуальні клавіатури</strong>. Фізична клавіатура комп'ютера не
-            зміниться.</p>
-
-        <h3>Вбудована валідація з required</h3>
-        <p>Коли <code>required</code> поєднується з типізованим input, браузер перевіряє не тільки заповненість, а й
-            формат:</p>
-        <pre><code><span class="tag">&lt;input</span> <span class="attr">type=</span><span
-                        class="val">"email"</span> <span class="attr">required</span><span class="tag">&gt;</span>
-<span class="comment">&lt;!-- Перевірить наявність @ та домену --&gt;</span>
-
-<span class="tag">&lt;input</span> <span class="attr">type=</span><span class="val">"tel"</span> <span class="attr">required</span><span
-                        class="tag">&gt;</span>
-<span class="comment">&lt;!-- Перевірить, що поле заповнене --&gt;</span></code></pre>
-        <p>Мінус: вигляд та текст повідомлень відрізняється між браузерами і не налаштовується. Для однакової поведінки
-            потрібна валідація через JavaScript.</p>
-    </section>
-
-    <!-- 3. Атрибут pattern -->
-    <section>
-        <h2>3. Атрибут pattern для валідації</h2>
-        <p>Атрибут <code>pattern</code> дозволяє вказати регулярний вираз (regex) для перевірки введених даних:</p>
-        <pre><code><span class="comment">&lt;!-- Тільки цифри, мінімум 3 символи --&gt;</span>
-<span class="tag">&lt;input</span> <span class="attr">type=</span><span class="val">"text"</span> <span class="attr">pattern=</span><span
-                        class="val">"[0-9]{3,}"</span> <span class="attr">required</span><span class="tag">&gt;</span>
-
-<span class="comment">&lt;!-- Міжнародний формат телефону --&gt;</span>
-<span class="tag">&lt;input</span> <span class="attr">type=</span><span class="val">"tel"</span> <span class="attr">pattern=</span><span
-                        class="val">"\+[0-9]{10,13}"</span> <span class="attr">required</span><span
-                        class="tag">&gt;</span></code></pre>
-        <p>HTML-валідація (<code>required</code>, <code>pattern</code>) легко обходиться через DevTools. Для надійної
-            перевірки потрібен JavaScript на клієнті <strong>та</strong> перевірка на сервері.</p>
-    </section>
-
-    <!-- 4. Одиниця rem -->
-    <section>
-        <h2>4. Одиниця rem</h2>
-        <p><code>rem</code> (root em) — відносна одиниця, яка залежить від <code>font-size</code> тегу <code>&lt;html&gt;</code>
-            (кореневого елемента).</p>
-
-        <h3>rem vs em</h3>
+        <h2>1. Viewport-залежні одиниці: vh і vw</h2>
+        <p>Одиниці, що залежать від розмірів вікна браузера (viewport):</p>
         <table>
             <thead>
             <tr>
                 <th>Одиниця</th>
-                <th>Від чого залежить</th>
-                <th>Передбачуваність</th>
+                <th>Значення</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td><code>em</code></td>
-                <td><code>font-size</code> <strong>батьківського</strong> елемента</td>
-                <td>Змінюється залежно від контексту — один клас може дати різний результат у різних місцях</td>
+                <td><code>1vh</code></td>
+                <td>1% від <strong>висоти</strong> вікна браузера</td>
             </tr>
             <tr>
-                <td><code>rem</code></td>
-                <td><code>font-size</code> тегу <code>&lt;html&gt;</code></td>
-                <td>Завжди однаковий результат незалежно від місця на сторінці</td>
+                <td><code>1vw</code></td>
+                <td>1% від <strong>ширини</strong> вікна браузера</td>
             </tr>
             </tbody>
         </table>
 
-        <h3>Формули перерахунку</h3>
-        <ul>
-            <li><strong>Розмір у rem</strong> = розмір у px / font-size html</li>
-            <li><strong>font-size html</strong> = розмір у px / розмір у rem</li>
-        </ul>
+        <h3>100vh замість height: 100%</h3>
+        <p>Щоб зробити блок на всю висоту екрану через <code>height: 100%</code>, потрібно задати <code>height:
+                100%</code> всім батьківським елементам у ланцюжку (html, body, обгортки). Це ненадійно та жорстко
+            прив'язує до розмітки.</p>
+        <p><code>100vh</code> вирішує це одним рядком без залежності від батьків:</p>
+        <pre><code><span class="sel">.hero</span> {
+  <span class="prop">height</span>: <span class="val">100vh</span>;   <span class="comment">/* Вся висота вікна */</span>
+}</code></pre>
 
-        <h3>Приклад перерахунку</h3>
-        <p>Якщо <code>html { font-size: 10px; }</code>, то 22px = 22/10 = <strong>2.2rem</strong>.</p>
-        <p>Для мобільних потрібен 18px при тих самих 2.2rem: font-size html = 18/2.2 ≈ 8px (округлюємо, бо пікселі
-            дробними бути не можуть).</p>
+        <h3>Проблема vw та скролбар</h3>
+        <p><code>100vw</code> — це 100% ширини вікна <strong>без урахування скролбару</strong>. Якщо на сторінці є
+            вертикальний скролбар (Windows, Linux), <code>100vw</code> буде більше за доступну ширину, що спричинить
+            горизонтальну прокрутку.</p>
+        <p>На macOS та мобільних пристроях скролбар накладається поверх контенту, тому проблема не виникає. Але на
+            Windows/Linux скролбар займає місце (~17px).</p>
+        <p>Висновок: <code>100vw</code> ≠ <code>100%</code>. Для ширини зазвичай краще використовувати відсотки.</p>
     </section>
 
-    <!-- 5. Підхід з rem: одне значення для всіх пристроїв -->
+    <!-- 2. Одиниці vmin і vmax -->
     <section>
-        <h2>5. Підхід з rem: одне значення для всіх пристроїв</h2>
+        <h2>2. Одиниці vmin і vmax</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Одиниця</th>
+                <th>Значення</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>1vmin</code></td>
+                <td>1% від <strong>меншого</strong> з двох значень (ширина або висота вікна)</td>
+            </tr>
+            <tr>
+                <td><code>1vmax</code></td>
+                <td>1% від <strong>більшого</strong> з двох значень (ширина або висота вікна)</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Як це працює при зміні орієнтації</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Орієнтація</th>
+                <th>vmin поводиться як</th>
+                <th>vmax поводиться як</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Ландшафтна (ширина &gt; висота)</td>
+                <td><code>vh</code></td>
+                <td><code>vw</code></td>
+            </tr>
+            <tr>
+                <td>Портретна (висота &gt; ширина)</td>
+                <td><code>vw</code></td>
+                <td><code>vh</code></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Приклад: адаптивний заголовок</h3>
+        <pre><code><span class="sel">.hero__title</span> {
+  <span class="prop">font-size</span>: <span class="val">15vmin</span>;   <span class="comment">/* Авто-масштаб при будь-якій орієнтації */</span>
+}</code></pre>
+        <p>Замість двох медіазапитів для портретної та ландшафтної орієнтації, <code>vmin</code> автоматично обирає
+            менший вимір.</p>
+    </section>
+
+    <!-- 3. Обмеження viewport-одиниць -->
+    <section>
+        <h2>3. Обмеження viewport-залежних одиниць</h2>
+        <p>Viewport-одиниці <strong>не підходять</strong> для побудови всього сайту:</p>
+        <ul>
+            <li><strong>Немає реальної залежності</strong> розміру шрифту від висоти вікна — на екранах 1080px та 900px
+                різниця мінімальна
+            </li>
+            <li><strong>Неможливо відповідати дизайн-макету</strong> — розміри в пікселях стають непередбачуваними</li>
+            <li><strong>Мобільні пристрої</strong> із схожими ширинами (360px vs 375px) отримають різний, але непотрібно
+                різний розмір
+            </li>
+        </ul>
+        <p>Де viewport-одиниці доречні:</p>
+        <ul>
+            <li><code>100vh</code> — повноекранні секції (hero-блоки)</li>
+            <li><code>80vh</code> — великі блоки з прив'язкою до висоти вікна</li>
+            <li>Проєкти без жорсткого дизайн-макету, де потрібен базовий адаптив</li>
+        </ul>
+        <p>Основними одиницями залишаються <code>px</code>, <code>%</code>, <code>em</code>, <code>rem</code>.</p>
+    </section>
+
+    <!-- 4. Підхід з rem: одне значення для всіх пристроїв -->
+    <section>
+        <h2>4. Підхід з rem: одне значення для всіх пристроїв</h2>
         <p>Ідея: записати всі розміри в rem <strong>без медіазапиту</strong>, а в медіазапитах змінювати тільки <code>font-size</code>
             тегу <code>&lt;html&gt;</code>.</p>
 
@@ -237,9 +157,9 @@
             елемент — змінити його значення у rem.</p>
     </section>
 
-    <!-- 6. Користувацький розмір шрифту та відсотки -->
+    <!-- 5. Користувацький розмір шрифту та відсотки -->
     <section>
-        <h2>6. Користувацький розмір шрифту та відсотки</h2>
+        <h2>5. Користувацький розмір шрифту та відсотки</h2>
         <p>За замовчуванням <code>font-size</code> у браузері = <strong>16px</strong>. Користувачі з порушеннями зору
             можуть змінити це значення в налаштуваннях.</p>
         <p>Якщо ми задаємо <code>html { font-size: 10px; }</code> — налаштування користувача ігноруються. Щоб їх
@@ -262,18 +182,18 @@
             збільшаться.</p>
     </section>
 
-    <!-- 7. Дробні пікселі: чому округлюємо -->
+    <!-- 6. Дробні пікселі: чому округлюємо -->
     <section>
-        <h2>7. Дробні пікселі: чому округлюємо</h2>
+        <h2>6. Дробні пікселі: чому округлюємо</h2>
         <p>Кожен піксель на екрані — це набір фізичних лампочок (RGB). Неможливо засвітити 0.18 лампочки. Тому всі
             значення в пікселях мають бути <strong>цілими числами</strong>.</p>
         <p>Коли результат обчислень дає дробне число (наприклад, 8.18px), потрібно <strong>округлити</strong> до цілого.
             Браузер зробить це сам, але краще контролювати результат.</p>
     </section>
 
-    <!-- 8. Ctrl+/- — це не zoom -->
+    <!-- 7. Ctrl+/- — це не zoom -->
     <section>
-        <h2>8. Ctrl+/- — це не zoom</h2>
+        <h2>7. Ctrl+/- — це не zoom</h2>
         <p>Важлива відмінність між двома способами масштабування:</p>
         <table>
             <thead>
@@ -298,9 +218,9 @@
             2560px. Верстка має коректно працювати і в такому режимі.</p>
     </section>
 
-    <!-- 9. Доступність (a11y) -->
+    <!-- 8. Доступність (a11y) -->
     <section>
-        <h2>9. Доступність (Accessibility / a11y)</h2>
+        <h2>8. Доступність (Accessibility / a11y)</h2>
         <p>Інтернет — базова потреба для всіх людей, незалежно від фізичних особливостей. Основні інструменти
             доступності:</p>
         <ul>
@@ -315,9 +235,9 @@
         </ul>
     </section>
 
-    <!-- 10. Веб-застосунок vs веб-сайт -->
+    <!-- 9. Веб-застосунок vs веб-сайт -->
     <section>
-        <h2>10. Веб-застосунок vs веб-сайт</h2>
+        <h2>9. Веб-застосунок vs веб-сайт</h2>
         <table>
             <thead>
             <tr>
@@ -348,9 +268,9 @@
             додаткам.</p>
     </section>
 
-    <!-- 11. Підсумкова таблиця -->
+    <!-- 10. Підсумкова таблиця -->
     <section>
-        <h2>11. Підсумкова таблиця</h2>
+        <h2>10. Підсумкова таблиця</h2>
         <table>
             <thead>
             <tr>
@@ -360,36 +280,20 @@
             </thead>
             <tbody>
             <tr>
-                <td>device-aspect-ratio</td>
-                <td>Застаріла, буде видалена. Не використовувати</td>
+                <td>vh / vw</td>
+                <td>1% від висоти / ширини viewport; 100vw ≠ 100% через скролбар</td>
             </tr>
             <tr>
-                <td>aspect-ratio</td>
-                <td>Співвідношення ширини/висоти viewport; підтримує min-/max-</td>
+                <td>vmin / vmax</td>
+                <td>1% від меншого / більшого виміру viewport; автоматична адаптація до орієнтації</td>
             </tr>
             <tr>
-                <td>orientation</td>
-                <td><code>portrait</code> (вертикально) / <code>landscape</code> (горизонтально)</td>
+                <td>Обмеження viewport-одиниць</td>
+                <td>Не підходять для всього сайту; доречні для hero-блоків (100vh) та проєктів без макету</td>
             </tr>
             <tr>
-                <td>type="search"</td>
-                <td>Клавіатура з кнопкою пошуку, хрестик очищення</td>
-            </tr>
-            <tr>
-                <td>type="email"</td>
-                <td>Клавіатура з @ та перевірка формату з required</td>
-            </tr>
-            <tr>
-                <td>type="tel"</td>
-                <td>Цифрова клавіатура з +, -, #, *</td>
-            </tr>
-            <tr>
-                <td>pattern</td>
-                <td>Regex-валідація у HTML; обходиться через DevTools</td>
-            </tr>
-            <tr>
-                <td>rem</td>
-                <td>Залежить від font-size html; однаковий результат скрізь на сторінці</td>
+                <td>Підхід з rem</td>
+                <td>Усі розміри в rem, у медіазапитах — тільки html font-size</td>
             </tr>
             <tr>
                 <td>html font-size у %</td>

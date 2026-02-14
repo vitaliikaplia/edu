@@ -106,9 +106,34 @@
             <code>body</code>. Це лише маскує проблему, а не вирішує її.</p>
     </section>
 
-    <!-- 6. Практичний приклад: адаптивна картка -->
+    <!-- 6. CSS-дебаг через outline -->
     <section>
-        <h2>6. Практичний приклад: адаптивна картка користувача</h2>
+        <h2>6. CSS-дебаг через outline</h2>
+        <p>Швидкий спосіб візуалізувати розмітку для пошуку причин overflow або зсувів — додати обведення всім
+            елементам:</p>
+
+        <h3>Метод outline</h3>
+        <pre><code><span class="comment">/* Обведення всіх елементів — не впливає на розміри */</span>
+<span class="sel">*</span> {
+  <span class="prop">outline</span>: <span class="val">1px solid red</span>;
+}</code></pre>
+
+        <h3>Метод напівпрозорого фону</h3>
+        <pre><code><span class="comment">/* Кожен вкладений рівень стає темнішим */</span>
+<span class="sel">*</span> {
+  <span class="prop">background</span>: <span class="val">rgb(0 0 0 / 0.1)</span>;
+}</code></pre>
+
+        <div class="tip">
+            <strong>Чому outline, а не border?</strong> <code>outline</code> не впливає на розміри блоків і не зміщує
+            сусідні елементи — ви бачите реальну розкладку. <code>border</code> додає товщину і може змінити поведінку
+            верстки.
+        </div>
+    </section>
+
+    <!-- 7. Практичний приклад: адаптивна картка -->
+    <section>
+        <h2>7. Практичний приклад: адаптивна картка користувача</h2>
         <p>Розглянемо верстку картки, яка на десктопі показує фото, ім'я, посаду та контакти вертикально, а на
             мобільному — фото на весь екран із накладеним текстом.</p>
 
@@ -175,9 +200,9 @@
             із <code>z-index</code> вищим накладається зверху з напівпрозорим фоном.</p>
     </section>
 
-    <!-- 7. CSS-трикутники через border -->
+    <!-- 8. CSS-трикутники через border -->
     <section>
-        <h2>7. CSS-трикутники через border</h2>
+        <h2>8. CSS-трикутники через border</h2>
         <p>Коли елемент має нульову ширину та висоту, а рамки — великий розмір, кожна з чотирьох рамок утворює
             трикутник:</p>
         <pre><code><span class="sel">.triangle</span> {
@@ -201,9 +226,36 @@
             тощо). Технологія проста та не потребує зображень.</p>
     </section>
 
-    <!-- 8. Логічні оператори в медіазапитах -->
+    <!-- 9. Pill shape через border-radius -->
     <section>
-        <h2>8. Логічні оператори в медіазапитах</h2>
+        <h2>9. Pill shape через border-radius</h2>
+        <p>Кнопка-«пігулка» (pill) — елемент із повністю заокругленими краями. Поширена помилка — використовувати
+            <code>border-radius: 50%</code>, що перетворює прямокутник на овал.</p>
+
+        <pre><code><span class="comment">/* Проблема: 50% робить овал, а не пігулку */</span>
+<span class="sel">.oval</span> {
+  <span class="prop">border-radius</span>: <span class="val">50%</span>;    <span class="comment">/* Овальна форма */</span>
+}
+
+<span class="comment">/* Рішення: велике значення створює ідеальні заокруглення */</span>
+<span class="sel">.pill</span> {
+  <span class="prop">border-radius</span>: <span class="val">100vw</span>;  <span class="comment">/* Завжди ідеальна пігулка */</span>
+}</code></pre>
+
+        <p>Значення <code>100vw</code> свідомо більше за будь-який можливий радіус — браузер автоматично обмежить його
+            до половини найменшого виміру елемента. Результат — ідеальні заокруглені краї незалежно від ширини чи висоти.
+        </p>
+
+        <h3>Варіації форми</h3>
+        <pre><code><span class="comment">/* Купол (заокруглення тільки зверху) */</span>
+<span class="sel">.dome</span> {
+  <span class="prop">border-radius</span>: <span class="val">100vw 100vw 0 0</span>;
+}</code></pre>
+    </section>
+
+    <!-- 10. Логічні оператори в медіазапитах -->
+    <section>
+        <h2>10. Логічні оператори в медіазапитах</h2>
 
         <h3>Кома (OR — логічне АБО)</h3>
         <p>Об'єднує кілька незалежних медіазапитів. Стилі застосовуються, якщо хоча б один з них справджується:</p>
@@ -226,9 +278,9 @@
             потрібні, але корисно знати про їхнє існування.</p>
     </section>
 
-    <!-- 9. Повноекранний фон: background-size: cover -->
+    <!-- 11. Повноекранний фон: background-size: cover -->
     <section>
-        <h2>9. Повноекранний фон: background-size: cover</h2>
+        <h2>11. Повноекранний фон: background-size: cover</h2>
         <p>Для створення повноекранного блоку з фоновим зображенням використовується комбінація:</p>
         <pre><code><span class="sel">.hero</span> {
   <span class="prop">height</span>: <span class="val">100vh</span>;                    <span class="comment">/* Вся висота вікна */</span>
@@ -243,30 +295,9 @@
             підвантажувати різні зображення для різних розмірів екрану.</p>
     </section>
 
-    <!-- 10. Тег <picture> для адаптивних зображень -->
+    <!-- 12. 100vh для повноекранних секцій -->
     <section>
-        <h2>10. Тег &lt;picture&gt; для адаптивних зображень</h2>
-        <p>Тег <code>&lt;picture&gt;</code> дозволяє показувати різні зображення залежно від медіазапиту:</p>
-        <pre><code><span class="tag">&lt;picture&gt;</span>
-  <span class="tag">&lt;source</span> <span class="attr">srcset=</span><span class="val">"mobile.jpg"</span>
-          <span class="attr">media=</span><span class="val">"(max-width: 480px)"</span><span class="tag">&gt;</span>
-  <span class="tag">&lt;source</span> <span class="attr">srcset=</span><span class="val">"tablet.jpg"</span>
-          <span class="attr">media=</span><span class="val">"(max-width: 1024px)"</span><span class="tag">&gt;</span>
-  <span class="tag">&lt;img</span> <span class="attr">src=</span><span class="val">"desktop.jpg"</span>
-       <span class="attr">alt=</span><span class="val">"Опис зображення"</span><span class="tag">&gt;</span>
-<span class="tag">&lt;/picture&gt;</span></code></pre>
-        <p>Переваги:</p>
-        <ul>
-            <li>На мобільному завантажується менше зображення — швидше завантаження</li>
-            <li>Можна показувати різний кроп для різних пристроїв</li>
-            <li>Тег <code>&lt;img&gt;</code> всередині забезпечує зворотну сумісність зі старими браузерами</li>
-            <li>Адреси зображень в HTML — зручно для інших розробників (front-end, back-end)</li>
-        </ul>
-    </section>
-
-    <!-- 11. 100vh для повноекранних секцій -->
-    <section>
-        <h2>11. 100vh для повноекранних секцій</h2>
+        <h2>12. 100vh для повноекранних секцій</h2>
         <p>Для створення блоку на всю висоту вікна використовують одиницю <code>vh</code>:</p>
         <pre><code><span class="sel">.fullscreen-section</span> {
   <span class="prop">height</span>: <span class="val">100vh</span>;   <span class="comment">/* 100% висоти viewport */</span>
@@ -336,9 +367,9 @@
         <p>Ті самі варіанти існують і для ширини viewport: <code>svw</code>, <code>lvw</code>, <code>dvw</code>. Також є діагональні одиниці <code>svi</code>, <code>lvi</code>, <code>dvi</code> (inline) та <code>svb</code>, <code>lvb</code>, <code>dvb</code> (block), які враховують напрямок тексту. На практиці для ширини ці одиниці потрібні рідко, оскільки панелі браузера зазвичай впливають тільки на висоту.</p>
     </section>
 
-    <!-- 12. Модульна сітка -->
+    <!-- 13. Модульна сітка -->
     <section>
-        <h2>12. Модульна сітка</h2>
+        <h2>13. Модульна сітка</h2>
         <p>Модульна сітка — це розбиття простору на рівні колонки, відносно яких розміщується контент. Ця концепція
             прийшла з типографіки (газети, журнали, енциклопедії).</p>
         <p>Стандарт — <strong>12 колонок</strong>, бо число 12 ділиться на 2, 3, 4 і 6:</p>
@@ -386,9 +417,9 @@
         </ul>
     </section>
 
-    <!-- 13. Bootstrap: сітка та компоненти -->
+    <!-- 14. Bootstrap: сітка та компоненти -->
     <section>
-        <h2>13. Bootstrap: сітка та компоненти</h2>
+        <h2>14. Bootstrap: сітка та компоненти</h2>
 
         <h3>Фреймворк vs бібліотека</h3>
         <p><strong>Фреймворк</strong> (Bootstrap) — це комплексне рішення: сітка, компоненти (кнопки, модальні вікна,
@@ -527,9 +558,9 @@
         </ul>
     </section>
 
-    <!-- 14. FlexboxGrid -->
+    <!-- 15. FlexboxGrid -->
     <section>
-        <h2>14. FlexboxGrid</h2>
+        <h2>15. FlexboxGrid</h2>
         <p>FlexboxGrid — це легка бібліотека, яка реалізує тільки модульну сітку на основі Flexbox. Класи практично
             ідентичні Bootstrap: <code>container</code>, <code>row</code>, <code>col</code>.</p>
         <p>Приклад використання:</p>
@@ -544,9 +575,9 @@
             як нативну альтернативу.</p>
     </section>
 
-    <!-- 15. Правила найменування CSS-класів -->
+    <!-- 16. Правила найменування CSS-класів -->
     <section>
-        <h2>15. Правила найменування CSS-класів</h2>
+        <h2>16. Правила найменування CSS-класів</h2>
 
         <h3>Що НЕ варто робити</h3>
         <ul>
@@ -582,9 +613,38 @@
             Простий код також швидше обробляється браузером.</p>
     </section>
 
-    <!-- 16. scroll-behavior: smooth -->
+    <!-- 17. Спрощення класів-модифікаторів -->
     <section>
-        <h2>16. scroll-behavior: smooth</h2>
+        <h2>17. Спрощення класів-модифікаторів</h2>
+
+        <p>Коли у вас є блок з кількома варіантами стилів (модифікаторами), зазвичай використовують базовий клас + клас-модифікатор:</p>
+
+        <pre><code><span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="val">"btn btn-primary"</span><span class="tag">&gt;</span>Зберегти<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="val">"btn btn-danger"</span><span class="tag">&gt;</span>Видалити<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="val">"btn btn-outline"</span><span class="tag">&gt;</span>Скасувати<span class="tag">&lt;/button&gt;</span></code></pre>
+
+        <p>Замість того щоб писати окремі стилі для кожного модифікатора, можна використати селектор <code>[class|="btn"]</code>, який вибере всі елементи, де клас починається зі слова <code>btn</code>:</p>
+
+        <pre><code><span class="comment">/* Базові стилі для всіх btn-* */</span>
+<span class="sel">[class|="btn"]</span> {
+  <span class="prop">padding</span>: <span class="val">8px 16px</span>;
+  <span class="prop">border-radius</span>: <span class="val">4px</span>;
+  <span class="prop">cursor</span>: <span class="val">pointer</span>;
+}
+
+<span class="comment">/* Конкретні модифікатори */</span>
+<span class="sel">.btn-primary</span> { <span class="prop">background</span>: <span class="val">#3b82f6</span>; }
+<span class="sel">.btn-danger</span> { <span class="prop">background</span>: <span class="val">#ef4444</span>; }
+<span class="sel">.btn-outline</span> { <span class="prop">border</span>: <span class="val">1px solid currentColor</span>; }</code></pre>
+
+        <div class="tip">
+            <strong>Увага:</strong> селектор <code>[class|="btn"]</code> працює лише коли <code>btn</code> — перше слово в атрибуті class. Якщо елемент має <code>class="card btn-primary"</code>, цей селектор його <strong>не вибере</strong>. Для таких випадків краще використовувати <code>[class*="btn-"]</code>.
+        </div>
+    </section>
+
+    <!-- 18. scroll-behavior: smooth -->
+    <section>
+        <h2>18. scroll-behavior: smooth</h2>
         <p>CSS-властивість для плавної прокрутки при переході за якірними посиланнями:</p>
         <pre><code><span class="sel">html</span> {
   <span class="prop">scroll-behavior</span>: <span class="val">smooth</span>;
@@ -593,9 +653,9 @@
             прокручувати сторінку до потрібного елемента замість різкого стрибка.</p>
     </section>
 
-    <!-- 17. Швидкість завантаження сайту -->
+    <!-- 19. Швидкість завантаження сайту -->
     <section>
-        <h2>17. Швидкість завантаження сайту</h2>
+        <h2>19. Швидкість завантаження сайту</h2>
         <p>Формула швидкості завантаження:</p>
         <p><strong>Час = Кількість файлів &times; Об'єм файлів + Складність обробки</strong></p>
         <p>Як впливати на кожну складову:</p>
@@ -608,9 +668,9 @@
         </ul>
     </section>
 
-    <!-- 18. Підсумкова таблиця -->
+    <!-- 20. Підсумкова таблиця -->
     <section>
-        <h2>18. Підсумкова таблиця</h2>
+        <h2>20. Підсумкова таблиця</h2>
         <table>
             <thead>
             <tr>
@@ -640,6 +700,10 @@
                 <td>Гумова, адаптивна/відгукова</td>
             </tr>
             <tr>
+                <td>CSS-дебаг через outline</td>
+                <td><code>* { outline: 1px solid red; }</code> — бачити межі всіх елементів</td>
+            </tr>
+            <tr>
                 <td>object-fit: cover</td>
                 <td>Заповнення блоку зображенням зі збереженням пропорцій</td>
             </tr>
@@ -648,16 +712,16 @@
                 <td>border + width: 0 + height: 0 + transparent</td>
             </tr>
             <tr>
+                <td>Pill shape</td>
+                <td><code>border-radius: 100vw</code> — ідеально закруглені кінці</td>
+            </tr>
+            <tr>
                 <td>Логічні оператори</td>
                 <td>Кома (OR), and (І), not (НЕ)</td>
             </tr>
             <tr>
                 <td>background-size: cover</td>
                 <td>Повноекранний фон без спотворень</td>
-            </tr>
-            <tr>
-                <td>&lt;picture&gt;</td>
-                <td>Різні зображення для різних пристроїв</td>
             </tr>
             <tr>
                 <td>100vh / dvh / svh / lvh</td>
@@ -678,6 +742,10 @@
             <tr>
                 <td>Найменування класів</td>
                 <td>Без кольорів, тегів, номерів; BEM; прості селектори</td>
+            </tr>
+            <tr>
+                <td>Класи-модифікатори</td>
+                <td><code>[class|="btn"]</code> — спільні стилі для всіх <code>btn-*</code></td>
             </tr>
             <tr>
                 <td>scroll-behavior</td>

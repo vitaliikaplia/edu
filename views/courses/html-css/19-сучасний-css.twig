@@ -1,0 +1,274 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Сучасний CSS: нові можливості</h1>
+    <p>Бонус-лекція: corner-shape, сучасні кольори (oklch, relative colors) та анімація підкреслення через градієнт</p>
+
+    <!-- 1. Corner-shape: нові форми кутів -->
+    <section>
+        <h2>1. Corner-shape: нові форми кутів</h2>
+
+        <p>CSS-специфікація <strong>Corners Level 2</strong> додає властивість <code>corner-shape</code>, яка змінює
+            форму заокруглення кутів. Раніше <code>border-radius</code> давав лише кругле заокруглення, тепер з'являються
+            нові варіанти.</p>
+
+        <div class="warning">
+            <strong>Увага:</strong> це експериментальна специфікація (2026). Жоден браузер поки не підтримує
+            <code>corner-shape</code> у стабільній версії. Цей матеріал — для ознайомлення з майбутнім CSS.
+        </div>
+
+        <h3>Можливі значення</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Значення</th>
+                <th>Ефект</th>
+                <th>Де може знадобитись</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>round</code></td>
+                <td>Звичайне заокруглення (як зараз)</td>
+                <td>Значення за замовчуванням</td>
+            </tr>
+            <tr>
+                <td><code>scoop</code></td>
+                <td>Увігнутий кут (вирізаний всередину)</td>
+                <td>Декоративні картки, квитки</td>
+            </tr>
+            <tr>
+                <td><code>bevel</code></td>
+                <td>Зрізаний кут (під кутом 45°)</td>
+                <td>Теги, бейджі, tech-стиль</td>
+            </tr>
+            <tr>
+                <td><code>squircle</code></td>
+                <td>Супереліпс (як іконки iOS)</td>
+                <td>Іконки додатків, аватари</td>
+            </tr>
+            <tr>
+                <td><code>notch</code></td>
+                <td>Прямокутний виріз</td>
+                <td>Промо-блоки, нестандартний дизайн</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Синтаксис</h3>
+        <pre><code><span class="sel">.card-ticket</span> {
+  <span class="prop">border-radius</span>: <span class="val">20px</span>;
+  <span class="prop">corner-shape</span>: <span class="val">scoop</span>;
+}
+
+<span class="sel">.badge</span> {
+  <span class="prop">border-radius</span>: <span class="val">8px</span>;
+  <span class="prop">corner-shape</span>: <span class="val">bevel</span>;
+}
+
+<span class="sel">.app-icon</span> {
+  <span class="prop">border-radius</span>: <span class="val">22%</span>;
+  <span class="prop">corner-shape</span>: <span class="val">squircle</span>;
+}</code></pre>
+
+        <h3>Різні форми для різних кутів</h3>
+        <p>Можна задати різні форми для кожного кута окремо:</p>
+        <pre><code><span class="sel">.creative-card</span> {
+  <span class="prop">border-radius</span>: <span class="val">20px</span>;
+  <span class="prop">corner-shape</span>: <span class="val">scoop round bevel round</span>;
+  <span class="comment">/* top-left top-right bottom-right bottom-left */</span>
+}</code></pre>
+
+        <div class="tip">
+            <strong>Squircle vs round:</strong> звичайний <code>border-radius</code> створює ідеальну дугу кола.
+            Squircle (супереліпс) — це більш плавний перехід від прямої лінії до кривої, як у іконках Apple. Різниця
+            тонка, але помітна на великих радіусах.
+        </div>
+    </section>
+
+    <!-- 2. Сучасний синтаксис кольорів -->
+    <section>
+        <h2>2. Сучасний синтаксис кольорів</h2>
+
+        <p>CSS еволюціонує від старого синтаксису <code>rgba()</code> до нових, потужніших способів задавати кольори.</p>
+
+        <h3>Новий синтаксис rgb / hsl (без ком)</h3>
+        <p>Сучасний CSS дозволяє записувати кольори через пробіли замість ком, а прозорість — через <code>/</code>:</p>
+        <pre><code><span class="comment">/* Старий синтаксис */</span>
+<span class="prop">color</span>: <span class="val">rgba(59, 130, 246, 0.5)</span>;
+
+<span class="comment">/* Новий синтаксис (без ком, без "a") */</span>
+<span class="prop">color</span>: <span class="val">rgb(59 130 246 / 0.5)</span>;
+<span class="prop">color</span>: <span class="val">hsl(217 91% 60% / 0.5)</span>;</code></pre>
+
+        <div class="tip">
+            <strong>Підтримка:</strong> новий синтаксис підтримується всіма сучасними браузерами. Можна сміливо
+            використовувати у нових проєктах.
+        </div>
+
+        <h3>oklch — перцептивно рівномірний колірний простір</h3>
+        <p><code>oklch()</code> задає колір через:</p>
+        <ul>
+            <li><strong>L</strong> (lightness) — яскравість від 0% (чорний) до 100% (білий)</li>
+            <li><strong>C</strong> (chroma) — насиченість (0 = сірий, 0.4+ = яскравий)</li>
+            <li><strong>H</strong> (hue) — тон у градусах (0 = рожевий, 90 = жовтий, 180 = блакитний, 270 = фіолетовий)
+            </li>
+        </ul>
+        <pre><code><span class="comment">/* Синій із насиченістю 0.2 */</span>
+<span class="prop">color</span>: <span class="val">oklch(60% 0.2 250)</span>;
+
+<span class="comment">/* Напівпрозорий зелений */</span>
+<span class="prop">color</span>: <span class="val">oklch(70% 0.18 150 / 0.7)</span>;</code></pre>
+
+        <h3>Чому oklch краще за hsl?</h3>
+        <p>В <code>hsl</code> два кольори з однаковим <code>L</code> можуть виглядати по-різному яскравими для ока
+            (жовтий здається світлішим за синій). В <code>oklch</code> однакова яскравість <strong>виглядає</strong>
+            однаково для будь-якого тону — це важливо для дизайн-систем і палітр.</p>
+
+        <h3>Relative colors (відносні кольори)</h3>
+        <p>Дозволяють створювати нові кольори на основі існуючих — змінюючи окремі компоненти:</p>
+        <pre><code><span class="sel">:root</span> {
+  <span class="prop">--brand</span>: <span class="val">oklch(60% 0.2 250)</span>;
+}
+
+<span class="sel">.card</span> {
+  <span class="comment">/* Взяти --brand і зробити світлішим */</span>
+  <span class="prop">background</span>: <span class="val">oklch(from var(--brand) calc(l + 0.2) c h)</span>;
+
+  <span class="comment">/* Взяти --brand і зробити напівпрозорим */</span>
+  <span class="prop">border-color</span>: <span class="val">oklch(from var(--brand) l c h / 0.3)</span>;
+}</code></pre>
+
+        <p>Тут <code>from var(--brand)</code> бере вихідний колір, а <code>l</code>, <code>c</code>, <code>h</code> —
+            його компоненти, які можна модифікувати через <code>calc()</code>.</p>
+
+        <h3>Практичне застосування</h3>
+        <pre><code><span class="sel">:root</span> {
+  <span class="prop">--accent</span>: <span class="val">oklch(55% 0.25 260)</span>;
+}
+
+<span class="sel">.btn</span> {
+  <span class="prop">background</span>: <span class="val">var(--accent)</span>;
+}
+
+<span class="sel">.btn:hover</span> {
+  <span class="comment">/* Автоматично темніший відтінок */</span>
+  <span class="prop">background</span>: <span class="val">oklch(from var(--accent) calc(l - 0.1) c h)</span>;
+}
+
+<span class="sel">.btn:active</span> {
+  <span class="comment">/* Ще темніший */</span>
+  <span class="prop">background</span>: <span class="val">oklch(from var(--accent) calc(l - 0.2) c h)</span>;
+}</code></pre>
+
+        <div class="tip">
+            <strong>Перевага relative colors:</strong> змінюєте один CSS-змінний <code>--accent</code>, і всі hover/active-стани
+            автоматично перераховуються. Не потрібно вручну підбирати кольори для кожного стану.
+        </div>
+    </section>
+
+    <!-- 3. Анімація підкреслення через градієнт -->
+    <section>
+        <h2>3. Анімація підкреслення через градієнт</h2>
+
+        <p>Анімоване підкреслення посилання — популярний ефект, який можна реалізувати через
+            <code>background-image</code> замість <code>text-decoration</code>.</p>
+
+        <h3>Ідея</h3>
+        <ul>
+            <li>Підкреслення — це <code>background-image</code> у вигляді лінійного градієнта</li>
+            <li>Розмір фону (<code>background-size</code>) змінюється від 0% до 100% при hover</li>
+            <li>Перехід анімується через <code>transition</code></li>
+        </ul>
+
+        <h3>Базовий приклад</h3>
+        <pre><code><span class="sel">.link</span> {
+  <span class="prop">text-decoration</span>: <span class="val">none</span>;
+  <span class="prop">background-image</span>: <span class="val">linear-gradient(currentColor, currentColor)</span>;
+  <span class="prop">background-position</span>: <span class="val">0% 100%</span>;
+  <span class="prop">background-repeat</span>: <span class="val">no-repeat</span>;
+  <span class="prop">background-size</span>: <span class="val">0% 2px</span>;
+  <span class="prop">transition</span>: <span class="val">background-size 0.3s ease</span>;
+}
+
+<span class="sel">.link:hover</span> {
+  <span class="prop">background-size</span>: <span class="val">100% 2px</span>;
+}</code></pre>
+
+        <h3>Як це працює</h3>
+        <ul>
+            <li><code>linear-gradient(currentColor, currentColor)</code> — «градієнт» з одного кольору (тобто суцільна
+                лінія кольору тексту)
+            </li>
+            <li><code>background-position: 0% 100%</code> — фон прив'язаний до нижнього лівого кута</li>
+            <li><code>background-size: 0% 2px</code> — ширина 0% (невидимо), висота 2px</li>
+            <li>При hover ширина зростає до 100% — лінія «виїжджає» зліва направо</li>
+        </ul>
+
+        <h3>Варіації напрямку</h3>
+        <pre><code><span class="comment">/* Зліва направо (за замовчуванням) */</span>
+<span class="prop">background-position</span>: <span class="val">0% 100%</span>;
+
+<span class="comment">/* Справа наліво */</span>
+<span class="prop">background-position</span>: <span class="val">100% 100%</span>;
+
+<span class="comment">/* З центру в обидва боки */</span>
+<span class="prop">background-position</span>: <span class="val">50% 100%</span>;</code></pre>
+
+        <h3>Кольоровий градієнт замість суцільної лінії</h3>
+        <pre><code><span class="sel">.link-gradient</span> {
+  <span class="prop">background-image</span>: <span class="val">linear-gradient(90deg, #3b82f6, #8b5cf6)</span>;
+  <span class="prop">background-position</span>: <span class="val">0% 100%</span>;
+  <span class="prop">background-repeat</span>: <span class="val">no-repeat</span>;
+  <span class="prop">background-size</span>: <span class="val">0% 2px</span>;
+  <span class="prop">transition</span>: <span class="val">background-size 0.3s ease</span>;
+}
+
+<span class="sel">.link-gradient:hover</span> {
+  <span class="prop">background-size</span>: <span class="val">100% 2px</span>;
+}</code></pre>
+
+        <div class="tip">
+            <strong>Чому не text-decoration?</strong> Властивість <code>text-decoration</code> не підтримує
+            <code>transition</code> для ширини чи кольору. <code>background-image</code> дає повний контроль над
+            анімацією, товщиною, кольором і напрямком.
+        </div>
+    </section>
+
+    <!-- 4. Підсумкова таблиця -->
+    <section>
+        <h2>4. Підсумкова таблиця</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Тема</th>
+                <th>Що запам'ятати</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>corner-shape</code></td>
+                <td>scoop, bevel, squircle, notch — нові форми кутів (експериментально)</td>
+            </tr>
+            <tr>
+                <td>rgb/hsl без ком</td>
+                <td><code>rgb(59 130 246 / 0.5)</code> — пробіли замість ком, <code>/</code> для прозорості</td>
+            </tr>
+            <tr>
+                <td><code>oklch()</code></td>
+                <td>Перцептивно рівномірний: L (яскравість), C (насиченість), H (тон)</td>
+            </tr>
+            <tr>
+                <td>Relative colors</td>
+                <td><code>oklch(from var(--color) calc(l + 0.2) c h)</code> — відносні кольори</td>
+            </tr>
+            <tr>
+                <td>Градієнтне підкреслення</td>
+                <td><code>background-image</code> + <code>background-size</code> + <code>transition</code></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+{% endblock %}

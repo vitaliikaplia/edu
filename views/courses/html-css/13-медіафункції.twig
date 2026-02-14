@@ -141,34 +141,7 @@
 
     <!-- ============================================================ -->
     <section>
-        <h2>4. Медіазапроси в тезі link — розділення файлів</h2>
-
-        <p>При підході Mobile First базовий CSS не містить жодного <code>@media</code>. Планшетні та десктопні стилі
-            підключаються окремими файлами:</p>
-
-        <pre><code><span class="comment">&lt;!-- Базовий — без медіазапитів (мобільний) --&gt;</span>
-<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span
-                        class="attr">href</span>=<span class="val">"mobile.css"</span><span class="tag">&gt;</span>
-
-<span class="comment">&lt;!-- Від 769px — планшет --&gt;</span>
-<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span
-                        class="attr">href</span>=<span class="val">"tablet.css"</span>
-      <span class="attr">media</span>=<span class="val">"(min-width: 769px)"</span><span class="tag">&gt;</span>
-
-<span class="comment">&lt;!-- Від 1025px — десктоп --&gt;</span>
-<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span
-                        class="attr">href</span>=<span class="val">"desktop.css"</span>
-      <span class="attr">media</span>=<span class="val">"(min-width: 1025px)"</span><span class="tag">&gt;</span></code></pre>
-
-        <div class="tip">
-            <strong>Каскадність:</strong> на десктопі працюють стилі з усіх трьох файлів — mobile + tablet + desktop.
-            Кожен наступний файл лише додає або перевизначає правила.
-        </div>
-    </section>
-
-    <!-- ============================================================ -->
-    <section>
-        <h2>5. Критичний CSS (Critical CSS)</h2>
+        <h2>4. Критичний CSS (Critical CSS)</h2>
 
         <p>Критичний CSS — це мінімальний набір стилів, необхідний для відображення <strong>першого екрану</strong>
             сайту. Він вбудовується безпосередньо в <code>&lt;style&gt;</code> всередині <code>&lt;head&gt;</code>.</p>
@@ -216,7 +189,7 @@
 
     <!-- ============================================================ -->
     <section>
-        <h2>6. Одиниця em — розмір шрифту поточного елемента</h2>
+        <h2>5. Одиниця em — розмір шрифту поточного елемента</h2>
 
         <p><code>1em</code> = значення <code>font-size</code> поточного елемента. Якщо у елемента немає явного <code>font-size</code>,
             значення успадковується від батька вгору по ланцюжку до кореневого елемента.</p>
@@ -237,7 +210,7 @@
 
     <!-- ============================================================ -->
     <section>
-        <h2>7. Одиниця rem — розмір шрифту кореневого елемента</h2>
+        <h2>6. Одиниця rem — розмір шрифту кореневого елемента</h2>
 
         <p><code>1rem</code> = значення <code>font-size</code> елемента <code>&lt;html&gt;</code> (не
             <code>&lt;body&gt;</code>). На відміну від <code>em</code>, <code>rem</code> не залежить від контексту
@@ -270,7 +243,7 @@
 
     <!-- ============================================================ -->
     <section>
-        <h2>8. Де використовувати які одиниці</h2>
+        <h2>7. Де використовувати які одиниці</h2>
 
         <table>
             <thead>
@@ -328,6 +301,71 @@
 
     <!-- ============================================================ -->
     <section>
+        <h2>8. Корисні CSS-скорочення (Shorthands)</h2>
+
+        <h3>inset — скорочення для позиціювання</h3>
+        <p>Властивість <code>inset</code> замінює одночасне задання <code>top</code>, <code>right</code>,
+            <code>bottom</code>, <code>left</code>:</p>
+
+        <pre><code><span class="sel">.overlay</span> {
+  <span class="prop">position</span>: <span class="val">absolute</span>;
+
+  <span class="comment">/* Замість top: 0; right: 0; bottom: 0; left: 0; */</span>
+  <span class="prop">inset</span>: <span class="val">0</span>;
+}</code></pre>
+
+        <p>Синтаксис аналогічний <code>margin</code>: одне значення — для всіх сторін, два — для вертикалі/горизонталі,
+            чотири — для кожної сторони окремо.</p>
+
+        <h3>Логічні властивості: margin-inline та padding-block</h3>
+        <p>Логічні властивості задають відступи відносно напрямку тексту, а не фізичних сторін екрана:</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Логічна властивість</th>
+                <th>Фізичний еквівалент (для LTR)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>margin-inline</code></td>
+                <td><code>margin-left</code> + <code>margin-right</code></td>
+            </tr>
+            <tr>
+                <td><code>padding-block</code></td>
+                <td><code>padding-top</code> + <code>padding-bottom</code></td>
+            </tr>
+            <tr>
+                <td><code>margin-inline-start</code></td>
+                <td><code>margin-left</code> (для LTR) / <code>margin-right</code> (для RTL)</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <pre><code><span class="sel">.card</span> {
+  <span class="prop">margin-inline</span>: <span class="val">auto</span>;       <span class="comment">/* Центрування по горизонталі */</span>
+  <span class="prop">padding-block</span>: <span class="val">2rem</span>;       <span class="comment">/* Відступи зверху та знизу */</span>
+}</code></pre>
+
+        <h3>place-items та place-content — швидке центрування</h3>
+        <p>У Grid-контейнері <code>place-items</code> — скорочення для <code>align-items</code> +
+            <code>justify-items</code>, а <code>place-content</code> — для <code>align-content</code> +
+            <code>justify-content</code>:</p>
+
+        <pre><code><span class="sel">.container</span> {
+  <span class="prop">display</span>: <span class="val">grid</span>;
+  <span class="prop">place-items</span>: <span class="val">center</span>;   <span class="comment">/* Центрує контент по обох осях */</span>
+}</code></pre>
+
+        <div class="tip">
+            <strong>Найкоротше центрування:</strong> <code>display: grid; place-items: center;</code> — два рядки для
+            ідеального центрування елементів і по горизонталі, і по вертикалі.
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
         <h2>9. Не переоптимізовуйте з em</h2>
 
         <p>Поширена помилка — побачити, що заголовок у 2.5 рази більший за текст, і замінити <code>font-size</code> на
@@ -364,70 +402,7 @@
 
     <!-- ============================================================ -->
     <section>
-        <h2>10. Центрування елементів через margin: auto</h2>
-
-        <p>У flex-контейнері <code>margin: auto</code> працює і по горизонталі, і по вертикалі (на відміну від
-            звичайного потоку, де <code>margin-top: auto</code> = 0).</p>
-
-        <pre><code><span class="sel">.container</span> {
-    <span class="prop">display</span>: <span class="val">flex</span>;
-    <span class="prop">width</span>: <span class="val">400px</span>;
-    <span class="prop">height</span>: <span class="val">400px</span>;
-}
-
-<span class="sel">.box</span> {
-    <span class="prop">width</span>: <span class="val">100px</span>;
-    <span class="prop">height</span>: <span class="val">100px</span>;
-    <span class="prop">margin</span>: <span class="val">auto</span>;  <span class="comment">/* Центрує і горизонтально, і вертикально */</span>
-}</code></pre>
-
-        <h3>margin auto у flex — розподіл елементів</h3>
-
-        <table>
-            <thead>
-            <tr>
-                <th>Елемент 1</th>
-                <th>Елемент 2</th>
-                <th>Результат</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td><code>margin-left: auto</code></td>
-                <td>—</td>
-                <td>Елемент притискається вправо</td>
-            </tr>
-            <tr>
-                <td><code>margin-right: auto</code></td>
-                <td><code>margin-left: auto</code></td>
-                <td>Елементи розходяться по кутах</td>
-            </tr>
-            <tr>
-                <td><code>margin-right: auto</code></td>
-                <td><code>margin-right: auto</code></td>
-                <td>Обидва притискаються вліво</td>
-            </tr>
-            <tr>
-                <td><code>margin-left: auto</code></td>
-                <td><code>margin-left: auto</code></td>
-                <td>Обидва притискаються вправо</td>
-            </tr>
-            <tr>
-                <td colspan="2"><code>margin: auto</code> для обох</td>
-                <td>Обидва по центру</td>
-            </tr>
-            </tbody>
-        </table>
-
-        <div class="tip">
-            <strong>Порівняння з justify-content:</strong> <code>margin: auto</code> керує окремими елементами, тоді як
-            <code>justify-content</code> — усіма елементами контейнера одразу.
-        </div>
-    </section>
-
-    <!-- ============================================================ -->
-    <section>
-        <h2>11. Схлопування зовнішніх відступів (margin collapsing)</h2>
+        <h2>10. Схлопування зовнішніх відступів (margin collapsing)</h2>
 
         <p>У звичайному потоці (без flex) вертикальні відступи сусідніх елементів <strong>не додаються</strong>, а
             <strong>схлопуються</strong> — залишається більший з двох.</p>
@@ -470,7 +445,7 @@
 
     <!-- ============================================================ -->
     <section>
-        <h2>12. Додаткові медіафункції</h2>
+        <h2>11. Додаткові медіафункції</h2>
 
         <p>Крім <code>min-width</code> / <code>max-width</code> існують інші медіафункції:</p>
 
@@ -510,6 +485,80 @@
             <strong>Найчастіше використовують</strong> <code>min-width</code> / <code>max-width</code>. Орієнтація —
             рідше. Висота — ще рідше, бо сторінка прокручується вертикально.
         </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <section>
+        <h2>12. Медіафункції aspect-ratio та orientation</h2>
+
+        <h3>aspect-ratio</h3>
+        <p>Визначає співвідношення ширини до висоти <strong>відображуваної області</strong> (viewport). Записується як
+            дріб:</p>
+        <pre><code><span class="sel">@media (min-aspect-ratio: 16/9)</span> {
+  <span class="comment">/* Стилі для широких екранів */</span>
+}</code></pre>
+        <p>Підтримує приставки <code>min-</code> та <code>max-</code>. Щоб зрозуміти, яке співвідношення більше —
+            переведіть дріб у десяткове: 16/9 = 1.78, 16/10 = 1.6. Отже, <code>min-aspect-ratio: 16/9</code> не включає
+            монітори 16:10.</p>
+
+        <h3>Популярні співвідношення сторін</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Співвідношення</th>
+                <th>Де зустрічається</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>4:3</td>
+                <td>Старі монітори з CRT-трубкою, дизайнерські монітори</td>
+            </tr>
+            <tr>
+                <td>16:9</td>
+                <td>Найпопулярніше: Full HD, HD, 4K</td>
+            </tr>
+            <tr>
+                <td>3:2</td>
+                <td>Microsoft Surface, деякі сучасні ноутбуки</td>
+            </tr>
+            <tr>
+                <td>16:10</td>
+                <td>MacBook Pro, деякі ноутбуки (більше висоти — зручніше для коду)</td>
+            </tr>
+            <tr>
+                <td>21:9</td>
+                <td>Ультраширокі монітори, кінематографічний формат</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>orientation</h3>
+        <p>Визначає орієнтацію пристрою. Приймає два значення:</p>
+        <ul>
+            <li><code>portrait</code> — вертикальна (висота &gt; ширина)</li>
+            <li><code>landscape</code> — горизонтальна (ширина &gt; висота)</li>
+        </ul>
+        <pre><code><span class="sel">@media (orientation: landscape)</span> {
+  <span class="comment">/* Стилі для горизонтальної орієнтації */</span>
+}</code></pre>
+
+        <h3>Комбінований медіазапит</h3>
+        <p>Для коректної роботи на різних пристроях часто потрібна комбінація:</p>
+        <pre><code><span class="sel">@media (min-width: 641px),
+       (orientation: landscape) and (max-width: 640px)</span> {
+  <span class="comment">/* Великі екрани АБО горизонтальні телефони */</span>
+  <span class="sel">.menu</span> {
+    <span class="prop">display</span>: <span class="val">flex</span>;
+    <span class="prop">flex-wrap</span>: <span class="val">wrap</span>;
+  }
+  <span class="sel">.menu__item</span> {
+    <span class="prop">width</span>: <span class="val">49%</span>;
+  }
+}</code></pre>
+        <p>Просто <code>orientation: landscape</code> недостатньо — на вертикально розташованому iPad (великий екран!)
+            елементи будуть по одному в рядку. А вертикально повернутий монітор теж визначиться як <code>portrait</code>.
+        </p>
     </section>
 
     <!-- ============================================================ -->
@@ -567,10 +616,6 @@
                 </td>
             </tr>
             <tr>
-                <td>Медіазапити в link</td>
-                <td>Атрибут <code>media</code> для підключення окремих CSS-файлів</td>
-            </tr>
-            <tr>
                 <td>Критичний CSS</td>
                 <td>CSS першого екрану вбудовується в <code>&lt;style&gt;</code> для миттєвого рендерингу</td>
             </tr>
@@ -585,8 +630,8 @@
                 </td>
             </tr>
             <tr>
-                <td>margin: auto у flex</td>
-                <td>Центрує елемент і по горизонталі, і по вертикалі (на відміну від звичайного потоку)</td>
+                <td>CSS Shorthands</td>
+                <td><code>inset</code> (позиціювання), <code>margin-inline</code>/<code>padding-block</code> (логічні), <code>place-items</code> (центрування)</td>
             </tr>
             <tr>
                 <td>Схлопування margin</td>
@@ -595,6 +640,14 @@
             <tr>
                 <td>overflow: hidden</td>
                 <td>Костиль для горизонтальної прокрутки — краще знайти першопричину</td>
+            </tr>
+            <tr>
+                <td>aspect-ratio</td>
+                <td>Співвідношення ширини/висоти viewport; підтримує min-/max-</td>
+            </tr>
+            <tr>
+                <td>orientation</td>
+                <td><code>portrait</code> (вертикально) / <code>landscape</code> (горизонтально)</td>
             </tr>
             </tbody>
         </table>

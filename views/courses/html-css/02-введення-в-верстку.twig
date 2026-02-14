@@ -29,7 +29,7 @@
 
         <h3>Формати макетів</h3>
         <p>Залежить від студії та дизайнера: раніше — PSD (Photoshop), потім — Sketch. Зараз абсолютний стандарт
-            індустрії — <strong>Figma</strong> (Adobe XD припинив розвиток у 2023 році).</p>
+            індустрії — <strong><a href="https://www.figma.com/" target="_blank">Figma</a></strong> (Adobe XD припинив розвиток у 2023 році).</p>
     </section>
 
     <!-- ===== SECTION 2 ===== -->
@@ -400,26 +400,191 @@ caption, tbody, tfoot, thead, tr, th, td</span> {
 
     <!-- ===== SECTION 8 ===== -->
     <section>
+        <h2>Протоколи посилань: tel: і mailto:</h2>
+
+        <p>У атрибуті <code>href</code> можна використовувати спеціальні протоколи для дзвінків та електронної пошти:</p>
+
+        <pre><code><span class="comment">&lt;!-- Дзвінок --&gt;</span>
+<span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="val">"tel:+380991234567"</span><span class="tag">&gt;</span>+38 (099) 123-45-67<span class="tag">&lt;/a&gt;</span>
+
+<span class="comment">&lt;!-- Електронна пошта --&gt;</span>
+<span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="val">"mailto:info@example.com?subject=Запит"</span><span class="tag">&gt;</span>Написати нам<span class="tag">&lt;/a&gt;</span></code></pre>
+
+        <h3>tel: — протокол для дзвінків</h3>
+        <p>Добре працює на мобільних пристроях: натискання відкриває набирач номера. На десктопі поведінка залежить від ОС та встановлених програм.</p>
+
+        <h3>mailto: — протокол для пошти</h3>
+        <div class="warning">
+            <strong>Недоліки mailto:</strong>
+            <ul>
+                <li>Email-адреса відкрита для спам-ботів</li>
+                <li>Користувач покидає сайт (переходить у поштовий клієнт)</li>
+                <li>Неможливо відстежити ефективність (UTM-мітки, аналітика)</li>
+                <li>Не всі мають налаштований поштовий клієнт</li>
+            </ul>
+            <p>Краща альтернатива — форма зворотного зв'язку на сайті.</p>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 9 ===== -->
+    <section>
+        <h2>Data-атрибути</h2>
+
+        <p>HTML5 дозволяє створювати довільні атрибути з префіксом <code>data-</code>:</p>
+
+        <pre><code><span class="tag">&lt;div</span> <span class="attr">data-category</span>=<span class="val">"news"</span>
+     <span class="attr">data-user-id</span>=<span class="val">"42"</span><span class="tag">&gt;</span>...<span class="tag">&lt;/div&gt;</span></code></pre>
+
+        <ul>
+            <li>Можна додати до <strong>будь-якого</strong> тегу</li>
+            <li>Браузер їх <strong>ігнорує</strong> — вони не впливають на відображення</li>
+            <li>Використовуються для зберігання додаткових даних для JavaScript</li>
+        </ul>
+
+        <h3>Виведення data-атрибута через CSS</h3>
+
+        <pre><code><span class="comment">&lt;!-- HTML --&gt;</span>
+<span class="tag">&lt;span</span> <span class="attr">data-tooltip</span>=<span class="val">"Підказка"</span><span class="tag">&gt;</span>Наведіть курсор<span class="tag">&lt;/span&gt;</span></code></pre>
+
+        <pre><code><span class="comment">/* CSS — виведення значення data-атрибута */</span>
+<span class="sel">span::before</span> {
+    <span class="prop">content</span>: <span class="val">attr(data-tooltip)</span>;
+}</code></pre>
+
+        <p>Функція <code>attr()</code> працює <strong>лише</strong> у властивості <code>content</code> псевдоелементів.</p>
+    </section>
+
+    <!-- ===== SECTION 10 ===== -->
+    <section>
+        <h2>CSS-змінні (custom properties)</h2>
+
+        <p>CSS-змінні (кастомні властивості) дозволяють зберігати значення і використовувати їх по всій сторінці. Це одна з найкорисніших можливостей сучасного CSS.</p>
+
+        <h3>Оголошення і використання</h3>
+        <pre><code><span class="sel">:root</span> {
+    <span class="prop">--header-height</span>: <span class="val">50px</span>;
+    <span class="prop">--footer-height</span>: <span class="val">4rem</span>;
+    <span class="prop">--primary-color</span>: <span class="val">#3498db</span>;
+}
+
+<span class="sel">.header</span> {
+    <span class="prop">height</span>: <span class="val">var(--header-height)</span>;
+}
+
+<span class="sel">.footer</span> {
+    <span class="prop">height</span>: <span class="val">var(--footer-height)</span>;
+}
+
+<span class="sel">.content</span> {
+    <span class="prop">min-height</span>: <span class="val">calc(100vh - var(--header-height) - var(--footer-height))</span>;
+}</code></pre>
+
+        <h3>Синтаксис</h3>
+        <ul>
+            <li><strong>Оголошення:</strong> починається з двох дефісів — <code>--назва: значення</code></li>
+            <li><strong>Використання:</strong> функція <code>var(--назва)</code></li>
+            <li>Назва чутлива до регістру: <code>--Color</code> і <code>--color</code> — це різні змінні</li>
+        </ul>
+
+        <h3>Область видимості</h3>
+        <ul>
+            <li><code>:root</code> — змінні доступні скрізь на сторінці (глобальні)</li>
+            <li>Якщо оголосити в конкретному селекторі — змінні доступні лише всередині цього елемента та його нащадків</li>
+        </ul>
+
+        <h3>Використання зі style guide</h3>
+        <p>Style guide від дизайнера визначає всі кольори, розміри шрифтів, відступи. Мінімальний padding (наприклад, 10px) означає, що всі відступи кратні цьому числу: 10, 20, 30px. CSS-змінні ідеально підходять для зберігання таких значень:</p>
+        <pre><code><span class="sel">:root</span> {
+    <span class="prop">--spacing-unit</span>: <span class="val">10px</span>;
+    <span class="prop">--font-heading</span>: <span class="val">24px</span>;
+    <span class="prop">--font-body</span>: <span class="val">16px</span>;
+    <span class="prop">--color-primary</span>: <span class="val">#2c3e50</span>;
+    <span class="prop">--color-accent</span>: <span class="val">#e74c3c</span>;
+}</code></pre>
+
+        <div class="tip">CSS-змінні працюють <strong>у рантаймі</strong> — їхні значення можна змінювати через JavaScript або медіа-запити. Це відрізняє їх від змінних препроцесорів (<code>$color</code> у SCSS), які існують лише на етапі компіляції.</div>
+    </section>
+
+    <!-- ===== SECTION 11 ===== -->
+    <section>
+        <h2>@supports — перевірка підтримки CSS</h2>
+
+        <p>Правило <code>@supports</code> перевіряє, чи підтримує браузер певну CSS-властивість, і застосовує стилі тільки якщо підтримує.</p>
+
+        <h3>Синтаксис</h3>
+        <pre><code><span class="sel">@supports (display: grid)</span> {
+    <span class="sel">.container</span> {
+        <span class="prop">display</span>: <span class="val">grid</span>;
+        <span class="prop">grid-template-columns</span>: <span class="val">repeat(3, 1fr)</span>;
+    }
+}</code></pre>
+
+        <h3>Логічні оператори</h3>
+        <pre><code><span class="comment">/* АБО */</span>
+<span class="sel">@supports (display: grid) or (display: flex)</span> { ... }
+
+<span class="comment">/* І */</span>
+<span class="sel">@supports (display: grid) and (gap: 10px)</span> { ... }
+
+<span class="comment">/* НЕ — використовувати обережно */</span>
+<span class="sel">@supports not (display: grid)</span> { ... }</code></pre>
+
+        <div class="warning"><strong>Увага щодо <code>not</code>:</strong> якщо браузер не підтримує сам <code>@supports</code>, він проігнорує весь блок, включно з <code>not</code>-варіантом. Тому <code>@supports not (...)</code> — ненадійний варіант для старих браузерів.</div>
+
+        <h3>Практичне застосування</h3>
+        <p>Використовуйте <code>@supports</code>, коли хочете застосувати нову CSS-властивість, але не впевнені в підтримці. Базові стилі пишете без <code>@supports</code>, а покращені — всередині:</p>
+        <pre><code><span class="comment">/* Базовий варіант */</span>
+<span class="sel">.layout</span> {
+    <span class="prop">display</span>: <span class="val">flex</span>;
+    <span class="prop">flex-wrap</span>: <span class="val">wrap</span>;
+}
+
+<span class="comment">/* Покращений варіант для браузерів із підтримкою grid */</span>
+<span class="sel">@supports (display: grid)</span> {
+    <span class="sel">.layout</span> {
+        <span class="prop">display</span>: <span class="val">grid</span>;
+        <span class="prop">grid-template-columns</span>: <span class="val">repeat(auto-fit, minmax(250px, 1fr))</span>;
+        <span class="prop">gap</span>: <span class="val">20px</span>;
+    }
+}</code></pre>
+    </section>
+
+    <!-- ===== SECTION 12 ===== -->
+    <section>
         <h2>Редактори коду</h2>
         <p>Безкоштовні редактори, які не потребують складного налаштування:</p>
         <ul>
-            <li><strong>Visual Studio Code</strong> — найпопулярніший, з величезною екосистемою плагінів. Стандарт
+            <li><strong><a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a></strong> — найпопулярніший, з величезною екосистемою плагінів. Стандарт
                 індустрії.
             </li>
-            <li><strong>Zed</strong> — сучасний, надшвидкий (написаний на Rust), безкоштовний і з відкритим кодом.
+            <li><strong><a href="https://zed.dev/" target="_blank">Zed</a></strong> — сучасний, надшвидкий (написаний на Rust), безкоштовний і з відкритим кодом.
                 Створений колишніми розробниками Atom.
             </li>
-            <li><strong>Cursor</strong> — форк VS Code з глибокою AI-інтеграцією. Є безкоштовний тариф.</li>
-            <li><strong>Sublime Text</strong> — легкий і швидкий, але платний ($99).</li>
+            <li><strong><a href="https://www.sublimetext.com/" target="_blank">Sublime Text</a></strong> — легкий і швидкий, але платний ($99).</li>
         </ul>
-        <p>Професійні IDE: <strong>WebStorm</strong> (JetBrains) — потужне середовище для JavaScript/TypeScript.
-            Безкоштовний для навчання та особистих проєктів (non-commercial license з 2024 року).</p>
+
+        <h3>AI-редактори</h3>
+        <p>Окрема категорія редакторів з глибокою інтеграцією штучного інтелекту. AI допомагає писати код, знаходити помилки та пропонувати рішення прямо в редакторі:</p>
+        <ul>
+            <li><strong><a href="https://www.cursor.com/" target="_blank">Cursor</a></strong> — форк VS Code з глибокою AI-інтеграцією. Один з перших AI-редакторів, що здобув масову популярність. Є безкоштовний тариф.</li>
+            <li><strong><a href="https://windsurf.com/" target="_blank">Windsurf</a></strong> — AI-редактор на базі VS Code (раніше називався Codeium). Є безкоштовний тариф з необмеженим автодоповненням.</li>
+            <li><strong><a href="https://antigravity.google/" target="_blank">Antigravity</a></strong> — новий AI-редактор, орієнтований на швидку розробку з допомогою AI-агентів.</li>
+        </ul>
+
+        <h3>Професійні IDE</h3>
+        <p>IDE (Integrated Development Environment) — це повноцінне середовище розробки з вбудованим дебагером, рефакторингом, підтримкою фреймворків та іншими інструментами:</p>
+        <ul>
+            <li><strong><a href="https://www.jetbrains.com/webstorm/" target="_blank">WebStorm</a></strong> (JetBrains) — потужне середовище для JavaScript/TypeScript та фронтенд-розробки.</li>
+            <li><strong><a href="https://www.jetbrains.com/phpstorm/" target="_blank">PhpStorm</a></strong> (JetBrains) — середовище для PHP-розробки. Включає всі можливості WebStorm + підтримку PHP, баз даних, фреймворків (Laravel, Symfony тощо).</li>
+        </ul>
+        <p>Усі IDE від JetBrains безкоштовні для навчання та особистих проєктів (non-commercial license з 2024 року).</p>
+
         <div class="tip">Найкращий редактор — той, у якому ви найефективніші. Для проходження курсу достатньо
             безкоштовного VS Code.
         </div>
     </section>
 
-    <!-- ===== SECTION 9 ===== -->
+    <!-- ===== SECTION 13 ===== -->
     <section>
         <h2>Пісочниці (онлайн-редактори)</h2>
 
@@ -427,10 +592,10 @@ caption, tbody, tfoot, thead, tr, th, td</span> {
 
         <h3>Популярні пісочниці</h3>
         <ul>
-            <li><strong>CodePen</strong> (codepen.io) — найпопулярніша, зручна для навчання HTML/CSS</li>
-            <li><strong>JSFiddle</strong> (jsfiddle.net) — легка, не потребує реєстрації</li>
-            <li><strong>CodeSandbox</strong> (codesandbox.io) — для складніших проєктів з npm-пакетами</li>
-            <li><strong>StackBlitz</strong> (stackblitz.com) — працює повністю в браузері, підтримує Node.js</li>
+            <li><strong><a href="https://codepen.io/" target="_blank">CodePen</a></strong> — найпопулярніша, зручна для навчання HTML/CSS</li>
+            <li><strong><a href="https://jsfiddle.net/" target="_blank">JSFiddle</a></strong> — легка, не потребує реєстрації</li>
+            <li><strong><a href="https://codesandbox.io/" target="_blank">CodeSandbox</a></strong> — для складніших проєктів з npm-пакетами</li>
+            <li><strong><a href="https://stackblitz.com/" target="_blank">StackBlitz</a></strong> — працює повністю в браузері, підтримує Node.js</li>
         </ul>
 
         <h3>Чим пісочниця відрізняється від редактора</h3>
@@ -442,19 +607,129 @@ caption, tbody, tfoot, thead, tr, th, td</span> {
         </ul>
     </section>
 
-    <!-- ===== SECTION 10 ===== -->
+    <!-- ===== SECTION 14 ===== -->
     <section>
         <h2>Про препроцесори та інші технології</h2>
         <p>Браузер працює рівно з трьома технологіями: <strong>HTML</strong>, <strong>CSS</strong> та
             <strong>JavaScript</strong>. Все інше (SASS, SCSS, LESS, React, TypeScript тощо) — це надбудови та
-            інструменти, що прискорюють розробку.</p>
+            інструменти, що прискорюють розробку. Файли препроцесорів <strong>не можна</strong> підключити до HTML напряму — їх потрібно скомпілювати у звичайний CSS.</p>
 
-        <div class="tip">Якщо ви добре знаєте базовий CSS, будь-який препроцесор (SASS, LESS) вивчається за кілька днів.
-            Спочатку — база, потім — інструменти.
-        </div>
+        <h3>Навіщо потрібні препроцесори</h3>
+        <p>Чистий CSS — потужний, але при великих проєктах стає громіздким. Препроцесори додають можливості, яких немає (або раніше не було) у стандартному CSS:</p>
+        <ul>
+            <li><strong>Змінні</strong> — зберігають кольори, розміри, шрифти в одному місці</li>
+            <li><strong>Вкладеність (nesting)</strong> — записуєте селектори всередині батьківських, як HTML-структуру</li>
+            <li><strong>Міксіни (mixins)</strong> — повторювані блоки стилів, які можна викликати одним рядком</li>
+            <li><strong>Математика</strong> — арифметичні операції над значеннями</li>
+            <li><strong>Імпорти</strong> — розбивка стилів на окремі файли без додаткових HTTP-запитів</li>
+        </ul>
+
+        <h3>SASS / SCSS</h3>
+        <p><strong>SASS</strong> (Syntactically Awesome Stylesheets) — найпопулярніший CSS-препроцесор. Має два синтаксиси:</p>
+        <ul>
+            <li><strong>.sass</strong> — старий синтаксис без фігурних дужок і крапок з комою (відступи замість дужок)</li>
+            <li><strong>.scss</strong> — новий синтаксис, повністю сумісний зі звичайним CSS. Будь-який CSS-файл — це вже валідний SCSS</li>
+        </ul>
+
+        <p>Приклад SCSS з використанням змінних та вкладеності:</p>
+        <pre><code><span class="comment">// Змінні</span>
+<span class="sel">$primary-color</span>: <span class="val">#3498db</span>;
+<span class="sel">$font-main</span>: <span class="val">Arial, sans-serif</span>;
+
+<span class="comment">// Вкладеність</span>
+<span class="sel">.header</span> {
+    <span class="prop">background</span>: <span class="val">$primary-color</span>;
+    <span class="prop">font-family</span>: <span class="val">$font-main</span>;
+
+    <span class="sel">.nav</span> {
+        <span class="prop">display</span>: <span class="val">flex</span>;
+
+        <span class="sel">a</span> {
+            <span class="prop">color</span>: <span class="val">white</span>;
+
+            <span class="sel">&amp;:hover</span> {
+                <span class="prop">opacity</span>: <span class="val">0.8</span>;
+            }
+        }
+    }
+}</code></pre>
+
+        <p>Після компіляції цей код перетвориться на звичайний CSS:</p>
+        <pre><code><span class="sel">.header</span> {
+    <span class="prop">background</span>: <span class="val">#3498db</span>;
+    <span class="prop">font-family</span>: <span class="val">Arial, sans-serif</span>;
+}
+<span class="sel">.header .nav</span> {
+    <span class="prop">display</span>: <span class="val">flex</span>;
+}
+<span class="sel">.header .nav a</span> {
+    <span class="prop">color</span>: <span class="val">white</span>;
+}
+<span class="sel">.header .nav a:hover</span> {
+    <span class="prop">opacity</span>: <span class="val">0.8</span>;
+}</code></pre>
+
+        <h3>LESS</h3>
+        <p><strong>LESS</strong> (Leaner Style Sheets) — ще один препроцесор, схожий на SCSS. Основна відмінність — змінні починаються з <code>@</code> замість <code>$</code>:</p>
+        <pre><code><span class="sel">@primary-color</span>: <span class="val">#3498db</span>;
+
+<span class="sel">.button</span> {
+    <span class="prop">background</span>: <span class="val">@primary-color</span>;
+}</code></pre>
+        <p>LESS був популярний раніше (його використовував Bootstrap 3), але зараз більшість проєктів перейшли на SCSS.</p>
+
+        <h3>PostCSS</h3>
+        <p><strong>PostCSS</strong> — це не препроцесор у класичному розумінні, а <strong>інструмент для трансформації CSS</strong> за допомогою плагінів. Найвідоміші плагіни:</p>
+        <ul>
+            <li><strong>Autoprefixer</strong> — автоматично додає вендорні префікси (<code>-webkit-</code>, <code>-moz-</code>) для підтримки старіших браузерів</li>
+            <li><strong>cssnano</strong> — мініфікує CSS для продакшену</li>
+        </ul>
+        <p>PostCSS часто використовується <strong>разом</strong> із SCSS: спочатку SCSS компілюється в CSS, а потім PostCSS додає префікси та мініфікує.</p>
+
+        <h3>Як працює компіляція</h3>
+        <p>Файл <code>.scss</code> або <code>.less</code> компілюється у звичайний <code>.css</code> за допомогою спеціальних інструментів. У HTML підключається вже <strong>скомпільований CSS</strong>:</p>
+
+        <pre><code><span class="comment">&lt;!-- В HTML підключаємо тільки CSS, ніколи SCSS --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"stylesheet"</span> <span class="attr">href=</span><span class="val">"style.css"</span><span class="tag">&gt;</span></code></pre>
+
+        <p>Компіляція відбувається автоматично під час розробки — при збереженні <code>.scss</code> файлу інструмент генерує оновлений <code>.css</code>.</p>
+
+        <h3>Сучасний CSS наздоганяє препроцесори</h3>
+        <p>Багато можливостей, заради яких раніше обирали препроцесори, тепер є у стандартному CSS:</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Можливість</th>
+                <th>Препроцесор</th>
+                <th>Нативний CSS</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Змінні</td>
+                <td><code>$color: red</code> (SCSS)</td>
+                <td><code>--color: red</code> (CSS Custom Properties)</td>
+            </tr>
+            <tr>
+                <td>Вкладеність</td>
+                <td>Підтримується давно</td>
+                <td><code>CSS Nesting</code> — підтримується з 2023 року</td>
+            </tr>
+            <tr>
+                <td>Математика</td>
+                <td><code>$width / 2</code></td>
+                <td><code>calc(100% / 2)</code></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="warning">CSS Custom Properties (<code>--color</code>) працюють <strong>у рантаймі</strong> — їхні значення можна змінювати через JavaScript або медіа-запити. Змінні препроцесорів (<code>$color</code>) існують <strong>лише на етапі компіляції</strong> і зникають у фінальному CSS. Це різні інструменти для різних задач.</div>
+
+        <div class="tip">Якщо ви добре знаєте базовий CSS, будь-який препроцесор (SASS, LESS) вивчається за кілька днів. Спочатку — база, потім — інструменти. На цьому курсі ми працюємо з чистим CSS — цього достатньо для розуміння всіх концепцій.</div>
     </section>
 
-    <!-- ===== SECTION 11 ===== -->
+    <!-- ===== SECTION 15 ===== -->
     <section>
         <h2>Поради початківцям</h2>
         <ul>
