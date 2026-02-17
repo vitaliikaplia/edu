@@ -233,6 +233,14 @@ function get_twig() {
      $twig->addFunction(new \Twig\TwigFunction('rand_id', function(){
          return bin2hex(random_bytes(8));
      }));
+     $twig->addFunction(new \Twig\TwigFunction('plural_uk', function(int $n, string $one, string $few, string $many): string {
+         $abs = abs($n) % 100;
+         $last = $abs % 10;
+         if ($abs > 10 && $abs < 20) return $n . ' ' . $many;
+         if ($last > 1 && $last < 5) return $n . ' ' . $few;
+         if ($last === 1) return $n . ' ' . $one;
+         return $n . ' ' . $many;
+     }));
 
     // adding twig filters
     $twig->addFilter( new \Twig\TwigFilter( 'pr', 'pr' ) );

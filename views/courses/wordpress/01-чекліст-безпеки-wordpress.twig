@@ -1,0 +1,729 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Чекліст безпеки WordPress (2026)</h1>
+    <p>Комплексний чекліст захисту WordPress-проекту: від конфігурації ядра до мережевого рівня.</p>
+
+    <!-- ===== SECTION 1 ===== -->
+    <section>
+        <h2>Ядро WordPress: оновлення та hardening</h2>
+
+        <h3>Оновлення</h3>
+        <ul>
+            <li>Завжди тримайте WordPress в актуальному стані — старі версії не отримують патчів безпеки.</li>
+            <li>Увімкніть автооновлення для minor-версій ядра.</li>
+            <li>Перед major-оновленнями робіть резервну копію та перевіряйте на staging-середовищі.</li>
+            <li>Завантажуйте ядро виключно з <a href="https://wordpress.org/" target="_blank">wordpress.org</a>. Ніяких nulled або модифікованих збірок.</li>
+            <li>Регулярно перевіряйте цілісність файлів ядра через WP-CLI: <code>wp core verify-checksums</code>.</li>
+            <li>Видаліть з кореня сайту файли, що розкривають версію WP та інші деталі: <code>readme.html</code>, <code>license.txt</code>, <code>wp-config-sample.php</code>. Вони відновлюються при оновленні ядра — автоматизуйте видалення через deploy-скрипт або cron.</li>
+        </ul>
+
+        <h3>Конфігурація wp-config.php</h3>
+
+        <p><strong>Вимкнення редагування файлів через адмінку</strong> — захист від RCE, вимикає Theme Editor і Plugin Editor одночасно:</p>
+        <pre><code><span class="prop">define</span>(<span class="val">'DISALLOW_FILE_EDIT'</span>, <span class="val">true</span>);</code></pre>
+
+        <p><strong>Заборона встановлення/оновлення плагінів/тем</strong> — тільки для production з CI/CD:</p>
+        <pre><code><span class="prop">define</span>(<span class="val">'DISALLOW_FILE_MODS'</span>, <span class="val">true</span>);</code></pre>
+
+        <p><strong>Примусовий SSL для адмінки:</strong></p>
+        <pre><code><span class="prop">define</span>(<span class="val">'FORCE_SSL_ADMIN'</span>, <span class="val">true</span>);</code></pre>
+
+        <p><strong>Вимкнення вбудованого wp-cron</strong> — замінити на системний cron:</p>
+        <pre><code><span class="prop">define</span>(<span class="val">'DISABLE_WP_CRON'</span>, <span class="val">true</span>);</code></pre>
+
+        <div class="example">
+            Системний cron: <code>*/15 * * * * wget -q -O - https://example.com/wp-cron.php?doing_wp_cron >/dev/null 2>&1</code>
+        </div>
+
+        <p><strong>Вимкнення режиму дебагу на production:</strong></p>
+        <pre><code><span class="prop">define</span>(<span class="val">'WP_DEBUG'</span>, <span class="val">false</span>);
+<span class="prop">define</span>(<span class="val">'WP_DEBUG_DISPLAY'</span>, <span class="val">false</span>);
+<span class="prop">define</span>(<span class="val">'WP_DEBUG_LOG'</span>, <span class="val">false</span>);</code></pre>
+
+        <h3>Унікальні ключі безпеки (Salts)</h3>
+        <ul>
+            <li>Згенеруйте через <a href="https://api.wordpress.org/secret-key/1.1/salt/" target="_blank">WordPress.org Salt Generator</a>.</li>
+            <li>Оновлення ключів «скидає» всі активні сесії.</li>
+            <li>Ротуйте ключі після будь-якого інциденту безпеки.</li>
+        </ul>
+
+        <h3>Захист wp-config.php</h3>
+        <ul>
+            <li>Перемістіть файл на рівень вище за кореневу теку вебсервера.</li>
+            <li>Права доступу: <code>600</code> або <code>640</code>.</li>
+            <li>Заблокуйте доступ через веб-сервер (див. розділ «Серверне середовище»).</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 2 ===== -->
+    <section>
+        <h2>Теми та плагіни</h2>
+
+        <h3>Вибір та джерело</h3>
+        <ul>
+            <li>Встановлюйте тільки з офіційного каталогу <a href="https://wordpress.org/plugins/" target="_blank">WordPress.org</a> або перевірених маркетплейсів.</li>
+            <li>Перед встановленням оцініть: дата останнього оновлення, рейтинг, кількість активних інсталяцій, відгуки (особливо щодо безпеки).</li>
+            <li>Уникайте «піратських» (nulled) версій — вони часто містять бекдори.</li>
+        </ul>
+
+        <div class="warning">
+            ~97% проблем безпеки WordPress пов'язані саме з плагінами (дані <a href="https://patchstack.com/" target="_blank">Patchstack</a>).
+        </div>
+
+        <h3>Оновлення</h3>
+        <ul>
+            <li>Регулярно оновлюйте всі теми та плагіни.</li>
+            <li>Вимикайте та видаляйте невикористовувані модулі — навіть деактивований плагін може бути вразливим.</li>
+            <li>Підпишіться на сповіщення про критичні оновлення від розробників та баз вразливостей (<a href="https://patchstack.com/" target="_blank">Patchstack</a>, <a href="https://wpscan.com/" target="_blank">WPScan</a>).</li>
+        </ul>
+
+        <h3>Аудит та перевірка</h3>
+        <ul>
+            <li>Скануйте плагіни/теми на вразливості та шкідливий код: WPScan, Sucuri SiteCheck, Patchstack, Wordfence.</li>
+            <li>Для платних тем/плагінів — перевіряйте наявність аудиту безпеки від розробника.</li>
+            <li>Тестуйте нові розширення спочатку на локальному чи staging-сервері.</li>
+            <li>Перевіряйте зовнішні залежності (Composer, npm) на оновлення та CVE.</li>
+        </ul>
+
+        <h3>Supply Chain Security</h3>
+        <ul>
+            <li>Використовуйте Subresource Integrity (SRI) для зовнішніх скриптів та стилів.</li>
+            <li>Контролюйте checksums завантажених пакетів.</li>
+            <li>Слідкуйте за supply chain атаками через бази CVE.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 3 ===== -->
+    <section>
+        <h2>Серверне середовище</h2>
+
+        <h3>PHP</h3>
+        <ul>
+            <li>Використовуйте PHP 8.3 або 8.4 (стандарт для 2026). Версії нижче 8.1 — ризик.</li>
+            <li>Приховуйте версію PHP: <code>expose_php = Off</code>.</li>
+            <li>Налаштуйте <code>open_basedir</code> для обмеження доступу PHP до файлової системи.</li>
+        </ul>
+
+        <p>Вимкніть небезпечні функції в <code>php.ini</code>:</p>
+        <pre><code><span class="prop">disable_functions</span> = <span class="val">exec, passthru, shell_exec, system, proc_open, popen, curl_multi_exec, parse_ini_file, show_source</span></code></pre>
+
+        <h3>Файлові права</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Об'єкт</th>
+                    <th>Права</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Файли WordPress</td>
+                    <td><code>644</code> (або <code>640</code>)</td>
+                </tr>
+                <tr>
+                    <td>Каталоги</td>
+                    <td><code>755</code> (або <code>750</code>)</td>
+                </tr>
+                <tr>
+                    <td><code>wp-config.php</code></td>
+                    <td><code>600</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            Власник файлів — системний користувач (не root).
+        </div>
+
+        <h3>Налаштування вебсервера</h3>
+
+        <p><strong>Вимкнення лістингу директорій:</strong></p>
+        <ul>
+            <li>Apache: <code>Options -Indexes</code> у <code>.htaccess</code>.</li>
+            <li>Nginx: <code>autoindex off;</code>.</li>
+        </ul>
+
+        <p><strong>Заборона виконання PHP в uploads:</strong></p>
+
+        <p>Apache (<code>.htaccess</code> в <code>wp-content/uploads/</code>):</p>
+        <pre><code><span class="tag">&lt;FilesMatch</span> <span class="val">"\.php$"</span><span class="tag">&gt;</span>
+  <span class="prop">Require</span> <span class="val">all denied</span>
+<span class="tag">&lt;/FilesMatch&gt;</span></code></pre>
+
+        <p>Nginx:</p>
+        <pre><code><span class="sel">location ~* /wp-content/uploads/.*\.php$</span> {
+    <span class="prop">deny</span> <span class="val">all</span>;
+}</code></pre>
+
+        <p><strong>Заборона виконання PHP в wp-includes:</strong></p>
+
+        <p>Nginx:</p>
+        <pre><code><span class="sel">location ~* /wp-includes/.*\.php$</span> {
+    <span class="prop">deny</span> <span class="val">all</span>;
+}</code></pre>
+
+        <p>Apache (<code>.htaccess</code> в <code>wp-includes/</code>):</p>
+        <pre><code><span class="tag">&lt;FilesMatch</span> <span class="val">"\.php$"</span><span class="tag">&gt;</span>
+  <span class="prop">Require</span> <span class="val">all denied</span>
+<span class="tag">&lt;/FilesMatch&gt;</span></code></pre>
+
+        <div class="warning">
+            Виняток: <code>wp-includes/ms-files.php</code> потрібен для Multisite.
+        </div>
+
+        <p><strong>Блокування доступу до системних файлів:</strong></p>
+
+        <p>Apache:</p>
+        <pre><code><span class="tag">&lt;FilesMatch</span> <span class="val">"^(wp-config\.php|\.htaccess|\.git|\.env|\.svn|readme\.html|license\.txt)"</span><span class="tag">&gt;</span>
+  <span class="prop">Require</span> <span class="val">all denied</span>
+<span class="tag">&lt;/FilesMatch&gt;</span></code></pre>
+
+        <p>Nginx:</p>
+        <pre><code><span class="sel">location ~ /(\.|wp-config\.php|readme\.html|license\.txt)</span> {
+    <span class="prop">deny</span> <span class="val">all</span>;
+}</code></pre>
+
+        <p><strong>Блокування xmlrpc.php на рівні сервера:</strong></p>
+
+        <p>Apache:</p>
+        <pre><code><span class="tag">&lt;Files</span> <span class="val">xmlrpc.php</span><span class="tag">&gt;</span>
+  <span class="prop">Require</span> <span class="val">all denied</span>
+<span class="tag">&lt;/Files&gt;</span></code></pre>
+
+        <p>Nginx:</p>
+        <pre><code><span class="sel">location = /xmlrpc.php</span> {
+    <span class="prop">deny</span> <span class="val">all</span>;
+}</code></pre>
+
+        <h3>Security Headers</h3>
+
+        <p>Налаштуйте через конфіг вебсервера або <code>.htaccess</code>:</p>
+        <pre><code><span class="prop">Strict-Transport-Security</span>: <span class="val">max-age=31536000; includeSubDomains; preload</span>
+<span class="prop">X-Content-Type-Options</span>: <span class="val">nosniff</span>
+<span class="prop">X-Frame-Options</span>: <span class="val">SAMEORIGIN</span>
+<span class="prop">Referrer-Policy</span>: <span class="val">strict-origin-when-cross-origin</span>
+<span class="prop">Permissions-Policy</span>: <span class="val">camera=(), microphone=(), geolocation=()</span>
+<span class="prop">X-Permitted-Cross-Domain-Policies</span>: <span class="val">none</span>
+<span class="prop">Content-Security-Policy</span>: <span class="comment">[налаштовуйте обережно під конкретний проект]</span></code></pre>
+
+        <h3>Заборона індексації адмінки</h3>
+
+        <p>Додайте <code>X-Robots-Tag: noindex, nofollow</code> для <code>/wp-admin/</code> та <code>/wp-login.php</code>, щоб пошуковики не індексували службові сторінки:</p>
+
+        <p>Nginx:</p>
+        <pre><code><span class="sel">location ~* ^/(wp-admin|wp-login\.php)</span> {
+    <span class="prop">add_header</span> <span class="val">X-Robots-Tag "noindex, nofollow" always</span>;
+}</code></pre>
+
+        <h3>SSL/TLS</h3>
+        <ul>
+            <li>Встановіть SSL-сертифікат (<a href="https://letsencrypt.org/" target="_blank">Let's Encrypt</a> або комерційний).</li>
+            <li>Перенаправляйте весь HTTP-трафік на HTTPS.</li>
+            <li>Увімкніть HSTS.</li>
+        </ul>
+
+        <h3>SSH</h3>
+        <ul>
+            <li>Використовуйте SSH з ключами (не паролем).</li>
+            <li>Змініть стандартний порт SSH.</li>
+            <li>Використовуйте Fail2Ban для блокування підозрілих спроб підключення.</li>
+        </ul>
+
+        <h3>Обмеження розміру запитів</h3>
+        <p>Захист від DoS через великі upload. Налаштуйте ліміт на рівні вебсервера:</p>
+        <ul>
+            <li>Nginx: <code>client_max_body_size 10m;</code></li>
+            <li>Apache: <code>LimitRequestBody 10485760</code></li>
+        </ul>
+
+        <div class="tip">
+            Узгодьте з <code>upload_max_filesize</code> та <code>post_max_size</code> в <code>php.ini</code>.
+        </div>
+
+        <h3>Фільтрація HTTP-методів</h3>
+        <p>Дозволяйте тільки <code>GET</code>, <code>POST</code>, <code>HEAD</code> для публічних сторінок. Блокуйте <code>TRACE</code>, <code>DELETE</code>, <code>PUT</code>, <code>OPTIONS</code> (якщо не потрібні для REST API):</p>
+
+        <p>Nginx:</p>
+        <pre><code><span class="sel">if ($request_method !~ ^(GET|POST|HEAD)$)</span> {
+    <span class="prop">return</span> <span class="val">405</span>;
+}</code></pre>
+
+        <h3>Rate Limiting на рівні сервера</h3>
+        <p>Окремо від плагінів, налаштуйте rate limiting для <code>wp-login.php</code> та <code>xmlrpc.php</code>:</p>
+
+        <p>Nginx:</p>
+        <pre><code><span class="prop">limit_req_zone</span> <span class="val">$binary_remote_addr zone=login:10m rate=1r/s</span>;
+
+<span class="sel">location = /wp-login.php</span> {
+    <span class="prop">limit_req</span> <span class="val">zone=login burst=3 nodelay</span>;
+    <span class="prop">include</span> <span class="val">fastcgi_params</span>;
+    <span class="prop">fastcgi_pass</span> <span class="val">php</span>;
+}</code></pre>
+
+        <h3>Захист від hot-linking</h3>
+        <p>Заборона прямого підключення зображень з інших сайтів (bandwidth theft):</p>
+
+        <p>Nginx:</p>
+        <pre><code><span class="sel">location ~* \.(jpg|jpeg|png|gif|webp|svg)$</span> {
+    <span class="prop">valid_referers</span> <span class="val">none blocked server_names *.yourdomain.com</span>;
+    <span class="sel">if ($invalid_referer)</span> {
+        <span class="prop">return</span> <span class="val">403</span>;
+    }
+}</code></pre>
+    </section>
+
+    <!-- ===== SECTION 4 ===== -->
+    <section>
+        <h2>База даних</h2>
+
+        <h3>Конфігурація</h3>
+        <ul>
+            <li>Змініть дефолтний префікс <code>wp_</code> на рандомний (наприклад, <code>x7z_</code>) на етапі встановлення.</li>
+            <li>Обмежте права користувача БД: тільки <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>. Без <code>DROP</code>, <code>ALTER</code>, <code>CREATE</code>, <code>GRANT</code> (якщо це можливо в робочому режимі).</li>
+            <li>Обмежте віддалений доступ до MySQL: <code>bind-address = 127.0.0.1</code> в конфігурації.</li>
+            <li>Регулярна ротація пароля БД.</li>
+            <li>Використовуйте окремого користувача БД для кожного сайту на сервері.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 5 ===== -->
+    <section>
+        <h2>Аутентифікація та контроль доступу</h2>
+
+        <h3>Реєстрація користувачів</h3>
+        <p>Якщо сайт не потребує публічної реєстрації — вимкніть її: Налаштування → Загальне → зняти «Будь-хто може зареєструватися».</p>
+
+        <div class="warning">
+            Банальний пункт, але часто забувають — відкрита реєстрація дає атакуючому авторизований доступ до REST API та внутрішніх ендпоінтів.
+        </div>
+
+        <h3>Паролі</h3>
+        <ul>
+            <li>Мінімум 12 символів: великі/малі літери, цифри, спецсимволи.</li>
+            <li>Перевіряйте паролі через базу <a href="https://haveibeenpwned.com/Passwords" target="_blank">HaveIBeenPwned</a>.</li>
+            <li>Використовуйте менеджер паролів.</li>
+            <li>Регулярна ротація паролів.</li>
+        </ul>
+
+        <h3>Двофакторна автентифікація (2FA)</h3>
+        <ul>
+            <li>Обов'язково для всіх адміністраторів та редакторів.</li>
+            <li>SMS — це legacy. Використовуйте:
+                <ul>
+                    <li><strong>Passkeys</strong> (біометрія, FIDO2) — найкращий варіант.</li>
+                    <li><strong>TOTP</strong> (Google Authenticator, Authy) — добрий варіант.</li>
+                </ul>
+            </li>
+            <li>Плагіни: WP 2FA, Solid Security.</li>
+        </ul>
+
+        <h3>Захист форми входу</h3>
+        <ul>
+            <li>Обмеження спроб входу: блокування IP після 3–5 невдалих спроб на 10–20 хвилин (Limit Login Attempts Reloaded або аналог).</li>
+            <li>CAPTCHA (reCAPTCHA) на форму входу та публічні форми.</li>
+            <li>Зміна URL входу з <code>/wp-admin</code> на кастомний (security through obscurity, але ефективний фільтр шуму від ботів).</li>
+            <li>За можливості — обмеження доступу до сторінки входу за IP через <code>.htaccess</code> або firewall.</li>
+        </ul>
+
+        <h3>Application Passwords</h3>
+        <p>Для REST API інтеграцій (n8n, Zapier тощо) використовуйте Application Passwords замість реального пароля адміна.</p>
+
+        <h3>Принцип найменших привілеїв</h3>
+        <ul>
+            <li>Адміністративну роль — тільки довіреним користувачам.</li>
+            <li>Іншим — мінімально необхідні ролі.</li>
+            <li>Не пишіть контент від імені адміністратора — створіть окремий обліковий запис «Автор» або «Редактор» для публікацій. Адмін-акаунт не повинен бути автором жодного посту.</li>
+            <li>Регулярно перевіряйте список користувачів, видаляйте непотрібні акаунти.</li>
+            <li>Не залишайте логін <code>admin</code> або <code>administrator</code>.</li>
+        </ul>
+
+        <h3>User ID адміністраторів</h3>
+        <ul>
+            <li>Видаліть або понизьте роль користувачів з ID 1–10 (боти та скрипти brute-force атакують саме ці ID в першу чергу).</li>
+            <li>Створіть робочий адмін-акаунт з непередбачуваним ID (наприклад, 8+ або далі).</li>
+            <li>Перепризначте контент видалених користувачів на обліковий запис автора.</li>
+        </ul>
+
+        <h3>Сесії та cookies</h3>
+        <ul>
+            <li>Встановіть <code>Secure</code>, <code>HttpOnly</code>, <code>SameSite=Strict</code> flags для cookies.</li>
+            <li>Обмежте час життя сесій адміністраторів.</li>
+            <li>Автоматичне завершення сесії неактивних користувачів (плагін Idle User Logout).</li>
+            <li>Автоматичний logout всіх сесій користувача при зміні його ролі або пароля іншим адміном — запобігає ситуації, коли понижений або звільнений користувач зберігає активну сесію.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 6 ===== -->
+    <section>
+        <h2>API та інтерфейси</h2>
+
+        <h3>XML-RPC</h3>
+        <p>У 2026 році практично не потрібен (замінений REST API), але залишається вектором DDoS та brute-force атак. Вимкніть через фільтр:</p>
+        <pre><code><span class="prop">add_filter</span>(<span class="val">'xmlrpc_enabled'</span>, <span class="val">'__return_false'</span>);</code></pre>
+
+        <div class="tip">
+            Краще заблокувати <code>xmlrpc.php</code> на рівні вебсервера (див. розділ «Серверне середовище»).
+        </div>
+
+        <h3>WordPress Embeds (oEmbed)</h3>
+        <p>Якщо функціональність вбудовування контенту (embed) не потрібна — вимкніть її для зменшення attack surface:</p>
+        <pre><code><span class="comment">// Видалити oEmbed discovery links</span>
+<span class="prop">remove_action</span>(<span class="val">'wp_head'</span>, <span class="val">'wp_oembed_add_discovery_links'</span>);
+<span class="comment">// Видалити oEmbed JavaScript</span>
+<span class="prop">remove_action</span>(<span class="val">'wp_head'</span>, <span class="val">'wp_oembed_add_host_js'</span>);
+<span class="comment">// Вимкнути oEmbed endpoint</span>
+<span class="prop">add_filter</span>(<span class="val">'embed_oembed_discover'</span>, <span class="val">'__return_false'</span>);
+<span class="comment">// Деактивувати embed rewrite rules</span>
+<span class="prop">remove_action</span>(<span class="val">'rest_api_init'</span>, <span class="val">'wp_oembed_register_route'</span>);</code></pre>
+
+        <h3>Коментарі</h3>
+        <p>Якщо проект не потребує коментування на фронтенді — вимкніть коментарі повністю на рівні ядра. Відкриті коментарі — це вектор спаму, XSS та SQL-ін'єкцій через сторонні плагіни коментування.</p>
+
+        <ul>
+            <li>В адмінці: Налаштування → Обговорення → зняти «Дозволити коментарі до нових записів».</li>
+        </ul>
+
+        <p>Для повного вимкнення (включно з існуючими записами):</p>
+        <pre><code><span class="comment">// Вимкнути підтримку коментарів для всіх типів контенту</span>
+<span class="prop">add_action</span>(<span class="val">'admin_init'</span>, <span class="sel">function</span>() {
+    <span class="val">$post_types</span> = <span class="prop">get_post_types</span>();
+    <span class="sel">foreach</span> (<span class="val">$post_types</span> as <span class="val">$post_type</span>) {
+        <span class="prop">remove_post_type_support</span>(<span class="val">$post_type</span>, <span class="val">'comments'</span>);
+        <span class="prop">remove_post_type_support</span>(<span class="val">$post_type</span>, <span class="val">'trackbacks'</span>);
+    }
+});
+
+<span class="comment">// Закрити коментарі на фронтенді</span>
+<span class="prop">add_filter</span>(<span class="val">'comments_open'</span>, <span class="val">'__return_false'</span>, <span class="val">20</span>, <span class="val">2</span>);
+<span class="prop">add_filter</span>(<span class="val">'pings_open'</span>, <span class="val">'__return_false'</span>, <span class="val">20</span>, <span class="val">2</span>);
+
+<span class="comment">// Сховати існуючі коментарі</span>
+<span class="prop">add_filter</span>(<span class="val">'comments_array'</span>, <span class="val">'__return_empty_array'</span>, <span class="val">10</span>, <span class="val">2</span>);
+
+<span class="comment">// Прибрати пункт меню «Коментарі» з адмінки</span>
+<span class="prop">add_action</span>(<span class="val">'admin_menu'</span>, <span class="sel">function</span>() {
+    <span class="prop">remove_menu_page</span>(<span class="val">'edit-comments.php'</span>);
+});</code></pre>
+
+        <div class="tip">
+            Також приберіть віджет коментарів з дашборду та видаліть сторінку коментарів з admin bar.
+        </div>
+
+        <h3>Pingbacks та Trackbacks</h3>
+        <p>Вимкніть повністю — це застарілий функціонал, який використовується як вектор DDoS-ампліфікації та спаму.</p>
+        <ul>
+            <li>В адмінці: Налаштування → Обговорення → зняти «Дозволити сповіщення посилань з інших блогів (pingbacks та trackbacks)».</li>
+        </ul>
+
+        <p>Додатково через код:</p>
+        <pre><code><span class="prop">add_filter</span>(<span class="val">'xmlrpc_methods'</span>, <span class="sel">function</span>(<span class="val">$methods</span>) {
+    <span class="sel">unset</span>(<span class="val">$methods</span>[<span class="val">'pingback.ping'</span>]);
+    <span class="sel">unset</span>(<span class="val">$methods</span>[<span class="val">'pingback.extensions.getPingbacks'</span>]);
+    <span class="sel">return</span> <span class="val">$methods</span>;
+});
+<span class="prop">add_filter</span>(<span class="val">'wp_headers'</span>, <span class="sel">function</span>(<span class="val">$headers</span>) {
+    <span class="sel">unset</span>(<span class="val">$headers</span>[<span class="val">'X-Pingback'</span>]);
+    <span class="sel">return</span> <span class="val">$headers</span>;
+});</code></pre>
+
+        <h3>REST API</h3>
+
+        <p><strong>Обмеження REST API для анонімних користувачів:</strong></p>
+
+        <div class="comparison">
+            <div>
+                <strong>Можна вимкнути повністю</strong>
+                <ul>
+                    <li>Звичайний корпоративний сайт</li>
+                    <li>Лендінг</li>
+                    <li>Блог без зовнішніх інтеграцій та headless-архітектури</li>
+                </ul>
+            </div>
+            <div>
+                <strong>Не можна вимикати</strong>
+                <ul>
+                    <li>Headless WP (React/Vue/Next.js)</li>
+                    <li>WooCommerce з зовнішніми інтеграціями</li>
+                    <li>Плагіни форм або кешування що працюють через REST</li>
+                    <li>Gutenberg-блоки на фронтенді що тягнуть дані через API</li>
+                </ul>
+            </div>
+        </div>
+
+        <p><strong>Оптимальний підхід</strong> — не вимикати повністю, а селективно закрити небезпечні ендпоінти (як мінімум <code>/wp/v2/users</code>) і дозволити тільки потрібні namespace (наприклад, <code>contact-form-7</code>, <code>oembed</code>).</p>
+
+        <p>Обмежте доступ до ендпоінтів, що лістять користувачів (<code>/wp-json/wp/v2/users</code>):</p>
+        <pre><code><span class="prop">add_filter</span>(<span class="val">'rest_endpoints'</span>, <span class="sel">function</span>(<span class="val">$endpoints</span>) {
+    <span class="sel">if</span> (<span class="sel">isset</span>(<span class="val">$endpoints</span>[<span class="val">'/wp/v2/users'</span>])) {
+        <span class="sel">unset</span>(<span class="val">$endpoints</span>[<span class="val">'/wp/v2/users'</span>]);
+    }
+    <span class="sel">if</span> (<span class="sel">isset</span>(<span class="val">$endpoints</span>[<span class="val">'/wp/v2/users/(?P&lt;id&gt;[\d]+)'</span>])) {
+        <span class="sel">unset</span>(<span class="val">$endpoints</span>[<span class="val">'/wp/v2/users/(?P&lt;id&gt;[\d]+)'</span>]);
+    }
+    <span class="sel">return</span> <span class="val">$endpoints</span>;
+});</code></pre>
+
+        <p>Якщо REST API не використовується публічно — обмежте доступ тільки для авторизованих користувачів.</p>
+
+        <h3>User Enumeration</h3>
+        <p>Заблокуйте <code>/?author=N</code> enumeration:</p>
+        <pre><code><span class="sel">if</span> (!<span class="prop">is_admin</span>() && <span class="sel">isset</span>(<span class="val">$_GET</span>[<span class="val">'author'</span>])) {
+    <span class="prop">wp_redirect</span>(<span class="prop">home_url</span>(), <span class="val">301</span>);
+    <span class="sel">exit</span>;
+}</code></pre>
+
+        <p>Або через <code>.htaccess</code> / Nginx rewrite.</p>
+
+        <h3>Приховування ID (Posts, Users, Terms)</h3>
+        <p>Сховайте числові ID користувачів, постів та термів з публічних URL і HTML-розмітки — вони спрощують enumeration та targeted атаки.</p>
+
+        <ul>
+            <li><strong>Користувачі:</strong> використовуйте slug замість ID в author archives; приберіть ID з body class (<code>author-1</code>) через фільтр <code>body_class</code>.</li>
+            <li><strong>Пости:</strong> за можливості використовуйте ЧПУ (pretty permalinks) без числових ID.</li>
+        </ul>
+
+        <p>Видаліть ID з CSS-класів (<code>post-123</code>, <code>page-item-45</code>):</p>
+        <pre><code><span class="prop">add_filter</span>(<span class="val">'post_class'</span>, <span class="sel">function</span>(<span class="val">$classes</span>) {
+    <span class="sel">return</span> <span class="prop">array_filter</span>(<span class="val">$classes</span>, <span class="sel">function</span>(<span class="val">$class</span>) {
+        <span class="sel">return</span> !<span class="prop">preg_match</span>(<span class="val">'/^(post|page-item)-\d+$/'</span>, <span class="val">$class</span>);
+    });
+});</code></pre>
+
+        <p><strong>Терми:</strong> аналогічно приберіть ID з класів меню та віджетів (<code>menu-item-123</code>, <code>cat-item-5</code>):</p>
+        <pre><code><span class="prop">add_filter</span>(<span class="val">'nav_menu_css_class'</span>, <span class="sel">function</span>(<span class="val">$classes</span>) {
+    <span class="sel">return</span> <span class="prop">array_filter</span>(<span class="val">$classes</span>, <span class="sel">function</span>(<span class="val">$class</span>) {
+        <span class="sel">return</span> !<span class="prop">preg_match</span>(<span class="val">'/^menu-item-\d+$/'</span>, <span class="val">$class</span>);
+    });
+});</code></pre>
+
+        <p>Приберіть <code>&lt;meta name="generator"&gt;</code> з head:</p>
+        <pre><code><span class="prop">remove_action</span>(<span class="val">'wp_head'</span>, <span class="val">'wp_generator'</span>);</code></pre>
+    </section>
+
+    <!-- ===== SECTION 7 ===== -->
+    <section>
+        <h2>File Uploads</h2>
+
+        <ul>
+            <li>Валідація MIME-типів завантажуваних файлів (не покладатися тільки на розширення).</li>
+            <li>Заборона виконання PHP в <code>wp-content/uploads/</code> (див. розділ «Серверне середовище»).</li>
+            <li>Сканування завантажених файлів на шкідливий код.</li>
+        </ul>
+
+        <p><strong>Строго обмежте дозволені типи файлів</strong> через фільтр <code>upload_mimes</code> — залиште тільки ті формати, які реально потрібні проекту. За замовчуванням WordPress дозволяє десятки типів (включно з SVG у нових версіях), більшість з яких не потрібні:</p>
+        <pre><code><span class="prop">add_filter</span>(<span class="val">'upload_mimes'</span>, <span class="sel">function</span>(<span class="val">$mimes</span>) {
+    <span class="sel">return</span> [
+        <span class="val">'jpg|jpeg|jpe'</span> => <span class="val">'image/jpeg'</span>,
+        <span class="val">'png'</span>          => <span class="val">'image/png'</span>,
+        <span class="val">'gif'</span>          => <span class="val">'image/gif'</span>,
+        <span class="val">'webp'</span>         => <span class="val">'image/webp'</span>,
+        <span class="val">'pdf'</span>          => <span class="val">'application/pdf'</span>,
+    ];
+});</code></pre>
+
+        <div class="warning">
+            Заблокуйте завантаження потенційно небезпечних форматів: <code>.svg</code> (XSS-вектор без санітизації), <code>.exe</code>, <code>.php</code>, <code>.sh</code>, <code>.sql</code>.
+        </div>
+
+        <p><strong>Content-Disposition header</strong> — налаштуйте сервер віддавати файли з uploads з заголовком <code>Content-Disposition: attachment</code>, щоб браузер не виконував їх, а пропонував скачати:</p>
+
+        <p>Nginx:</p>
+        <pre><code><span class="sel">location ~* /wp-content/uploads/</span> {
+    <span class="prop">add_header</span> <span class="val">Content-Disposition "attachment"</span>;
+}</code></pre>
+    </section>
+
+    <!-- ===== SECTION 8 ===== -->
+    <section>
+        <h2>WAF та мережевий захист</h2>
+
+        <h3>Зовнішній WAF (CDN)</h3>
+        <ul>
+            <li><strong><a href="https://www.cloudflare.com/" target="_blank">Cloudflare</a></strong> (або Sucuri, Cloud Armor) — рекомендовано для всіх проектів.</li>
+            <li>CDN приховує реальну IP-адресу сервера та захищає від DDoS.</li>
+        </ul>
+        <p>Налаштуйте WAF Rules:</p>
+        <ul>
+            <li>Block доступ до <code>xmlrpc.php</code>.</li>
+            <li>Challenge (Captcha) для <code>/wp-admin</code> для всіх країн, окрім вашої.</li>
+            <li>Block запити з підозрілими User-Agent.</li>
+            <li>Rate limiting на критичні ендпоінти.</li>
+        </ul>
+
+        <h3>Внутрішній WAF (плагіни)</h3>
+        <ul>
+            <li>Wordfence, Solid Security або аналоги — для захисту на рівні WordPress.</li>
+            <li>Моніторинг та блокування підозрілих запитів.</li>
+        </ul>
+
+        <h3>Мережевий фаєрвол</h3>
+        <ul>
+            <li>Налаштуйте iptables/ufw: закрийте всі порти, окрім необхідних (SSH, HTTPS).</li>
+            <li>Fail2Ban або OSSEC для автоматичного блокування підозрілих IP.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 9 ===== -->
+    <section>
+        <h2>Моніторинг та логування</h2>
+
+        <h3>Activity Log</h3>
+        <ul>
+            <li>Встановіть WP Activity Log або аналог.</li>
+            <li>Фіксуйте: логіни, встановлення/оновлення плагінів, зміни налаштувань, редагування контенту.</li>
+        </ul>
+
+        <div class="example">
+            Activity Log — це «цифрова камера спостереження» адмінки. У разі інциденту дозволяє встановити причину.
+        </div>
+
+        <h3>Login Notification</h3>
+        <p>Налаштуйте email-повідомлення адміну при кожному вході в адмінку — дозволяє оперативно виявити несанкціонований доступ, навіть якщо атакуючий обійшов інші шари захисту.</p>
+
+        <h3>File Integrity Monitoring</h3>
+        <ul>
+            <li>Відстежуйте зміни хешів файлів ядра, плагінів та тем (Wordfence, OSSEC).</li>
+            <li><code>wp core verify-checksums</code> — регулярно через cron.</li>
+        </ul>
+
+        <h3>Серверні логи</h3>
+        <ul>
+            <li>Регулярно аналізуйте access та error логи на підозрілу активність.</li>
+            <li>Налаштуйте алерти на аномальну кількість 404, 403 або спроб доступу до адмінки.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 10 ===== -->
+    <section>
+        <h2>Резервні копії</h2>
+
+        <ul>
+            <li>Мінімум 3 копії на різних сховищах (сервер + хмара: S3, Google Drive, Backblaze).</li>
+            <li><strong>Ніколи</strong> не зберігайте бекапи тільки на тому ж сервері.</li>
+            <li>Регулярність: щоденно для активних сайтів, щотижня для статичних.</li>
+            <li>Інкрементальні + повні бекапи.</li>
+            <li>Автоматизуйте через плагіни (UpdraftPlus, BlogVault) або серверні скрипти.</li>
+            <li>Зберігайте бекапи зашифрованими.</li>
+        </ul>
+
+        <div class="warning">
+            <strong>Обов'язково</strong> тестуйте відновлення з бекапу («репетиція пожежі»).
+        </div>
+
+        <div class="tip">
+            <strong>Окремо шифруйте дампи БД</strong> — вони містять паролі, email-адреси, персональні дані користувачів та токени. Незашифрований дамп БД в чужих руках = повна компрометація сайту.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 11 ===== -->
+    <section>
+        <h2>DNS та Email Security</h2>
+
+        <h3>DNS</h3>
+        <ul>
+            <li>Увімкніть DNSSEC для захисту від DNS spoofing.</li>
+            <li>Приховуйте реальну IP сервера за CDN (Cloudflare тощо).</li>
+        </ul>
+
+        <h3>Email (захист домену від фішингу)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Запис</th>
+                    <th>Призначення</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>SPF</strong></td>
+                    <td>Вкажіть дозволені сервери відправки пошти</td>
+                </tr>
+                <tr>
+                    <td><strong>DKIM</strong></td>
+                    <td>Цифровий підпис листів</td>
+                </tr>
+                <tr>
+                    <td><strong>DMARC</strong></td>
+                    <td>Політика обробки листів, що не пройшли перевірку</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ===== SECTION 12 ===== -->
+    <section>
+        <h2>Disclosure та документація</h2>
+
+        <h3>security.txt</h3>
+        <p>Додайте файл <code>/.well-known/security.txt</code> (<a href="https://www.rfc-editor.org/rfc/rfc9116" target="_blank">RFC 9116</a>) для responsible disclosure:</p>
+        <pre><code><span class="prop">Contact</span>: <span class="val">mailto:security@example.com</span>
+<span class="prop">Preferred-Languages</span>: <span class="val">uk, en</span>
+<span class="prop">Expires</span>: <span class="val">2027-01-01T00:00:00.000Z</span></code></pre>
+
+        <h3>Документація</h3>
+        <ul>
+            <li>Описуйте всі налаштування безпеки (без паролів у відкритому вигляді).</li>
+            <li>Розробіть план відновлення після інциденту (DRP).</li>
+            <li>Регулярно оновлюйте документацію.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 13 ===== -->
+    <section>
+        <h2>Безпека робочого місця адміністратора</h2>
+
+        <ul>
+            <li>Актуальна ОС, браузер, антивірус/EDR.</li>
+            <li>Не використовуйте адмін-акаунт для звичайного серфінгу.</li>
+            <li>Уникайте публічних Wi-Fi при роботі з сайтом; використовуйте VPN.</li>
+            <li>Навчайте команду: фішинг, соціальна інженерія, обов'язковість 2FA.</li>
+            <li>Призначте відповідального за моніторинг безпеки.</li>
+        </ul>
+
+        <div class="warning">
+            Пам'ятайте: компрометований комп'ютер адміна = компрометований сайт.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 14 ===== -->
+    <section>
+        <h2>Action Plan (швидкий старт)</h2>
+
+        <p>Мінімальний набір дій для базового захисту нового WordPress-проекту:</p>
+
+        <ol>
+            <li>Перевірити версію PHP (8.3+)</li>
+            <li>Додати <code>DISALLOW_FILE_EDIT</code> та <code>DISABLE_WP_CRON</code> у <code>wp-config.php</code></li>
+            <li>Оновити Salts</li>
+            <li>Налаштувати 2FA для всіх адмінів</li>
+            <li>Закрити <code>xmlrpc.php</code> на рівні сервера</li>
+            <li>Вимкнути pingbacks/trackbacks</li>
+            <li>Вимкнути коментарі (якщо не потрібні проекту)</li>
+            <li>Обмежити дозволені формати завантаження файлів (<code>upload_mimes</code>)</li>
+            <li>Заблокувати виконання PHP в <code>uploads/</code> та <code>wp-includes/</code></li>
+            <li>Видалити <code>readme.html</code>, <code>license.txt</code>, <code>wp-config-sample.php</code></li>
+            <li>Заблокувати user enumeration (author, REST API users)</li>
+            <li>Приховати ID користувачів, постів та термів з публічної розмітки</li>
+            <li>Видалити/понизити адмін-акаунти з ID 1–10, створити адміна з вищим ID</li>
+            <li>Налаштувати Security Headers</li>
+            <li>Налаштувати бекапи на зовнішнє сховище</li>
+            <li>Встановити Activity Log плагін</li>
+            <li>Перевірити файлові права (644/755/600)</li>
+            <li>Налаштувати Cloudflare WAF</li>
+            <li>Налаштувати rate limiting на <code>wp-login.php</code> на рівні сервера</li>
+            <li>Фільтрація HTTP-методів (тільки GET/POST/HEAD)</li>
+            <li>Налаштувати login notification для адмінів</li>
+            <li>Налаштувати захист від hot-linking</li>
+            <li>Налаштувати SPF/DKIM/DMARC</li>
+            <li>Додати <code>security.txt</code></li>
+            <li>Вимкнути публічну реєстрацію (якщо не потрібна)</li>
+            <li>Вимкнути oEmbed (якщо не потрібен)</li>
+            <li>Додати X-Robots-Tag noindex для wp-admin</li>
+            <li>Протестувати відновлення з бекапу</li>
+            <li>Шифрувати дампи БД окремо</li>
+        </ol>
+    </section>
+
+{% endblock %}

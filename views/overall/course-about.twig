@@ -6,7 +6,7 @@
             <span class="course-hero-icon">{{ course.icon }}</span>
             <h1>{{ course.title }}</h1>
             <p class="course-hero-desc">{{ course.description }}</p>
-            <span class="course-card-meta">{{ lessons | length }} лекцій · 🕐 ≈ {{ course.total_reading_time }} хв</span>
+            <span class="course-card-meta">{{ plural_uk(lessons | length, 'лекція', 'лекції', 'лекцій') }} · 🕐 ≈ {{ course.total_reading_time }} хв</span>
         </div>
 
         {% include 'overall/breadcrumbs.twig' %}

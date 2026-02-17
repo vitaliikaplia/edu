@@ -20,7 +20,7 @@
                     <div class="course-card-body">
                         <strong class="course-card-title">{{ course.title }}</strong>
                         <p class="course-card-desc">{{ course.description }}</p>
-                        <span class="course-card-meta">{{ course.lessons | length }} лекцій · ≈ {{ course.total_reading_time }} хв</span>
+                        <span class="course-card-meta">{{ plural_uk(course.lessons | length, 'лекція', 'лекції', 'лекцій') }} · ≈ {{ course.total_reading_time }} хв</span>
                     </div>
                 </a>
             {% endfor %}
