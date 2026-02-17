@@ -188,6 +188,33 @@
         });
     }
 
+    // --- Copy code button ---
+    var copyIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    var checkIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+    var preBlocks = document.querySelectorAll('pre');
+    preBlocks.forEach(function (pre) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'code-copy-btn';
+        btn.setAttribute('aria-label', 'Копіювати код');
+        btn.innerHTML = copyIcon;
+        pre.appendChild(btn);
+
+        btn.addEventListener('click', function () {
+            var code = pre.querySelector('code');
+            var text = (code || pre).textContent;
+            navigator.clipboard.writeText(text).then(function () {
+                btn.innerHTML = checkIcon;
+                btn.classList.add('is-copied');
+                setTimeout(function () {
+                    btn.innerHTML = copyIcon;
+                    btn.classList.remove('is-copied');
+                }, 1500);
+            });
+        });
+    });
+
     // --- TOC sidebar: assign IDs to headings & highlight active ---
     var tocSidebar = document.getElementById('tocSidebar');
     if (tocSidebar) {
