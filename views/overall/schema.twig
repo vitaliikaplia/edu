@@ -7,12 +7,17 @@
     "name": "edu.kaplia.pro",
     "url": "{{ site.url }}",
     "description": "{{ page.description | default('') }}",
-    "inLanguage": "uk"
+    "inLanguage": "uk",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ site.url }}api/search/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+    }
 }
 </script>
 {% endif %}
 
-{# --- Course page (ItemList) --- #}
+{# --- Course page (Course + ItemList) --- #}
 {% if 'course-about' in body_classes and lessons is defined %}
 <script type="application/ld+json">
 {
@@ -20,16 +25,18 @@
     "@type": "Course",
     "name": "{{ course.title }}",
     "description": "{{ course.description }}",
+    "url": "{{ site.url }}{{ course.slug }}/",
     "provider": {
         "@type": "Organization",
         "name": "edu.kaplia.pro",
         "url": "{{ site.url }}"
     },
     "inLanguage": "uk",
+    "numberOfLessons": {{ lessons | length }},
     "hasCourseInstance": {
         "@type": "CourseInstance",
         "courseMode": "online",
-        "courseWorkload": "PT{{ lessons | length }}H"
+        "courseWorkload": "PT{{ course.total_reading_time }}M"
     }
 }
 </script>
@@ -39,6 +46,7 @@
     "@type": "ItemList",
     "name": "{{ course.title }} — зміст курсу",
     "numberOfItems": {{ lessons | length }},
+    "itemListOrder": "https://schema.org/ItemListOrderAscending",
     "itemListElement": [
         {% for lesson in lessons %}
         {
@@ -64,6 +72,7 @@
     "description": "{{ page.description | default('') }}",
     "url": "{{ page.canonical | default('') }}",
     "inLanguage": "uk",
+    "position": {{ lesson_current | default(1) }},
     "isPartOf": {
         "@type": "Course",
         "name": "{{ course.title }}",
@@ -78,6 +87,10 @@
         "@type": "Organization",
         "name": "edu.kaplia.pro",
         "url": "{{ site.url }}"
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ page.canonical | default('') }}"
     },
     "wordCount": {{ (reading_time | default(1)) * 200 }},
     "timeRequired": "PT{{ reading_time | default(1) }}M"
