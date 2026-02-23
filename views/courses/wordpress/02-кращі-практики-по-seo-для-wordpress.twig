@@ -1,0 +1,713 @@
+{% extends "overall/base-lesson.twig" %}
+
+{% block lesson %}
+
+    <h1>Кращі практики по SEO для WordPress (2026)</h1>
+    <p>Комплексний чекліст пошукової оптимізації WordPress-проєкту: від технічного фундаменту до AI-оптимізації.</p>
+
+    <!-- ===== SECTION 1 ===== -->
+    <section>
+        <h2>Технічне SEO: Core Web Vitals</h2>
+
+        <p>Core Web Vitals — це набір метрик Google, що вимірюють реальний досвід користувача. З 2024 року INP замінив FID як метрику інтерактивності.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Метрика</th>
+                    <th>Що вимірює</th>
+                    <th>Норма</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>LCP</strong> (Largest Contentful Paint)</td>
+                    <td>Швидкість завантаження найбільшого елемента</td>
+                    <td><code>&lt; 2.5 сек</code></td>
+                </tr>
+                <tr>
+                    <td><strong>INP</strong> (Interaction to Next Paint)</td>
+                    <td>Затримка відповіді на дії користувача</td>
+                    <td><code>&lt; 200 мс</code></td>
+                </tr>
+                <tr>
+                    <td><strong>CLS</strong> (Cumulative Layout Shift)</td>
+                    <td>Візуальна стабільність (зсуви елементів)</td>
+                    <td><code>&lt; 0.1</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="warning">
+            64% вебсайтів не проходять порогові значення Core Web Vitals. Перевіряйте свої показники щомісяця через <a href="https://pagespeed.web.dev/" target="_blank">PageSpeed Insights</a> та <a href="https://search.google.com/search-console/" target="_blank">Search Console</a>.
+        </div>
+
+        <h3>Як покращити</h3>
+        <ul>
+            <li><strong>LCP:</strong> оптимізуйте зображення, використовуйте CDN, увімкніть кешування, завантажуйте hero-зображення eagerly (без lazy load).</li>
+            <li><strong>INP:</strong> мінімізуйте JavaScript, розбивайте довгі таски, використовуйте <code>defer</code> або <code>async</code> для некритичних скриптів.</li>
+            <li><strong>CLS:</strong> задавайте розміри для зображень та iframe, не вставляйте контент вище за видиму область після завантаження.</li>
+        </ul>
+
+        <div class="tip">
+            Тестуйте на реальних даних (CrUX / Chrome UX Report), а не лише в лабораторних умовах. Google оцінює саме реальний досвід користувачів.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 2 ===== -->
+    <section>
+        <h2>Швидкість та продуктивність</h2>
+
+        <h3>Серверна оптимізація</h3>
+        <ul>
+            <li>Використовуйте якісний managed WordPress хостинг з uptime 99.9%+.</li>
+            <li>Хостинг має підтримувати PHP 8.3+ та HTTP/2 або HTTP/3.</li>
+            <li>Сервер має бути географічно близько до основної аудиторії (або використовуйте CDN).</li>
+            <li>Увімкніть GZIP або Brotli стиснення — зменшує розмір даних на 60–80%.</li>
+        </ul>
+
+        <h3>Кешування</h3>
+        <ul>
+            <li>Встановіть <strong>один</strong> плагін кешування: <a href="https://wp-rocket.me/" target="_blank">WP Rocket</a> (найпростіший), <a href="https://wordpress.org/plugins/litespeed-cache/" target="_blank">LiteSpeed Cache</a> (для LiteSpeed серверів), або <a href="https://nitropack.io/" target="_blank">NitroPack</a> (найвищий % проходження CWV).</li>
+            <li>Увімкніть page cache, browser cache та object cache.</li>
+            <li>Увімкніть мініфікацію CSS та JS.</li>
+        </ul>
+
+        <div class="warning">
+            Ніколи не використовуйте два плагіни кешування одночасно — це викликає конфлікти, збої у верстці та непередбачувану поведінку.
+        </div>
+
+        <h3>Оптимізація фронтенду</h3>
+        <ul>
+            <li>Мініфікуйте CSS, JavaScript та HTML.</li>
+            <li>Відкладіть завантаження некритичного JS через <code>defer</code> або <code>async</code>.</li>
+            <li>Preload критичних ресурсів (шрифти, above-the-fold CSS).</li>
+            <li>Видаліть невикористовувані плагіни та деактивовані теми — кожен додає overhead.</li>
+            <li>Обмежте кількість плагінів до необхідного мінімуму.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 3 ===== -->
+    <section>
+        <h2>Crawlability та індексація</h2>
+
+        <h3>Sitemap</h3>
+        <ul>
+            <li>Використовуйте sitemap від SEO-плагіна (Rank Math, Yoast) замість вбудованого у WordPress — він базовий і не має налаштувань.</li>
+            <li>Надішліть sitemap у <a href="https://search.google.com/search-console/" target="_blank">Google Search Console</a> та <a href="https://www.bing.com/webmasters/" target="_blank">Bing Webmaster Tools</a>.</li>
+            <li>Виключіть thin/noindex сторінки з sitemap.</li>
+        </ul>
+
+        <h3>robots.txt</h3>
+        <ul>
+            <li>Не блокуйте CSS та JS файли — Google рендерить сторінки для розуміння контенту.</li>
+            <li>Додайте URL sitemap у robots.txt.</li>
+            <li>Використовуйте <code>noindex</code> мета-тег (не robots.txt) для приховання сторінок з пошуку — robots.txt не запобігає індексації, лише скануванню.</li>
+        </ul>
+
+        <div class="example">
+            Базовий robots.txt для WordPress:
+        </div>
+
+        <pre><code><span class="prop">User-agent</span>: <span class="val">*</span>
+<span class="prop">Disallow</span>: <span class="val">/wp-admin/</span>
+<span class="prop">Allow</span>: <span class="val">/wp-admin/admin-ajax.php</span>
+
+<span class="prop">Sitemap</span>: <span class="val">https://example.com/sitemap_index.xml</span></code></pre>
+
+        <h3>Контроль AI-ботів</h3>
+        <p>З появою AI-ботів (GPTBot, CCBot тощо) додайте відповідні правила у robots.txt за потреби:</p>
+
+        <pre><code><span class="comment"># Заблокувати AI-ботів (якщо не хочете, щоб ваш контент використовували для навчання)</span>
+<span class="prop">User-agent</span>: <span class="val">GPTBot</span>
+<span class="prop">Disallow</span>: <span class="val">/</span>
+
+<span class="prop">User-agent</span>: <span class="val">CCBot</span>
+<span class="prop">Disallow</span>: <span class="val">/</span></code></pre>
+
+        <h3>Загальні правила</h3>
+        <ul>
+            <li>Кожна важлива сторінка має бути доступна за максимум 3 кліки від головної.</li>
+            <li>Виправляйте всі 404-помилки та налаштуйте 301-редіректи.</li>
+            <li>Переконайтесь, що canonical-теги коректно встановлені на всіх сторінках.</li>
+            <li>Аудит crawl budget: видаліть або закрийте від індексації thin/low-value сторінки.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 4 ===== -->
+    <section>
+        <h2>Mobile-First індексація</h2>
+
+        <p>Google повністю перейшов на mobile-first indexing у 2024 році. Мобільна версія вашого сайту <strong>є</strong> основною версією для ранжування.</p>
+
+        <h3>Обов'язкові вимоги</h3>
+        <ul>
+            <li><strong>Responsive design</strong> (єдиний URL, єдиний HTML) — рекомендований Google підхід.</li>
+            <li><strong>Паритет контенту</strong> — мобільна версія має містити той самий контент, посилання та структуровані дані, що й десктоп.</li>
+            <li>Tap targets мінімум <code>48x48 пікселів</code>.</li>
+            <li>Шрифт мінімум <code>16px</code> — менший потребує зумування і фіксується як помилка.</li>
+            <li>Без горизонтального скролу.</li>
+        </ul>
+
+        <div class="warning">
+            Якщо мобільна версія має менше контенту, менше посилань або відсутні структуровані дані — ваші позиції відображають саме мобільну (обмежену) версію. Desktop-only оптимізації невидимі для Google.
+        </div>
+
+        <div class="tip">
+            Для локальних сайтів додайте click-to-call, карти та робочі години — мобільні користувачі очікують швидкий доступ до контактів.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 5 ===== -->
+    <section>
+        <h2>On-Page SEO: мета-теги та URL</h2>
+
+        <h3>Мета-теги</h3>
+        <ul>
+            <li><strong>Title</strong> — унікальний для кожної сторінки, 50–60 символів. Первинний ключовик на початку працює краще.</li>
+            <li><strong>Meta description</strong> — унікальний, 150–160 символів. Не є прямим фактором ранжування, але впливає на CTR.</li>
+            <li>Додавайте заклик до дії або ціннісну пропозицію в description.</li>
+            <li>Уникайте дублювання title та description між сторінками.</li>
+        </ul>
+
+        <div class="tip">
+            Google переписує 60–70% description, але якісні описи частіше залишаються без змін.
+        </div>
+
+        <h3>Заголовки</h3>
+        <ul>
+            <li>Один <code>&lt;h1&gt;</code> на сторінку з основним ключовим словом.</li>
+            <li>Логічна ієрархія: <code>H1 &gt; H2 &gt; H3 &gt; H4</code>.</li>
+            <li>Структуруйте контент для AI-читабельності: чіткі заголовки, списки, таблиці, FAQ-секції.</li>
+        </ul>
+
+        <h3>WordPress Permalinks</h3>
+        <ul>
+            <li>Використовуйте структуру <strong>Post Name</strong> (<code>example.com/post-name/</code>) — чисті, описові URL.</li>
+            <li>Тримайте URL короткими, описовими та з ключовими словами.</li>
+            <li>Для topic clusters можна додати категорію: <code>example.com/category/post-name/</code>.</li>
+        </ul>
+
+        <div class="warning">
+            Ніколи не змінюйте permalinks без налаштування 301-редіректів — це створює масові 404-помилки та знищує існуючий посилальний капітал.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 6 ===== -->
+    <section>
+        <h2>Контент: якість та E-E-A-T</h2>
+
+        <p><strong>E-E-A-T</strong> (Experience, Expertise, Authoritativeness, Trustworthiness) — ключовий фреймворк Google для оцінки якості контенту.</p>
+
+        <h3>Якість контенту</h3>
+        <ul>
+            <li>Створюйте оригінальний, people-first контент з демонстрацією реального досвіду.</li>
+            <li>Відповідайте на search intent кожної сторінки: інформаційний, навігаційний, комерційний, транзакційний.</li>
+            <li>Додавайте оригінальні фото, тести, огляди, кейси та дані — Google розпізнає і нагороджує реальний досвід.</li>
+            <li>Будуйте topical authority через кластери контенту: пілар-сторінка (3,000–10,000 слів) + 5–20 підтемних статей, всі з перелінковкою.</li>
+            <li>Регулярно оновлюйте контент — свіжість сигналізує про актуальність.</li>
+        </ul>
+
+        <h3>E-E-A-T сигнали</h3>
+        <ul>
+            <li>Додайте біографії авторів з кредитами, посиланнями на соцмережі та релевантною експертизою.</li>
+            <li>Створіть повноцінну сторінку «Про нас» з контактною інформацією та редакційними політиками.</li>
+            <li>Для YMYL-контенту (фінанси, здоров'я, юриспруденція) потрібен експертний рівень кредитів.</li>
+        </ul>
+
+        <div class="example">
+            Грудневий Core Update 2025: сайти з оригінальним контентом та демонстрацією досвіду отримали зростання на ~23%. Контент-ферми з генеричним контентом зазнали значних втрат.
+        </div>
+
+        <h3>AI-контент</h3>
+
+        <div class="comparison">
+            <div>
+                <strong>Допустимо ✅</strong>
+                <ul>
+                    <li>AI як помічник для чернеток</li>
+                    <li>Контент з людською редактурою та фактчеком</li>
+                    <li>Додавання унікального досвіду та експертизи</li>
+                </ul>
+            </div>
+            <div>
+                <strong>Небезпечно ❌</strong>
+                <ul>
+                    <li>Масове виробництво AI-контенту без перевірки</li>
+                    <li>Scaled content abuse для маніпуляції ранжуванням</li>
+                    <li>Генеричний AI-контент без людської перспективи</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="warning">
+            SpamBrain від Google визначає низькоякісний AI-контент з точністю ~98% (дані 2025 року). Масовий AI-контент без експертного нагляду зазнав 87% негативного впливу після Core Update грудня 2025.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 7 ===== -->
+    <section>
+        <h2>Зображення</h2>
+
+        <h3>Формати</h3>
+        <ul>
+            <li>Використовуйте <strong>WebP</strong> або <strong>AVIF</strong> як основні формати. AVIF дає до 50% кращу компресію, ніж WebP.</li>
+            <li>Встановіть плагін оптимізації: <a href="https://wordpress.org/plugins/optimole-wp/" target="_blank">Optimole</a>, <a href="https://wordpress.org/plugins/wp-smushit/" target="_blank">Smush</a>, <a href="https://wordpress.org/plugins/shortpixel-image-optimiser/" target="_blank">ShortPixel</a> або <a href="https://wordpress.org/plugins/imagify/" target="_blank">Imagify</a>.</li>
+            <li>Увімкніть автоматичну конвертацію у WebP/AVIF.</li>
+        </ul>
+
+        <h3>Оптимізація</h3>
+        <ul>
+            <li><strong>Alt text</strong> — описовий, з ключовими словами, для кожного зображення. Важливо для доступності та Google Images.</li>
+            <li><strong>Імена файлів</strong> — описові: <code>seo-checklist-wordpress.jpg</code> замість <code>IMG_12345.jpg</code>.</li>
+            <li>Стискайте зображення перед завантаженням.</li>
+            <li>Використовуйте <code>srcset</code> для responsive images.</li>
+        </ul>
+
+        <h3>Lazy Loading</h3>
+        <ul>
+            <li>Перші 2–3 зображення (hero/LCP) — завантажувати eagerly.</li>
+            <li>Решту — lazy load.</li>
+        </ul>
+
+        <div class="warning">
+            Lazy loading <strong>всіх</strong> зображень (включно з above-the-fold) погіршує LCP. Завжди виключайте hero-зображення з lazy load.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 8 ===== -->
+    <section>
+        <h2>Внутрішня перелінковка</h2>
+
+        <p>Стратегічна внутрішня перелінковка може підвищити позиції до 40% та покращити ефективність сканування з 40% до 70%.</p>
+
+        <h3>Стратегія</h3>
+        <ul>
+            <li>Використовуйте модель <strong>hub-and-spoke</strong> (topic clusters): пілар-сторінка з посиланнями на всі підтемні статті і навпаки.</li>
+            <li>Використовуйте описовий, keyword-rich anchor text — уникайте «натисніть тут» або «детальніше».</li>
+            <li>Пов'язуйте новий контент з існуючими релевантними сторінками (і навпаки).</li>
+            <li>Тримайте важливі сторінки в межах 3 кліків від головної.</li>
+        </ul>
+
+        <h3>Аудит</h3>
+        <ul>
+            <li>Регулярно перевіряйте broken links та orphan pages (сторінки без жодного внутрішнього посилання).</li>
+            <li>71% вебсайтів мають порушену або неефективну внутрішню структуру посилань.</li>
+        </ul>
+
+        <div class="tip">
+            Плагін <a href="https://wordpress.org/plugins/link-whisper/" target="_blank">Link Whisper</a> або вбудовані підказки Rank Math допомагають систематично будувати внутрішню перелінковку.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 9 ===== -->
+    <section>
+        <h2>Структуровані дані (Schema.org)</h2>
+
+        <p>Сторінки зі структурованими даними отримують на 20–30% більше кліків у порівнянні зі звичайними результатами. Google рекомендує формат <strong>JSON-LD</strong>.</p>
+
+        <h3>Обов'язкові типи</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Тип</th>
+                    <th>Де використовувати</th>
+                    <th>Що дає</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>Organization</code></td>
+                    <td>Головна сторінка</td>
+                    <td>Встановлює бренд-сутність, Knowledge Panel</td>
+                </tr>
+                <tr>
+                    <td><code>Article / BlogPosting</code></td>
+                    <td>Статті та записи</td>
+                    <td>Rich snippets (автор, дата, заголовок)</td>
+                </tr>
+                <tr>
+                    <td><code>BreadcrumbList</code></td>
+                    <td>Всі сторінки</td>
+                    <td>Навігаційна стежка в SERP</td>
+                </tr>
+                <tr>
+                    <td><code>FAQPage</code></td>
+                    <td>FAQ-секції</td>
+                    <td>Розгорнуті FAQ rich snippets</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Приклад JSON-LD для Article</h3>
+
+        <pre><code><span class="tag">&lt;script</span> <span class="attr">type=</span><span class="val">"application/ld+json"</span><span class="tag">&gt;</span>
+{
+    <span class="prop">"@context"</span>: <span class="val">"https://schema.org"</span>,
+    <span class="prop">"@type"</span>: <span class="val">"Article"</span>,
+    <span class="prop">"headline"</span>: <span class="val">"Назва статті"</span>,
+    <span class="prop">"author"</span>: {
+        <span class="prop">"@type"</span>: <span class="val">"Person"</span>,
+        <span class="prop">"name"</span>: <span class="val">"Ім'я Автора"</span>
+    },
+    <span class="prop">"datePublished"</span>: <span class="val">"2026-01-15"</span>,
+    <span class="prop">"dateModified"</span>: <span class="val">"2026-02-20"</span>
+}
+<span class="tag">&lt;/script&gt;</span></code></pre>
+
+        <h3>Правила</h3>
+        <ul>
+            <li>Розмічайте тільки контент, що присутній на сторінці — додавання невидимих даних порушує гайдлайни Google.</li>
+            <li>Тримайте дані актуальними (ціни, години, рейтинги).</li>
+            <li>Валідуйте через <a href="https://search.google.com/test/rich-results" target="_blank">Google Rich Results Test</a>.</li>
+            <li>SEO-плагіни (Rank Math, Yoast) додають основну розмітку автоматично.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 10 ===== -->
+    <section>
+        <h2>WordPress: SEO-плагіни</h2>
+
+        <p>Встановіть <strong>один</strong> комплексний SEO-плагін. Ніколи не використовуйте два одночасно.</p>
+
+        <div class="comparison">
+            <div>
+                <strong>Rank Math</strong>
+                <ul>
+                    <li>Найкращий безкоштовний функціонал</li>
+                    <li>Мультиключові слова (безкоштовно)</li>
+                    <li>Менеджер редіректів (безкоштовно)</li>
+                    <li>Розширена Schema (безкоштовно)</li>
+                    <li>Моніторинг 404 (безкоштовно)</li>
+                    <li>Google Indexing API інтеграція</li>
+                </ul>
+            </div>
+            <div>
+                <strong>Yoast SEO</strong>
+                <ul>
+                    <li>Найкращий аналіз читабельності</li>
+                    <li>Мультиключові — тільки Premium</li>
+                    <li>Менеджер редіректів — тільки Premium</li>
+                    <li>Базова Schema безкоштовно</li>
+                    <li>Довша історія та ширша екосистема</li>
+                    <li>Інтеграція з Elementor та WooCommerce</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Базова конфігурація SEO-плагіна</h3>
+        <ul>
+            <li>Налаштуйте шаблони title та description — забезпечує оптимізовані мета-теги навіть якщо ви забули задати їх вручну.</li>
+            <li>Увімкніть breadcrumbs — генерує BreadcrumbList Schema автоматично.</li>
+            <li>Налаштуйте менеджер редіректів — автоматичні 301 при зміні URL.</li>
+            <li>Увімкніть підказки внутрішньої перелінковки.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 11 ===== -->
+    <section>
+        <h2>WordPress: тема та хостинг</h2>
+
+        <h3>Вибір теми</h3>
+        <ul>
+            <li>Для нових проєктів використовуйте <strong>блочні теми</strong> (Full Site Editor) — вони швидші, легші та підтримують FSE.</li>
+            <li>Перевіряйте мобільний PageSpeed score теми перед вибором.</li>
+            <li>Обирайте тему з підтримкою Schema markup.</li>
+            <li>Переконайтесь, що тема активно підтримується та сумісна з WordPress 6.7+.</li>
+        </ul>
+
+        <div class="example">
+            Топ блочні теми за швидкістю: Ollie (22 KB, PageSpeed 99–100), Kadence, Frost, Twentytwenty-Five.
+        </div>
+
+        <h3>Хостинг та SEO</h3>
+        <ul>
+            <li>Managed WordPress хостинг з CDN, автомасштабуванням та вбудованим кешуванням — ідеальний варіант.</li>
+            <li>Гарантований uptime 99.9%+ — сайти на нестабільних серверах втрачають crawl-можливості під час даунтайму.</li>
+            <li>Підтримка PHP 8.3+ та HTTP/2 або HTTP/3.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 12 ===== -->
+    <section>
+        <h2>HTTPS та безпека</h2>
+
+        <ul>
+            <li><strong>SSL/HTTPS обов'язковий</strong> на всьому сайті — підтверджений фактор ранжування. Chrome показує «Not Secure» без SSL.</li>
+            <li>Мінімум TLS 1.3.</li>
+            <li>HSTS headers обов'язкові.</li>
+            <li>Перевірте відсутність mixed content (HTTP-ресурси на HTTPS-сторінках).</li>
+            <li>Тримайте WordPress, теми та плагіни оновленими — зламані сайти втрачають позиції та можуть бути деіндексовані.</li>
+        </ul>
+
+        <div class="tip">
+            Безпека і SEO тісно пов'язані. Детальний чекліст безпеки дивіться у попередній лекції цього курсу.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 13 ===== -->
+    <section>
+        <h2>Link Building та Off-Page SEO</h2>
+
+        <h3>Стратегія</h3>
+        <ul>
+            <li><strong>Якість і релевантність важливіші за кількість</strong> — одне якісне посилання з авторитетного тематичного сайту переважує десятки низькоякісних.</li>
+            <li><strong>Digital PR</strong> — найефективніша тактика 2025–2026 (48.6% SEO-спеціалістів). Значно ефективніша за guest posting (16%) чи linkable assets (12%).</li>
+            <li>Публікуйте оригінальні дослідження, дані та кейси — 156% зростання посилань при переході від генеричних статей до оригінальних досліджень.</li>
+            <li>Будуйте посилання тільки з <strong>тематично релевантних</strong> джерел.</li>
+        </ul>
+
+        <div class="warning">
+            Заборонено: купівля посилань, обмін посиланнями, PBN. Алгоритмічні оновлення Google 2025 року цілеспрямовано виявляють неприродні посилальні патерни. Покарання — від зниження позицій до деіндексації.
+        </div>
+
+        <h3>Brand mentions</h3>
+        <ul>
+            <li>Збільшуйте згадки бренду через guest blogging, thought leadership та участь у спільнотах.</li>
+            <li>Згадки бренду покращують шанси цитування в AI-відповідях.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 14 ===== -->
+    <section>
+        <h2>AI Overviews та GEO</h2>
+
+        <p><strong>AI Overviews</strong> з'являються для ~16% усіх пошукових запитів. <strong>GEO</strong> (Generative Engine Optimization) — нова дисципліна оптимізації для AI-пошукових систем.</p>
+
+        <h3>Вплив AI Overviews на SEO</h3>
+        <ul>
+            <li>AI Overviews знижують CTR для позиції #1 на 58% (дані Ahrefs).</li>
+            <li>58.5% пошуків у США закінчуються без кліку.</li>
+            <li>Прості фактичні запити найбільш уражені — складні, нюансовані та opinion-based запити все ще генерують кліки.</li>
+        </ul>
+
+        <h3>Як оптимізувати</h3>
+        <ul>
+            <li>Створюйте чіткий, авторитетний, добре структурований контент — AI обирає джерела за довірою, ясністю та релевантністю.</li>
+            <li>Фокусуйтесь на long-tail та складних запитах, де AI Overviews працюють гірше.</li>
+            <li>Будуйте семантичний слід бренду по всьому вебу — GEO = бути джерелом, яке AI-системи цитують.</li>
+            <li>Впроваджуйте комплексні структуровані дані для розпізнавання AI-системами.</li>
+            <li>Будуйте brand awareness для прямих запитів — брендові запити менш уражені AI Overviews.</li>
+        </ul>
+
+        <div class="tip">
+            Диверсифікуйте джерела трафіку — залежність від одного каналу ризикована. Великі видання втратили 50–55% органічного трафіку через AI Overviews.
+        </div>
+
+        <h3>Моніторинг</h3>
+        <ul>
+            <li>Google Search Console інтегрує дані AI Overviews та AI Mode у звіти Performance з 2026 року.</li>
+            <li>Відстежуйте цитування в Perplexity, ChatGPT та Gemini.</li>
+        </ul>
+    </section>
+
+    <!-- ===== SECTION 15 ===== -->
+    <section>
+        <h2>Spam-політики Google</h2>
+
+        <p>Порушення spam-політик Google може призвести до manual action, падіння позицій або повної деіндексації.</p>
+
+        <h3>Заборонені практики</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Порушення</th>
+                    <th>Опис</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Site reputation abuse</strong></td>
+                    <td>Публікація стороннього контенту для експлуатації ваших сигналів ранжування («parasite SEO»)</td>
+                </tr>
+                <tr>
+                    <td><strong>Scaled content abuse</strong></td>
+                    <td>Масове виробництво контенту (включно з AI) для маніпуляції ранжуванням</td>
+                </tr>
+                <tr>
+                    <td><strong>Expired domain abuse</strong></td>
+                    <td>Купівля прострочених доменів для розміщення низькоякісного контенту</td>
+                </tr>
+                <tr>
+                    <td><strong>Link spam</strong></td>
+                    <td>Купівля посилань, обмін, масовий guest posting заради посилань</td>
+                </tr>
+                <tr>
+                    <td><strong>Cloaking</strong></td>
+                    <td>Показ різного контенту пошуковим ботам та користувачам</td>
+                </tr>
+                <tr>
+                    <td><strong>Doorway pages</strong></td>
+                    <td>Створення сторінок-прокладок для перенаправлення користувачів</td>
+                </tr>
+                <tr>
+                    <td><strong>Hidden text</strong></td>
+                    <td>Прихований текст або посилання для маніпуляції пошуком</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ===== SECTION 16 ===== -->
+    <section>
+        <h2>Моніторинг та аналітика</h2>
+
+        <h3>Обов'язкові інструменти</h3>
+        <ul>
+            <li><a href="https://search.google.com/search-console/" target="_blank">Google Search Console</a> — основний інструмент моніторингу SEO. З 2026 року інтегрує дані AI Overviews.</li>
+            <li>Google Analytics 4 — підключіть до Search Console для повного аналізу воронки.</li>
+        </ul>
+
+        <h3>Регулярні перевірки</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Що</th>
+                    <th>Як часто</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Keyword-позиції та органічний трафік</td>
+                    <td>Щотижня</td>
+                </tr>
+                <tr>
+                    <td>Core Web Vitals у Search Console</td>
+                    <td>Щомісяця</td>
+                </tr>
+                <tr>
+                    <td>Проблеми індексації у Search Console</td>
+                    <td>Щотижня</td>
+                </tr>
+                <tr>
+                    <td>Manual actions у Search Console</td>
+                    <td>Щотижня</td>
+                </tr>
+                <tr>
+                    <td>Комплексний SEO-аудит (технічний, контент, бекліки)</td>
+                    <td>Щоквартально</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            Слідкуйте за <a href="https://developers.google.com/search/blog" target="_blank">Google Search Central Blog</a> — Google робив 3 core updates у 2025 році. Розуміння змін допомагає проактивно адаптувати стратегію.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 17 ===== -->
+    <section>
+        <h2>Типові помилки WordPress SEO</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Помилка</th>
+                    <th>Чому це шкодить</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Увімкнений чекбокс «Видимість для пошукових систем»</strong> у Налаштування &rarr; Читання</td>
+                    <td>Повністю блокує індексацію. Частий промах після міграції зі staging.</td>
+                </tr>
+                <tr>
+                    <td><strong>Забагато плагінів</strong></td>
+                    <td>Сповільнює сайт, створює конфлікти та зайві запити до БД.</td>
+                </tr>
+                <tr>
+                    <td><strong>Неоптимізовані зображення</strong></td>
+                    <td>Причина #1 поганих Core Web Vitals.</td>
+                </tr>
+                <tr>
+                    <td><strong>Відсутність keyword research</strong></td>
+                    <td>Неможливо ранжуватися за релевантні запити, не знаючи їх.</td>
+                </tr>
+                <tr>
+                    <td><strong>Ігнорування search intent</strong></td>
+                    <td>Високий bounce rate і низькі позиції через невідповідність очікуванням.</td>
+                </tr>
+                <tr>
+                    <td><strong>Дублікати контенту</strong> (www vs non-www, HTTP vs HTTPS)</td>
+                    <td>Google не знає яку версію ранжувати і може не ранжувати жодну.</td>
+                </tr>
+                <tr>
+                    <td><strong>Відсутність стратегії перелінковки</strong></td>
+                    <td>Orphan pages невидимі для пошукових систем.</td>
+                </tr>
+                <tr>
+                    <td><strong>Неповна або відсутня Schema-розмітка</strong></td>
+                    <td>Втрата 20–30% CTR від rich snippets. Тільки 30% сайтів впроваджують Schema.</td>
+                </tr>
+                <tr>
+                    <td><strong>SEO як одноразова дія</strong></td>
+                    <td>SEO — постійний процес. Без підтримки позиції та трафік падають.</td>
+                </tr>
+                <tr>
+                    <td><strong>Не налаштований Google Search Console</strong></td>
+                    <td>Сліпота щодо проблем індексації, manual actions, CWV та keyword-даних.</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ===== SECTION 18 ===== -->
+    <section>
+        <h2>Міжнародне SEO (hreflang)</h2>
+
+        <p>Якщо сайт має мультимовні або мультирегіональні версії — hreflang є критично важливим. Понад 65% міжнародних сайтів мають значні помилки впровадження hreflang.</p>
+
+        <h3>Правила</h3>
+        <ul>
+            <li>Кожна сторінка має посилатися на всі свої альтернативні версії <strong>плюс</strong> на саму себе (self-referencing tag).</li>
+            <li>Завжди додавайте тег <code>x-default</code> як fallback.</li>
+            <li>Використовуйте правильні ISO-коди: ISO 639-1 для мови, ISO 3166-1 Alpha 2 для регіону (<code>en-US</code>, не <code>eng-USA</code>).</li>
+            <li>Обирайте один метод: HTML head, HTTP headers або XML sitemaps — і застосовуйте його консистентно.</li>
+        </ul>
+
+        <h3>Приклад</h3>
+        <pre><code><span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"uk"</span> <span class="attr">href=</span><span class="val">"https://example.com/uk/page/"</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"en"</span> <span class="attr">href=</span><span class="val">"https://example.com/en/page/"</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"x-default"</span> <span class="attr">href=</span><span class="val">"https://example.com/en/page/"</span> <span class="tag">/&gt;</span></code></pre>
+
+        <div class="tip">
+            Починайте з обмеженого набору сторінок, щоб перевірити впровадження, потім масштабуйте. Перевіряйте помилки hreflang у Search Console щомісяця.
+        </div>
+    </section>
+
+    <!-- ===== SECTION 19 ===== -->
+    <section>
+        <h2>Action Plan (швидкий старт)</h2>
+
+        <p>Мінімальний набір дій для базової SEO-оптимізації нового WordPress-проєкту:</p>
+
+        <ol>
+            <li>Перевірити, що «Видимість для пошукових систем» <strong>вимкнена</strong> у Налаштування &rarr; Читання</li>
+            <li>Встановити SSL-сертифікат та налаштувати HTTPS</li>
+            <li>Налаштувати permalink-структуру Post Name (<code>/%postname%/</code>)</li>
+            <li>Встановити SEO-плагін (Rank Math або Yoast) та пройти майстер налаштування</li>
+            <li>Налаштувати шаблони title та description в SEO-плагіні</li>
+            <li>Надіслати XML sitemap у Google Search Console та Bing Webmaster Tools</li>
+            <li>Підключити Google Analytics 4 та зв'язати з Search Console</li>
+            <li>Встановити плагін кешування (WP Rocket, LiteSpeed Cache або NitroPack)</li>
+            <li>Встановити плагін оптимізації зображень та увімкнути WebP/AVIF конвертацію</li>
+            <li>Перевірити Core Web Vitals через PageSpeed Insights</li>
+            <li>Додати Organization Schema на головну сторінку</li>
+            <li>Налаштувати breadcrumbs та BreadcrumbList Schema</li>
+            <li>Перевірити мобільну версію сайту (контент, tap targets, шрифти)</li>
+            <li>Налаштувати robots.txt з посиланням на sitemap</li>
+            <li>Видалити невикористовувані плагіни та деактивовані теми</li>
+            <li>Перевірити canonical-теги на всіх сторінках</li>
+            <li>Додати alt text до всіх зображень</li>
+            <li>Побудувати базову внутрішню перелінковку (hub-and-spoke)</li>
+            <li>Налаштувати редіректи www &rarr; non-www (або навпаки) та HTTP &rarr; HTTPS</li>
+            <li>Створити сторінку «Про нас» з контактною інформацією</li>
+            <li>Додати біографії авторів до контенту</li>
+            <li>Провести keyword research для основних сторінок</li>
+            <li>Валідувати структуровані дані через Google Rich Results Test</li>
+            <li>Налаштувати моніторинг Core Web Vitals у Search Console</li>
+            <li>Перевірити відсутність mixed content (HTTP ресурсів на HTTPS сторінках)</li>
+        </ol>
+    </section>
+
+{% endblock %}
