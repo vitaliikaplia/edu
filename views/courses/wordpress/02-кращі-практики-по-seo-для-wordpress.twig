@@ -102,8 +102,12 @@
         <ul>
             <li>Не блокуйте CSS та JS файли — Google рендерить сторінки для розуміння контенту.</li>
             <li>Додайте URL sitemap у robots.txt.</li>
-            <li>Використовуйте <code>noindex</code> мета-тег (не robots.txt) для приховання сторінок з пошуку — robots.txt не запобігає індексації, лише скануванню.</li>
+            <li>Використовуйте <code>noindex</code> мета-тег (не robots.txt) для приховання сторінок з пошуку.</li>
         </ul>
+
+        <div class="warning">
+            robots.txt — це лише <strong>рекомендація</strong> для пошукових систем, а не жорстка заборона. Google сам вирішує, чи дотримуватися директив. robots.txt не запобігає індексації — якщо на сторінку є зовнішні посилання, Google може проіндексувати її навіть при Disallow. Для надійного приховування з пошуку використовуйте мета-тег <code>noindex</code>.
+        </div>
 
         <div class="example">
             Базовий robots.txt для WordPress:
@@ -115,15 +119,14 @@
 
 <span class="prop">Sitemap</span>: <span class="val">https://example.com/sitemap_index.xml</span></code></pre>
 
-        <h3>Контроль AI-ботів</h3>
-        <p>З появою AI-ботів (GPTBot, CCBot тощо) додайте відповідні правила у robots.txt за потреби:</p>
+        <h3>AI-боти та robots.txt</h3>
+        <p>З появою AI-ботів (GPTBot, CCBot, Google-Extended тощо) виникає спокуса заблокувати їх у robots.txt. Але варто розуміти наслідки:</p>
 
-        <pre><code><span class="comment"># Заблокувати AI-ботів (якщо не хочете, щоб ваш контент використовували для навчання)</span>
-<span class="prop">User-agent</span>: <span class="val">GPTBot</span>
-<span class="prop">Disallow</span>: <span class="val">/</span>
+        <div class="warning">
+            Блокування AI-ботів = зникнення вашого сайту з AI-видачі (ChatGPT, Perplexity, Gemini тощо). Навчання AI-моделей та AI-пошук — це пов'язані процеси. Якщо ви заблокуєте GPTBot, ваш контент не з'явиться у відповідях ChatGPT.
+        </div>
 
-<span class="prop">User-agent</span>: <span class="val">CCBot</span>
-<span class="prop">Disallow</span>: <span class="val">/</span></code></pre>
+        <p>Для більшості сайтів <strong>краще не блокувати</strong> AI-ботів — присутність у AI-відповідях стає важливим джерелом трафіку та впізнаваності бренду (див. розділ «AI Overviews та GEO»).</p>
 
         <h3>Загальні правила</h3>
         <ul>
@@ -458,7 +461,7 @@
         </ul>
 
         <div class="warning">
-            Заборонено: купівля посилань, обмін посиланнями, PBN. Алгоритмічні оновлення Google 2025 року цілеспрямовано виявляють неприродні посилальні патерни. Покарання — від зниження позицій до деіндексації.
+            Згідно з гайдлайнами Google, маніпулятивні посилальні схеми (PBN, масовий обмін, doorway-лінки) є порушенням і можуть призвести до зниження позицій. Алгоритми Google постійно вдосконалюються у виявленні неприродних посилальних патернів — будуйте посилальний профіль так, щоб він виглядав органічно та природно.
         </div>
 
         <h3>Brand mentions</h3>
@@ -661,16 +664,22 @@
         <ul>
             <li>Кожна сторінка має посилатися на всі свої альтернативні версії <strong>плюс</strong> на саму себе (self-referencing tag).</li>
             <li>Завжди додавайте тег <code>x-default</code> як fallback.</li>
-            <li>Використовуйте правильні ISO-коди: ISO 639-1 для мови, ISO 3166-1 Alpha 2 для регіону (<code>en-US</code>, не <code>eng-USA</code>).</li>
+            <li>Використовуйте правильні ISO-коди: ISO 639-1 для мови, ISO 3166-1 Alpha 2 для регіону.</li>
+            <li>Вказуйте <strong>мову + країну</strong> для точного таргетування: <code>uk-UA</code> (українська для України), <code>en-UA</code> (англійська для України), а не просто <code>uk</code> чи <code>en</code>.</li>
             <li>Обирайте один метод: HTML head, HTTP headers або XML sitemaps — і застосовуйте його консистентно.</li>
         </ul>
 
-        <h3>Приклад</h3>
-        <pre><code><span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"uk"</span> <span class="attr">href=</span><span class="val">"https://example.com/uk/page/"</span> <span class="tag">/&gt;</span>
-<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"en"</span> <span class="attr">href=</span><span class="val">"https://example.com/en/page/"</span> <span class="tag">/&gt;</span>
-<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"x-default"</span> <span class="attr">href=</span><span class="val">"https://example.com/en/page/"</span> <span class="tag">/&gt;</span></code></pre>
-
         <div class="tip">
+            hreflang не замінює атрибут <code>lang</code> в HTML-тезі (<code>&lt;html lang="uk"&gt;</code>). Це різні механізми: <code>lang</code> вказує мову поточної сторінки для браузера та скрінрідерів, а hreflang повідомляє пошуковим системам про альтернативні мовні версії. Використовуйте обидва.
+        </div>
+
+        <h3>Приклад для мультимовного сайту в Україні</h3>
+        <pre><code><span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"uk-UA"</span> <span class="attr">href=</span><span class="val">"https://example.com/uk/page/"</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"ru-UA"</span> <span class="attr">href=</span><span class="val">"https://example.com/ru/page/"</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"en-UA"</span> <span class="attr">href=</span><span class="val">"https://example.com/en/page/"</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"x-default"</span> <span class="attr">href=</span><span class="val">"https://example.com/uk/page/"</span> <span class="tag">/&gt;</span></code></pre>
+
+        <div class="example">
             Починайте з обмеженого набору сторінок, щоб перевірити впровадження, потім масштабуйте. Перевіряйте помилки hreflang у Search Console щомісяця.
         </div>
     </section>
