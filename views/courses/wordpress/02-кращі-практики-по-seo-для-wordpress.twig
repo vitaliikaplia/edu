@@ -39,7 +39,7 @@
         </table>
 
         <div class="warning">
-            64% вебсайтів не проходять порогові значення Core Web Vitals. Перевіряйте свої показники щомісяця через <a href="https://pagespeed.web.dev/" target="_blank">PageSpeed Insights</a> та <a href="https://search.google.com/search-console/" target="_blank">Search Console</a>.
+            Більшість вебсайтів не проходять порогові значення Core Web Vitals. Перевіряйте свої показники щомісяця через <a href="https://pagespeed.web.dev/" target="_blank">PageSpeed Insights</a> та <a href="https://search.google.com/search-console/" target="_blank">Search Console</a>.
         </div>
 
         <h3>Як покращити</h3>
@@ -85,6 +85,14 @@
             <li>Видаліть невикористовувані плагіни та деактивовані теми — кожен додає overhead.</li>
             <li>Обмежте кількість плагінів до необхідного мінімуму.</li>
         </ul>
+
+        <h3>Оптимізація бази даних</h3>
+        <ul>
+            <li>Регулярно очищуйте ревізії постів — WordPress зберігає кожну зміну, що роздуває базу. Обмежте кількість ревізій у <code>wp-config.php</code>: <code>define('WP_POST_REVISIONS', 5);</code></li>
+            <li>Видаляйте застарілі transients, спам-коментарі та записи в таблиці <code>wp_options</code> з autoload = yes.</li>
+            <li>Використовуйте плагін <a href="https://wordpress.org/plugins/wp-optimize/" target="_blank">WP-Optimize</a> або <a href="https://wordpress.org/plugins/advanced-database-cleaner/" target="_blank">Advanced Database Cleaner</a> для автоматичного обслуговування.</li>
+            <li>Чиста база зменшує час відгуку сервера (TTFB), що безпосередньо впливає на Core Web Vitals.</li>
+        </ul>
     </section>
 
     <!-- ===== SECTION 3 ===== -->
@@ -127,6 +135,13 @@
         </div>
 
         <p>Для більшості сайтів <strong>краще не блокувати</strong> AI-ботів — присутність у AI-відповідях стає важливим джерелом трафіку та впізнаваності бренду (див. розділ «AI Overviews та GEO»).</p>
+
+        <h3>Захист crawl budget через WAF</h3>
+        <ul>
+            <li>Налаштуйте WAF (наприклад, <a href="https://www.cloudflare.com/" target="_blank">Cloudflare</a>) для блокування шкідливих ботів та парсерів, що перевантажують сервер і витрачають краулінговий бюджет.</li>
+            <li>Використовуйте Bot Management для розмежування корисних ботів (Googlebot, Bingbot) та шкідливих скраперів.</li>
+            <li>Rate limiting для підозрілих User-Agent та IP-адрес зменшує навантаження і зберігає crawl budget для пошукових систем.</li>
+        </ul>
 
         <h3>Загальні правила</h3>
         <ul>
@@ -219,7 +234,7 @@
         </ul>
 
         <div class="example">
-            Грудневий Core Update 2025: сайти з оригінальним контентом та демонстрацією досвіду отримали зростання на ~23%. Контент-ферми з генеричним контентом зазнали значних втрат.
+            Після Core Updates сайти з оригінальним контентом та демонстрацією реального досвіду стабільно зростають у видачі, тоді як контент-ферми з генеричним контентом зазнають значних втрат.
         </div>
 
         <h3>AI-контент</h3>
@@ -244,7 +259,7 @@
         </div>
 
         <div class="warning">
-            SpamBrain від Google визначає низькоякісний AI-контент з точністю ~98% (дані 2025 року). Масовий AI-контент без експертного нагляду зазнав 87% негативного впливу після Core Update грудня 2025.
+            SpamBrain від Google ефективно визначає низькоякісний AI-контент. Масовий AI-контент без експертного нагляду стабільно зазнає негативного впливу після Core Updates.
         </div>
     </section>
 
@@ -267,14 +282,15 @@
             <li>Використовуйте <code>srcset</code> для responsive images.</li>
         </ul>
 
-        <h3>Lazy Loading</h3>
+        <h3>Lazy Loading та пріоритет завантаження</h3>
         <ul>
-            <li>Перші 2–3 зображення (hero/LCP) — завантажувати eagerly.</li>
-            <li>Решту — lazy load.</li>
+            <li>LCP-елемент (hero-зображення) — додайте атрибут <code>fetchpriority="high"</code> для пріоритетного завантаження браузером.</li>
+            <li>Решта медіафайлів поза першим екраном — <code>loading="lazy"</code>.</li>
+            <li>Перші 2–3 зображення (above-the-fold) — завантажувати eagerly, без lazy load.</li>
         </ul>
 
         <div class="warning">
-            Lazy loading <strong>всіх</strong> зображень (включно з above-the-fold) погіршує LCP. Завжди виключайте hero-зображення з lazy load.
+            Lazy loading <strong>всіх</strong> зображень (включно з above-the-fold) погіршує LCP. Завжди виключайте hero-зображення з lazy load та додавайте їм <code>fetchpriority="high"</code>.
         </div>
     </section>
 
@@ -282,7 +298,7 @@
     <section>
         <h2>Внутрішня перелінковка</h2>
 
-        <p>Стратегічна внутрішня перелінковка може підвищити позиції до 40% та покращити ефективність сканування з 40% до 70%.</p>
+        <p>Стратегічна внутрішня перелінковка суттєво впливає на позиції та покращує ефективність сканування сайту пошуковими ботами.</p>
 
         <h3>Стратегія</h3>
         <ul>
@@ -295,7 +311,7 @@
         <h3>Аудит</h3>
         <ul>
             <li>Регулярно перевіряйте broken links та orphan pages (сторінки без жодного внутрішнього посилання).</li>
-            <li>71% вебсайтів мають порушену або неефективну внутрішню структуру посилань.</li>
+            <li>Більшість вебсайтів мають порушену або неефективну внутрішню структуру посилань.</li>
         </ul>
 
         <div class="tip">
@@ -339,8 +355,17 @@
                     <td>FAQ-секції</td>
                     <td>Розгорнуті FAQ rich snippets</td>
                 </tr>
+                <tr>
+                    <td><code>LocalBusiness</code></td>
+                    <td>Локальний бізнес</td>
+                    <td>Knowledge Panel, карта, години роботи, контакти в SERP</td>
+                </tr>
             </tbody>
         </table>
+
+        <div class="tip">
+            Більшість цих типів розмітки можна налаштувати через SEO-плагіни (Rank Math, Yoast) без ручного написання JSON-LD. Обов'язково налаштуйте Schema через плагін для автоматичного формування Rich Snippets у видачі.
+        </div>
 
         <h3>Приклад JSON-LD для Article</h3>
 
@@ -455,8 +480,8 @@
         <h3>Стратегія</h3>
         <ul>
             <li><strong>Якість і релевантність важливіші за кількість</strong> — одне якісне посилання з авторитетного тематичного сайту переважує десятки низькоякісних.</li>
-            <li><strong>Digital PR</strong> — найефективніша тактика 2025–2026 (48.6% SEO-спеціалістів). Значно ефективніша за guest posting (16%) чи linkable assets (12%).</li>
-            <li>Публікуйте оригінальні дослідження, дані та кейси — 156% зростання посилань при переході від генеричних статей до оригінальних досліджень.</li>
+            <li><strong>Digital PR</strong> — одна з найефективніших тактик лінкбілдингу. Значно ефективніша за масовий guest posting.</li>
+            <li>Публікуйте оригінальні дослідження, дані та кейси — оригінальний контент привертає значно більше посилань, ніж генеричні статті.</li>
             <li>Будуйте посилання тільки з <strong>тематично релевантних</strong> джерел.</li>
         </ul>
 
@@ -673,11 +698,18 @@
             hreflang не замінює атрибут <code>lang</code> в HTML-тезі (<code>&lt;html lang="uk"&gt;</code>). Це різні механізми: <code>lang</code> вказує мову поточної сторінки для браузера та скрінрідерів, а hreflang повідомляє пошуковим системам про альтернативні мовні версії. Використовуйте обидва.
         </div>
 
-        <h3>Приклад для мультимовного сайту в Україні</h3>
-        <pre><code><span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"uk-UA"</span> <span class="attr">href=</span><span class="val">"https://example.com/uk/page/"</span> <span class="tag">/&gt;</span>
-<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"ru-UA"</span> <span class="attr">href=</span><span class="val">"https://example.com/ru/page/"</span> <span class="tag">/&gt;</span>
-<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"en-UA"</span> <span class="attr">href=</span><span class="val">"https://example.com/en/page/"</span> <span class="tag">/&gt;</span>
+        <h3>Приклад для мультимовного сайту</h3>
+        <pre><code><span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"uk"</span> <span class="attr">href=</span><span class="val">"https://example.com/uk/page/"</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"en"</span> <span class="attr">href=</span><span class="val">"https://example.com/en/page/"</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"de"</span> <span class="attr">href=</span><span class="val">"https://example.com/de/page/"</span> <span class="tag">/&gt;</span>
 <span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="val">"alternate"</span> <span class="attr">hreflang=</span><span class="val">"x-default"</span> <span class="attr">href=</span><span class="val">"https://example.com/uk/page/"</span> <span class="tag">/&gt;</span></code></pre>
+
+        <h3>Плагіни для багатомовності</h3>
+        <ul>
+            <li><a href="https://wordpress.org/plugins/polylang/" target="_blank">Polylang</a> — безкоштовний плагін з підтримкою hreflang, зручний для невеликих проєктів.</li>
+            <li><a href="https://wpml.org/" target="_blank">WPML</a> — платний, найпопулярніший плагін для складних мультимовних сайтів з повною інтеграцією hreflang та WooCommerce.</li>
+            <li>Обидва плагіни автоматично генерують hreflang-теги — ручне налаштування не потрібне.</li>
+        </ul>
 
         <div class="example">
             Починайте з обмеженого набору сторінок, щоб перевірити впровадження, потім масштабуйте. Перевіряйте помилки hreflang у Search Console щомісяця.
