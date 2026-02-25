@@ -38,19 +38,29 @@ function get_all_blocks_styles(){
 }
 
 function minify_html($html) {
-    if (MINIFY_HTML) {
-        return preg_replace([
-            '/\>[^\S ]+/s',
-            '/[^\S ]+\</s',
-            '/(\s)+/s'
-        ], [
-            '>',
-            '<',
-            '\\1'
-        ], $html);
-    } else {
-        return preg_replace("/^\s*\n/m", '', $html);
+    if (!MINIFY_HTML) {
+        return $html;
     }
+
+    // Protect <pre> blocks from minification
+    $pre_blocks = [];
+    $html = preg_replace_callback('/<pre\b[^>]*>.*?<\/pre>/si', function($match) use (&$pre_blocks) {
+        $placeholder = '<!--PRE_BLOCK_' . count($pre_blocks) . '-->';
+        $pre_blocks[] = $match[0];
+        return $placeholder;
+    }, $html);
+
+    // Remove leading whitespace (indentation) from each line
+    $html = preg_replace('/^[ \t]+/m', '', $html);
+    // Remove empty lines
+    $html = preg_replace('/\n\s*\n/', "\n", $html);
+
+    // Restore <pre> blocks
+    foreach ($pre_blocks as $i => $block) {
+        $html = str_replace('<!--PRE_BLOCK_' . $i . '-->', $block, $html);
+    }
+
+    return $html;
 }
 
 function ukr_to_lat($str) {

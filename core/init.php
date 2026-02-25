@@ -37,7 +37,7 @@ const SVG_SPRITE_URL = HOME_URL . 'assets/svg/sprite.svg?ver=' . ASSETS_VERSION;
 const SVG_FOLDER = HOME_URL . 'assets/svg/';
 const IMG_FOLDER = HOME_URL . 'assets/img/';
 const ASSETS_URL = HOME_URL . 'assets';
-const MINIFY_HTML = false;
+const MINIFY_HTML = true;
 const TWIG_VIEWS_DIRNAME = 'views';
 
 const SITE_NAME = 'edu.kaplia.pro';
