@@ -1,5 +1,6 @@
 {
     "name": "vitaliikaplia/edu",
+    "version": "1.0.0",
     "description": "",
     "type": "application",
     "license": "none",
@@ -16,7 +17,7 @@
     "config": {
         "vendor-dir": "vendor",
         "platform": {
-            "php": "8.3"
+            "php": "8.4"
         }
     }
 }
